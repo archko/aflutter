@@ -1,6 +1,7 @@
+import 'package:AFlutter/state/test_scoped_mode_page.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'home/home_tabs_page.dart';
+
 import 'model/app_state_mode.dart';
 
 void main() {
@@ -22,7 +23,7 @@ class _ScropedModeAppState extends State<ScropedModeApp> {
   @override
   void initState() {
     super.initState();
-    model = AppStateModel()..loadProducts();
+    model = AppStateModel()..loadMovies();
   }
 
   @override
@@ -32,9 +33,7 @@ class _ScropedModeAppState extends State<ScropedModeApp> {
       child: MaterialApp(
         title: 'Flutter scoped mode',
         color: Colors.grey,
-        builder: (BuildContext context, Widget child) {
-          return child;
-        },
+        home: TestScopedModePage(),
       ),
     );
   }
