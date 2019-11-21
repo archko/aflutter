@@ -5,19 +5,19 @@ import 'package:provider/provider.dart';
 import 'model/app_provider.dart';
 
 void main() {
-  runApp(ScropedModeApp());
+  runApp(StateDemoApp());
 }
 
-class ScropedModeApp extends StatefulWidget {
-  const ScropedModeApp({
+class StateDemoApp extends StatefulWidget {
+  const StateDemoApp({
     Key key,
   }) : super(key: key);
 
   @override
-  _ScropedModeAppState createState() => _ScropedModeAppState();
+  _StateDemoAppState createState() => _StateDemoAppState();
 }
 
-class _ScropedModeAppState extends State<ScropedModeApp> {
+class _StateDemoAppState extends State<StateDemoApp> {
   AppProvider model;
 
   @override
