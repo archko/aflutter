@@ -11,6 +11,7 @@ class AppStateModel extends Model {
 
   List<Animate> getMovies() {
     if (_animates == null) {
+      Future(() => {loadMovies()});
       return <Animate>[];
     }
 
@@ -25,7 +26,7 @@ class AppStateModel extends Model {
   loadData() async {
     List<Animate> list;
     final String url =
-        'https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?resource_id=28286&from_mid=1&&format=json&ie=utf-8&oe=utf-8&query=电影&sort_key=16&sort_type=1&stat0=&stat1=&stat2=&stat3=&pn=20&rn=12&cb=cbs';
+        'https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?resource_id=28286&from_mid=1&&format=json&ie=utf-8&oe=utf-8&query=电影&sort_key=16&sort_type=1&stat0=&stat1=&stat2=&stat3=&pn=0&rn=25&cb=cbs';
     try {
       HttpResponse httpResponse = await HttpClient.instance.get(url);
       var result = httpResponse.data.replaceAll('cbs(', '').replaceAll(')', '');

@@ -23,7 +23,7 @@ class _ScropedModeAppState extends State<ScropedModeApp> {
   @override
   void initState() {
     super.initState();
-    model = AppStateModel()..loadMovies();
+    model = AppStateModel();//..loadMovies();
   }
 
   @override
@@ -32,7 +32,6 @@ class _ScropedModeAppState extends State<ScropedModeApp> {
       model: model,
       child: MaterialApp(
         title: 'Flutter scoped mode',
-        color: Colors.grey,
         home: TestScopedModePage(),
       ),
     );
