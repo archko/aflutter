@@ -1,4 +1,4 @@
-import 'package:AFlutter/state/load_model.dart';
+import 'package:AFlutter/model/load_model.dart';
 import 'package:flutter/material.dart';
 
 class PullToRefreshWidget extends StatefulWidget {

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:AFlutter/api/http_client.dart';
 import 'package:AFlutter/api/http_response.dart';
-import 'package:AFlutter/state/load_model.dart';
+import 'package:AFlutter/model/load_model.dart';
 import 'package:flutter/material.dart';
 
 import 'movie_list_item.dart';

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:AFlutter/api/http_client.dart';
 import 'package:AFlutter/api/http_response.dart';
 import 'package:AFlutter/list/gank_detail_page.dart';
-import 'package:AFlutter/state/load_model.dart';
+import 'package:AFlutter/model/load_model.dart';
 import 'package:flutter/material.dart';
 
 import '../entity/gank_bean.dart';

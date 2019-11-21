@@ -1,8 +1,8 @@
-import 'package:AFlutter/state/test_scoped_mode_page.dart';
+import 'package:AFlutter/state/test_provider_page.dart';
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'package:provider/provider.dart';
 
-import 'model/app_state_mode.dart';
+import 'model/app_provider.dart';
 
 void main() {
   runApp(ScropedModeApp());
@@ -18,21 +18,27 @@ class ScropedModeApp extends StatefulWidget {
 }
 
 class _ScropedModeAppState extends State<ScropedModeApp> {
-  AppStateModel model;
+  AppProvider model;
 
   @override
   void initState() {
     super.initState();
-    model = AppStateModel();//..loadMovies();
+    model = AppProvider(); //..loadMovies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<AppStateModel>(
-      model: model,
-      child: MaterialApp(
-        title: 'Flutter scoped mode',
-        home: TestScopedModePage(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(builder: (_) => AppProvider()),
+      ],
+      child: Consumer<AppProvider>(
+        builder: (context, counter, _) {
+          return MaterialApp(
+            title: 'Flutter provider',
+            home: TestProviderModePage(),
+          );
+        },
       ),
     );
   }

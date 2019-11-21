@@ -1,12 +1,11 @@
 import 'dart:convert';
 
-import 'package:scoped_model/scoped_model.dart';
+import 'package:AFlutter/api/http_client.dart';
+import 'package:AFlutter/api/http_response.dart';
+import 'package:AFlutter/list/movie_list_page.dart';
+import 'package:flutter/material.dart';
 
-import '../api/http_client.dart';
-import '../api/http_response.dart';
-import '../list/movie_list_page.dart';
-
-class AppStateModel extends Model {
+class AppProvider with ChangeNotifier {
   List<Animate> _animates;
 
   List<Animate> getMovies() {

@@ -1,38 +1,36 @@
 import 'package:AFlutter/list/movie_list_page.dart';
-import 'package:AFlutter/model/app_state_mode.dart';
+import 'package:AFlutter/model/app_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../list/movie_list_item.dart';
 
-class TestScopedModePage extends StatefulWidget {
-  TestScopedModePage({Key key}) : super(key: key);
+class TestProviderModePage extends StatefulWidget {
+  TestProviderModePage({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return new TestScopedModePageState();
+    return new TestProviderModePageState();
   }
 }
 
-class TestScopedModePageState extends State<TestScopedModePage>
+class TestProviderModePageState extends State<TestProviderModePage>
     with AutomaticKeepAliveClientMixin {
   RefreshController _controller = RefreshController();
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<AppStateModel>(
-      builder: (BuildContext context, Widget child, AppStateModel model) {
-        return Scaffold(
-          appBar: AppBar(title: Text('Flutter scoped mode')),
-          body: SmartRefresher(
-            controller: _controller,
-            child: buildList(model.getMovies()),
-            enablePullUp: true,
-            header: MaterialClassicHeader(),
-          ),
-        );
-      },
+    final model = Provider.of<AppProvider>(context);
+    return Scaffold(
+      appBar: AppBar(title: Text('Flutter provider')),
+      body: SmartRefresher(
+        controller: _controller,
+        child: buildList(model.getMovies()),
+        enablePullUp: true,
+        header: MaterialClassicHeader(),
+      ),
     );
   }
 
