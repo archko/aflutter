@@ -6,6 +6,10 @@ import 'state/app_redux.dart';
 import 'state/test_flutter_redux_page.dart';
 
 void main() {
+  runReduxApp();
+}
+
+void runReduxApp() {
   final store = Store<SearchState>(
     searchReducer,
     initialState: SearchInitial(),
@@ -14,13 +18,13 @@ void main() {
     ],
   );
 
-  runApp(StateDemoApp(
+  runApp(FlutterReduxDemoApp(
     store: store,
   ));
 }
 
-class StateDemoApp extends StatelessWidget {
-  const StateDemoApp({
+class FlutterReduxDemoApp extends StatelessWidget {
+  const FlutterReduxDemoApp({
     Key key,
     this.store,
   }) : super(key: key);
