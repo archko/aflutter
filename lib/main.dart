@@ -1,44 +1,39 @@
-import 'package:AFlutter/state/test_provider_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
-import 'model/app_provider.dart';
+import 'state/app_redux.dart';
+import 'state/test_flutter_redux_page.dart';
 
 void main() {
-  runApp(StateDemoApp());
+  final store = Store<SearchState>(
+    searchReducer,
+    initialState: SearchInitial(),
+    middleware: [
+      SearchMiddleware(),
+    ],
+  );
+
+  runApp(StateDemoApp(
+    store: store,
+  ));
 }
 
-class StateDemoApp extends StatefulWidget {
+class StateDemoApp extends StatelessWidget {
   const StateDemoApp({
     Key key,
+    this.store,
   }) : super(key: key);
 
-  @override
-  _StateDemoAppState createState() => _StateDemoAppState();
-}
-
-class _StateDemoAppState extends State<StateDemoApp> {
-  AppProvider model;
-
-  @override
-  void initState() {
-    super.initState();
-    model = AppProvider(); //..loadMovies();
-  }
+  final Store store;
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(builder: (_) => AppProvider()),
-      ],
-      child: Consumer<AppProvider>(
-        builder: (context, counter, _) {
-          return MaterialApp(
-            title: 'Flutter provider',
-            home: TestProviderModePage(),
-          );
-        },
+    return StoreProvider<SearchState>(
+      store: store,
+      child: MaterialApp(
+        title: 'Flutter redux',
+        home: TestFlutterReduxPage(),
       ),
     );
   }
