@@ -76,8 +76,13 @@ class TestFlutterReduxPageState extends State<TestFlutterReduxPage>
         child: Text("loading."),
       );
     } else if (state is SearchEmpty) {
-      return Center(
-        child: Text("no data."),
+      return GestureDetector(
+        onTap: () {
+          _getStore().dispatch(SearchAction(""));
+        },
+        child: Center(
+          child: Text("no data."),
+        ),
       );
     }
   }
