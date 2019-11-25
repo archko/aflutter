@@ -1,5 +1,5 @@
 import 'package:AFlutter/entity/Animate.dart';
-import 'package:AFlutter/dao/MovieDao.dart';
+import 'package:AFlutter/service/MovieService.dart';
 import 'package:flutter/material.dart';
 
 class AppProvider with ChangeNotifier {
@@ -15,7 +15,7 @@ class AppProvider with ChangeNotifier {
   }
 
   void loadMovies() async {
-    _animates = await MovieDao.loadData();
+    _animates = await MovieService.loadData();
     notifyListeners();
   }
 }

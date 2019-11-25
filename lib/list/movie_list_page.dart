@@ -1,7 +1,8 @@
-import 'package:AFlutter/dao/MovieDao.dart';
+import 'package:AFlutter/service/MovieService.dart';
 import 'package:AFlutter/entity/Animate.dart';
 import 'package:AFlutter/model/base_list_view_model.dart';
 import 'package:AFlutter/state/list_state.dart';
+import 'package:AFlutter/state/load_more_status.dart';
 import 'package:flutter/material.dart';
 
 import 'movie_list_item.dart';
@@ -27,17 +28,19 @@ class MovieListPageState extends State<MovieListPage>
     super.initState();
 
     //加载第一页数据
-    MovieDao.loadData();
+    //MovieService.loadData();
   }
 
   //下拉刷新,必须异步async不然会报错
   @override
   Future refresh() async {
+    setStatus(LoadMoreStatus.LOADING);
     loadModel.setPage(0);
-    List<Animate> list = await MovieDao.loadData();
+    List<Animate> list = await MovieService.loadData();
     loadModel.setDataList(list);
     setState(() {
-      print("refresh end.${loadModel.getCount()}");
+      setStatus(LoadMoreStatus.IDLE);
+      print("refresh end.${loadModel.page}, ${loadModel.getCount()}");
     });
   }
 
@@ -49,6 +52,7 @@ class MovieListPageState extends State<MovieListPage>
       listCount: loadModel.getCount(),
       onLoadMore: loadMore,
       onRefresh: refresh,
+      listState: this,
     );
     /*return new Scaffold(
       body: mlists.length == 0
@@ -76,11 +80,16 @@ class MovieListPageState extends State<MovieListPage>
 
   @override
   Future<void> loadMore() async {
-    List<Animate> list=await MovieDao.loadMore(loadModel.page);
+    if (loadModel.getCount() < 1) {
+      return refresh();
+    }
+    setStatus(LoadMoreStatus.LOADING);
+    List<Animate> list = await MovieService.loadMore(loadModel.page);
     loadModel.addDataList(list);
     loadModel.setPage(loadModel.page + 1);
     setState(() {
-      print("loadMore end.${loadModel.getCount()}");
+      setStatus(LoadMoreStatus.IDLE);
+      print("loadMore end.${loadModel.page}, ${loadModel.getCount()}");
     });
   }
 }

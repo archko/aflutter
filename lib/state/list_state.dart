@@ -4,7 +4,12 @@ import 'load_more_status.dart';
 
 mixin ListState<T extends StatefulWidget> on State<T> {
   @protected
-  LoadMoreStatus loadMoreStatus;
+  LoadMoreStatus loadMoreStatus = LoadMoreStatus.IDLE;
+
+  @protected
+  setStatus(LoadMoreStatus status) {
+    loadMoreStatus = status;
+  }
 
   @protected
   refresh() async {}

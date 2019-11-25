@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:dio/dio.dart';
 
+import 'HttpLogInterceptor.dart';
 import 'http_response.dart';
 
 class HttpClient {
@@ -17,9 +18,8 @@ class HttpClient {
 
   HttpClient._init() {
     if (dio == null) {
-      //dio.interceptors.add(HttpLogInterceptor());
-
       dio = new Dio();
+      dio.interceptors.add(HttpLogInterceptor());
     }
   }
 
@@ -41,8 +41,8 @@ class HttpClient {
     if (null == option) {
       option = new Options();
       option.responseType = ResponseType.plain;
-      option.headers = headers;
     }
+    option.headers = headers;
     option.method = GET;
 
     //Response response;
@@ -61,22 +61,21 @@ class HttpClient {
     if (null == option) {
       option = new Options();
       option.responseType = ResponseType.plain;
-      option.headers = headers;
     }
+    option.headers = headers;
     option.method = POST;
     return request(url, options: option);
   }
 
-  Future postForm(url, {params, header}) async {
-    FormData formData = new FormData.from({
-      "name": "wendux",
-      "age": 25,
-      //"file1": new UploadFileInfo(new File("./upload.txt"), "upload1.txt")
-      //"file2": new UploadFileInfo(new File("./upload.txt"), "upload2.txt")
-    });
+  Future postForm(url, {formData, params, header}) async {
+    //FormData formData = new FormData.from({
+    //  "name": "wendux",
+    //  "age": 25,
+    //  //"file1": new UploadFileInfo(new File("./upload.txt"), "upload1.txt")
+    //  //"file2": new UploadFileInfo(new File("./upload.txt"), "upload2.txt")
+    //});
 
-    Response response;
-    response = await dio.post("/info", data: formData);
+    return dio.request(url, data: formData);
   }
 
   Future<HttpResponse> request(url, {options, params}) async {
