@@ -23,7 +23,7 @@ class TestProviderPageState extends State<TestProviderPage>
   Widget build(BuildContext context) {
     final model = Provider.of<AppProvider>(context);
     return Scaffold(
-      appBar: AppBar(title: Text('Flutter provider')),
+      //appBar: AppBar(title: Text('Flutter provider')),
       body: SmartRefresher(
         controller: _controller,
         child: buildList(model.getMovies()),
