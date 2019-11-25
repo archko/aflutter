@@ -45,6 +45,7 @@ class _PullToRefreshWidgetState extends State<PullToRefreshWidget> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     super.dispose();
   }
 

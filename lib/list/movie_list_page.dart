@@ -13,7 +13,7 @@ class MovieListPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return new MovieListPageState();
+    return MovieListPageState();
   }
 }
 
@@ -21,32 +21,19 @@ class MovieListPageState extends State<MovieListPage>
     with ListState<MovieListPage>, AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  BaseListViewModel loadModel = new BaseListViewModel();
+  BaseListViewModel loadModel = BaseListViewModel();
 
   @override
   void initState() {
     super.initState();
-
-    //加载第一页数据
-    //MovieService.loadData();
-  }
-
-  //下拉刷新,必须异步async不然会报错
-  @override
-  Future refresh() async {
-    setStatus(LoadMoreStatus.LOADING);
-    loadModel.setPage(0);
-    List<Animate> list = await MovieService.loadData();
-    loadModel.setDataList(list);
-    setState(() {
-      setStatus(LoadMoreStatus.IDLE);
-      print("refresh end.${loadModel.page}, ${loadModel.getCount()}");
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return new PullToRefreshWidget(
+    if (loadModel.getCount() < 1 && loadMoreStatus == LoadMoreStatus.IDLE) {
+      refresh();
+    }
+    return PullToRefreshWidget(
       itemBuilder: (BuildContext context, int index) =>
           _renderItem(index, context),
       listCount: loadModel.getCount(),
@@ -54,10 +41,10 @@ class MovieListPageState extends State<MovieListPage>
       onRefresh: refresh,
       listState: this,
     );
-    /*return new Scaffold(
+    /*return Scaffold(
       body: mlists.length == 0
-          ? new Center(child: new CircularProgressIndicator())
-          : new RefreshIndicator(
+          ? Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
               child: ListView.builder(
                 physics: const AlwaysScrollableScrollPhysics(),
                 itemCount: mlists.length,
@@ -75,7 +62,27 @@ class MovieListPageState extends State<MovieListPage>
    * 列表的ltem
    */
   _renderItem(index, context) {
-    return new MovieListItem(bean: loadModel.dataList[index]);
+    return MovieListItem(bean: loadModel.dataList[index]);
+  }
+
+  @override
+  Future refresh() async {
+    setStatus(LoadMoreStatus.LOADING);
+    loadModel.setPage(0);
+    await MovieService.loadData().then((list) {
+      loadModel.setDataList(list);
+      setState(() {
+        print("refresh end.${loadModel.page}, ${loadModel.getCount()}");
+        if (list.length < 1) {
+          setStatus(LoadMoreStatus.NOMORE);
+        } else {
+          setStatus(LoadMoreStatus.IDLE);
+        }
+      });
+    }).catchError((_) => setState(() {
+          print("refresh error");
+          setStatus(LoadMoreStatus.FAIL);
+        }));
   }
 
   @override
@@ -84,12 +91,19 @@ class MovieListPageState extends State<MovieListPage>
       return refresh();
     }
     setStatus(LoadMoreStatus.LOADING);
-    List<Animate> list = await MovieService.loadMore(loadModel.page);
-    loadModel.addDataList(list);
-    loadModel.setPage(loadModel.page + 1);
-    setState(() {
-      setStatus(LoadMoreStatus.IDLE);
-      print("loadMore end.${loadModel.page}, ${loadModel.getCount()}");
-    });
+    await MovieService.loadMore(loadModel.page + 1).then((list) {
+      loadModel.addDataList(list);
+      loadModel.setPage(loadModel.page + 1);
+      setState(() {
+        if (list.length < 1) {
+          setStatus(LoadMoreStatus.NOMORE);
+        } else {
+          setStatus(LoadMoreStatus.IDLE);
+        }
+        print("loadMore end.${loadModel.page}, ${loadModel.getCount()}");
+      });
+    }).catchError((_) => setState(() {
+          setStatus(LoadMoreStatus.FAIL);
+        }));
   }
 }

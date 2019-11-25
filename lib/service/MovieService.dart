@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 
 class MovieService {
   //加载列表数据
-  static Future loadData({int pn}) async {
+  static Future<List<Animate>> loadData({int pn}) async {
     pn ??= 0;
     List<Animate> list;
     String url =
@@ -32,7 +32,7 @@ class MovieService {
         .toList();
   }
 
-  static Future loadMore(int pn) async {
+  static Future<List<Animate>> loadMore(int pn) async {
     return loadData(pn: pn);
   }
 }
