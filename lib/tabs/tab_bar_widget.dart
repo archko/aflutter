@@ -38,8 +38,8 @@ class _TabBarPageWidgetState extends State<TabBarPageWidget> {
   _renderPage() {
     return [
       new MovieListPage(),
-      new TestProviderPage(),
       new GankJsonListPage(),
+      new TestProviderPage(),
     ];
   }
 

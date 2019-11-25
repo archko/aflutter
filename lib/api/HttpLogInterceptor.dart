@@ -20,7 +20,6 @@ class HttpLogInterceptor extends Interceptor {
   @override
   onResponse(Response response) {
     print("######################### Response End ###########################");
-    print("response:$response");
     if (response.request.responseType == ResponseType.plain) {
       var contentLength = (response.data as String).length;
       String bodySize = "$contentLength-byte";
@@ -36,6 +35,8 @@ class HttpLogInterceptor extends Interceptor {
       sb.write(" body:");
       sb.write(response.data);
       print(sb);
+    } else {
+      print("response:$response");
     }
     return response;
   }
