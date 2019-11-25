@@ -1,5 +1,6 @@
 import 'package:AFlutter/dao/MovieDao.dart';
 import 'package:AFlutter/model/base_list_view_model.dart';
+import 'package:AFlutter/state/list_state.dart';
 import 'package:flutter/material.dart';
 
 import 'movie_list_item.dart';
@@ -15,7 +16,7 @@ class MovieListPage extends StatefulWidget {
 }
 
 class MovieListPageState extends State<MovieListPage>
-    with AutomaticKeepAliveClientMixin {
+    with ListState<MovieListPage>, AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   BaseListViewModel loadModel = new BaseListViewModel();
@@ -29,7 +30,8 @@ class MovieListPageState extends State<MovieListPage>
   }
 
   //下拉刷新,必须异步async不然会报错
-  Future _pullToRefresh() async {
+  @override
+  Future refresh() async {
     loadModel.setPage(0);
     return MovieDao.loadData();
   }
@@ -40,8 +42,8 @@ class MovieListPageState extends State<MovieListPage>
       loadModel: loadModel,
       itemBuilder: (BuildContext context, int index) =>
           _renderItem(index, context),
-      onLoadMore: loadData,
-      onRefresh: _pullToRefresh,
+      onLoadMore: loadMore,
+      onRefresh: refresh,
     );
     /*return new Scaffold(
       body: mlists.length == 0
@@ -67,7 +69,8 @@ class MovieListPageState extends State<MovieListPage>
     return new MovieListItem(bean: loadModel.dataList[index]);
   }
 
-  Future<void> loadData() {
+  @override
+  Future<void> loadMore() {
     MovieDao.loadMore(loadModel.page);
   }
 }
