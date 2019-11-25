@@ -32,6 +32,11 @@ class BaseListViewModel {
 
   setDataList(List list) {
     dataList = list;
+    dataList ??= [];
+  }
+
+  int getCount() {
+    return dataList == null ? 0 : dataList.length;
   }
 
   @override

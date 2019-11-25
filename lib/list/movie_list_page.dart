@@ -1,4 +1,5 @@
 import 'package:AFlutter/dao/MovieDao.dart';
+import 'package:AFlutter/entity/Animate.dart';
 import 'package:AFlutter/model/base_list_view_model.dart';
 import 'package:AFlutter/state/list_state.dart';
 import 'package:flutter/material.dart';
@@ -33,15 +34,19 @@ class MovieListPageState extends State<MovieListPage>
   @override
   Future refresh() async {
     loadModel.setPage(0);
-    return MovieDao.loadData();
+    List<Animate> list = await MovieDao.loadData();
+    loadModel.setDataList(list);
+    setState(() {
+      print("refresh end.${loadModel.getCount()}");
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return new PullToRefreshWidget(
-      loadModel: loadModel,
       itemBuilder: (BuildContext context, int index) =>
           _renderItem(index, context),
+      listCount: loadModel.getCount(),
       onLoadMore: loadMore,
       onRefresh: refresh,
     );
@@ -70,7 +75,12 @@ class MovieListPageState extends State<MovieListPage>
   }
 
   @override
-  Future<void> loadMore() {
-    MovieDao.loadMore(loadModel.page);
+  Future<void> loadMore() async {
+    List<Animate> list=await MovieDao.loadMore(loadModel.page);
+    loadModel.addDataList(list);
+    loadModel.setPage(loadModel.page + 1);
+    setState(() {
+      print("loadMore end.${loadModel.getCount()}");
+    });
   }
 }

@@ -90,9 +90,9 @@ class _GankJsonListPageState extends State<GankJsonListPage>
   @override
   Widget build(BuildContext context) {
     return new PullToRefreshWidget(
-      loadModel: loadModel,
       itemBuilder: (BuildContext context, int index) =>
           _renderItem(index, context),
+      listCount: loadModel.dataList.length,
       onLoadMore: loadData,
       onRefresh: _pullToRefresh,
     );

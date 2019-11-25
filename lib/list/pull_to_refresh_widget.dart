@@ -1,16 +1,11 @@
-import 'package:AFlutter/model/base_list_view_model.dart';
 import 'package:flutter/material.dart';
 
 class PullToRefreshWidget extends StatefulWidget {
   PullToRefreshWidget(
-      {Key key,
-      this.loadModel,
-      this.itemBuilder,
-      this.onLoadMore,
-      this.onRefresh})
+      {Key key, this.itemBuilder, this.listCount, this.onLoadMore, this.onRefresh})
       : super(key: key);
-  final BaseListViewModel loadModel;
   final IndexedWidgetBuilder itemBuilder;
+  final int listCount;
   final RefreshCallback onLoadMore;
   final RefreshCallback onRefresh;
 
@@ -71,7 +66,7 @@ class _PullToRefreshWidgetState extends State<PullToRefreshWidget> {
   }
 
   int _getListCount() {
-    return widget.loadModel.dataList.length;
+    return widget.listCount;
   }
 
   _getItem(int index) {

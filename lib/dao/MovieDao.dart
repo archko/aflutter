@@ -32,7 +32,7 @@ class MovieDao {
         .toList();
   }
 
-  static Future<Null> loadMore(int pn) async {
+  static Future loadMore(int pn) async {
     return loadData(pn: pn);
   }
 }
