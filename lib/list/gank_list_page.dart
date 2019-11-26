@@ -85,7 +85,7 @@ class _GankListPageState extends State<GankListPage>
   Future refresh() async {
     loadMoreStatus = (LoadMoreStatus.LOADING);
     loadModel.setPage(1);
-    await GankService.loadData().then((list) {
+    await GankService.loadData(pn:loadModel.page).then((list) {
       loadModel.setData(list.beans);
       setState(() {
         print("refresh end.${loadModel.page}, ${loadModel.getCount()}");
