@@ -1,14 +1,16 @@
-import 'dart:async';
+import 'dart:convert';
 
 import 'package:AFlutter/api/http_client.dart';
 import 'package:AFlutter/api/http_response.dart';
 import 'package:AFlutter/list/gank_detail_page.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:AFlutter/model/base_list_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
-import '../model/gank_bean.dart';
-import '../model/gank_today.dart';
+import '../entity/gank_bean.dart';
+import '../entity/gank_today.dart';
+import 'gank_list_image_item.dart';
+import 'gank_list_noimage_item.dart';
+import 'pull_to_refresh_widget.dart';
 
 class GankJsonListPage extends StatefulWidget {
   GankJsonListPage({Key key, this.title}) : super(key: key);
@@ -18,95 +20,9 @@ class GankJsonListPage extends StatefulWidget {
   _GankJsonListPageState createState() => new _GankJsonListPageState();
 }
 
-class _GankJsonListPageState extends State<GankJsonListPage> {
-  ListView buildListView() => ListView.builder(
-      itemCount: length,
-      itemBuilder: (BuildContext context, int position) {
-        return buildRow(position);
-      });
-
-  Widget buildRow(int i) {
-    var beans = gankToday.beans;
-    //print('bean i:$i data:$beans');
-    if (beans == null) {
-      return Text("no items:");
-    }
-    var bean = beans[i];
-    if (bean.images == null || bean.images.length < 1) {
-      return GestureDetector(
-        onTap: () {
-          setState(() {
-            detail(bean);
-          });
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-                padding: EdgeInsets.only(
-                    left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                child: Text("Title:${bean.publishedAt}")),
-            Padding(
-                padding: EdgeInsets.only(
-                    left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                child: Text("Title:${bean.desc}")),
-          ],
-        ),
-      );
-    } else {
-      return GestureDetector(
-        onTap: () {
-          setState(() {
-            detail(bean);
-          });
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-                padding: EdgeInsets.only(
-                    left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                child: Text("Title:${bean.publishedAt}")),
-            Padding(
-                padding: EdgeInsets.only(
-                    left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                child: Text("Url:${bean.images[0]}")),
-            Padding(
-              padding: EdgeInsets.only(left: 10.0, right: 10.0),
-              child: Image(
-                image: CachedNetworkImageProvider(bean.images[0]),
-                //width: album.images.width.toDouble(),
-                //height: album.images.height.toDouble(),
-                fit: BoxFit.fitWidth,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
-  void detail(GankBean gankBean) {
-    Navigator.of(context).push(
-      new MaterialPageRoute<void>(
-        builder: (BuildContext context) {
-          return new GankDetailPage(
-            gankBean: gankBean,
-          );
-        },
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: buildListView(),
-    );
-  }
-
-  GankToday gankToday = GankToday([]);
-  var length = 0;
+class _GankJsonListPageState extends State<GankJsonListPage>
+    with AutomaticKeepAliveClientMixin {
+  BaseListViewModel loadModel = new BaseListViewModel();
 
   @override
   void initState() {
@@ -118,7 +34,7 @@ class _GankJsonListPageState extends State<GankJsonListPage> {
   //  return await rootBundle.loadString('assets/album.json');
   //}
 
-  loadData() async {
+  Future<Null> loadData() async {
     String dataURL = "http://gank.io/api/today";
     //http.Response response = await http.get(dataURL);
     //setState(() {
@@ -130,9 +46,13 @@ class _GankJsonListPageState extends State<GankJsonListPage> {
     //});
     HttpResponse httpResponse = await HttpClient.instance.get(dataURL);
     setState(() {
-      gankToday = GankToday.fromJson(httpResponse.data);
-      length = gankToday.beans.length;
-      print("length:${gankToday.category}, content:${gankToday.items.length}");
+      if (mounted) {
+        var gankToday = GankToday.fromJson(json.decode(httpResponse.data));
+        loadModel.addData(gankToday.beans);
+        print(
+            "length:${gankToday?.category}, content:${gankToday?.items
+                ?.length}");
+      }
     });
 
     /*loadAsset().then((value) {
@@ -144,5 +64,57 @@ class _GankJsonListPageState extends State<GankJsonListPage> {
         print(albums[0]);
       });
     });*/
+    return null;
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
+  Future _pullToRefresh() async {
+    loadModel.setPage(0);
+    return loadData();
+  }
+
+  void detail(GankBean bean) {
+    Navigator.of(context).push(
+      new MaterialPageRoute<void>(
+        builder: (BuildContext context) {
+          return new GankDetailPage(
+            bean: bean,
+          );
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new PullToRefreshWidget(
+      itemBuilder: (BuildContext context, int index) =>
+          _renderItem(index, context),
+      listCount: loadModel.data.length,
+      onLoadMore: loadData,
+      onRefresh: _pullToRefresh,
+    );
+  }
+
+  /**
+   * 列表的ltem
+   */
+  _renderItem(index, context) {
+    var bean = loadModel.data[index];
+    if (bean.images == null || bean.images.length < 1) {
+      return GankListNoImageItem(
+          bean: bean,
+          onPressed: () {
+            detail(bean);
+          });
+    } else {
+      return GankListImageItem(
+          bean: bean,
+          onPressed: () {
+            detail(bean);
+          });
+    }
   }
 }

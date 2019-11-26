@@ -1,5 +1,6 @@
+import 'package:AFlutter/list/pull_widget.dart';
+import 'package:AFlutter/list/test_list_item.dart';
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
 
 class TestListPage extends StatefulWidget {
   TestListPage({Key key, this.title}) : super(key: key);
@@ -9,105 +10,159 @@ class TestListPage extends StatefulWidget {
   _TestListPageState createState() => new _TestListPageState();
 }
 
-class _TestListPageState extends State<TestListPage> {
-  final _suggestions = <WordPair>[];
-  final _biggerFont = const TextStyle(fontSize: 18.0);
-  final Set<WordPair> _saved = new Set<WordPair>(); // Add this line.
+class _TestListPageState extends State<TestListPage>
+    with AutomaticKeepAliveClientMixin {
+  List items = [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+  ];
 
-  Widget _buildSuggestions() {
-    return ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        // The itemBuilder callback is called once per suggested word pairing,
-        // and places each suggestion into a ListTile row.
-        // For even rows, the function adds a ListTile row for the word pairing.
-        // For odd rows, the function adds a Divider widget to visually
-        // separate the entries. Note that the divider may be difficult
-        // to see on smaller devices.
-        itemBuilder: (context, i) {
-          // Add a one-pixel-high divider widget before each row in theListView.
-          if (i.isOdd) return Divider();
+  PullWidgetController _pullController = new PullWidgetController();
 
-          // The syntax "i ~/ 2" divides i by 2 and returns an integer result.
-          // For example: 1, 2, 3, 4, 5 becomes 0, 1, 1, 2, 2.
-          // This calculates the actual number of word pairings in the ListView,
-          // minus the divider widgets.
-          final index = i ~/ 2;
-          // If you've reached the end of the available word pairings...
-          if (index >= _suggestions.length) {
-            // ...then generate 10 more and add them to the suggestions list.
-            _suggestions.addAll(generateWordPairs().take(10));
-          }
-          return _buildRow(_suggestions[index]);
-        });
+  @override
+  void initState() {
+    super.initState();
+    _pullController.dataList = items;
   }
 
-  Widget _buildRow(WordPair pair) {
-    final bool alreadySaved = _saved.contains(pair); // Add this line.
-    return ListTile(
-      title: Text(
-        pair.asPascalCase,
-        style: _biggerFont,
-      ),
-      trailing: new Icon(
-        // Add the lines from here...
-        alreadySaved ? Icons.favorite : Icons.favorite_border,
-        color: alreadySaved ? Colors.red : null,
-      ),
-      onTap: () {
-        // Add 9 lines from here...
-        setState(() {
-          if (alreadySaved) {
-            _saved.remove(pair);
-          } else {
-            _saved.add(pair);
-          }
-        });
-      }, // .
-    );
+  @override
+  bool get wantKeepAlive => true;
+  int page = 1;
+  bool isLoading = false;
+  bool isRefreshing = false;
+  bool isLoadMoring = false;
+
+  _lockToAwait() async {
+    ///if loading, lock to await
+    doDelayed() async {
+      await Future.delayed(Duration(seconds: 1)).then((_) async {
+        if (isLoading) {
+          return await doDelayed();
+        } else {
+          return null;
+        }
+      });
+    }
+
+    await doDelayed();
+  }
+
+  @protected
+  Future<Null> handleRefresh() async {
+    if (isLoading) {
+      if (isRefreshing) {
+        return null;
+      }
+      await _lockToAwait();
+    }
+    isLoading = true;
+    isRefreshing = true;
+    page = 1;
+    var res = await requestRefresh();
+    print("res:$res;");
+    if (res != null) {
+      resolveRefreshResult(res);
+      setState(() {
+        _pullController.needRefresh.value =  true;
+      });
+    }
+    isLoading = false;
+    isRefreshing = false;
+    return null;
+  }
+
+  @protected
+  resolveRefreshResult(res) {
+    if (res != null) {
+      _pullController?.dataList?.clear();
+      setState(() {
+        _pullController?.dataList?.addAll(res);
+        //print("resolveRefreshResult:$res;");
+      });
+    }
+  }
+
+  @protected
+  Future<Null> onLoadMore() async {
+    if (isLoading) {
+      if (isLoadMoring) {
+        return null;
+      }
+      await _lockToAwait();
+    }
+    isLoading = true;
+    isLoadMoring = true;
+    page++;
+    var res = await requestLoadMore();
+    if (res != null) {
+      setState(() {
+        _pullController?.dataList?.addAll(res);
+      });
+    }
+    setState(() {
+      _pullController.needLoadMore.value = (res != null);
+    });
+    isLoading = false;
+    isLoadMoring = false;
+    return null;
+  }
+
+  //下拉刷新数据
+  @protected
+  requestRefresh() async {
+    return [
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+    ];
+  }
+
+  ///上拉更多请求数据
+  @protected
+  requestLoadMore() async {
+    return [(_pullController.dataList.length + 1).toString()];
+  }
+
+  _renderItem(int index) {
+    if (_pullController.dataList.length == 0) {
+      return null;
+    }
+    //print("item:${_pullController.dataList[index]}");
+    switch (index) {
+      case 2:
+        return new TestListItem(bean: _pullController.dataList[index], onPressed: () {});
+      default:
+        return new TestListItem(bean: _pullController.dataList[index], onPressed: () {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Startup Name Generator'),
-        actions: <Widget>[
-          // Add 3 lines from here...
-          new IconButton(icon: const Icon(Icons.list), onPressed: _pushSaved),
-        ], // ... to here.
-      ),
-      body: _buildSuggestions(),
-    );
-  }
-
-  void _pushSaved() {
-    Navigator.of(context).push(
-      new MaterialPageRoute<void>(
-        // Add 20 lines from here...
-        builder: (BuildContext context) {
-          final Iterable<ListTile> tiles = _saved.map(
-            (WordPair pair) {
-              return new ListTile(
-                title: new Text(
-                  pair.asPascalCase,
-                  style: _biggerFont,
-                ),
-              );
-            },
-          );
-          final List<Widget> divided = ListTile.divideTiles(
-            context: context,
-            tiles: tiles,
-          ).toList();
-          return new Scaffold(
-            // Add 6 lines from here...
-            appBar: new AppBar(
-              title: const Text('Saved Suggestions'),
-            ),
-            body: new ListView(children: divided),
-          );
-        },
-      ), // ... to here.
+    return new PullWidget(
+      pullController: _pullController,
+      items: _pullController.dataList,
+      itemBuilder: (BuildContext context, int index) => _renderItem(index),
+      onLoadMore: onLoadMore,
+      onRefresh: handleRefresh,
     );
   }
 }
