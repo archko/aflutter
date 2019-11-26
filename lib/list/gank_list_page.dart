@@ -5,18 +5,23 @@ import 'package:AFlutter/widget/list_more_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../entity/gank_bean.dart';
-import '../entity/gank_today.dart';
 import 'gank_detail_page.dart';
 import 'gank_list_image_item.dart';
 import 'gank_list_noimage_item.dart';
 import 'pull_to_refresh_widget.dart';
 
 class GankListPage extends StatefulWidget {
-  GankListPage({Key key, this.title}) : super(key: key);
+  GankListPage({Key key, this.title, this.type}) : super(key: key);
   final String title;
+  final String type;
 
   @override
   _GankListPageState createState() => new _GankListPageState();
+
+  @override
+  String toStringShort() {
+    return type == null ? super.toStringShort() : type;
+  }
 }
 
 class _GankListPageState extends State<GankListPage>
@@ -85,20 +90,21 @@ class _GankListPageState extends State<GankListPage>
   Future refresh() async {
     loadMoreStatus = (LoadMoreStatus.LOADING);
     loadModel.setPage(1);
-    await GankService.loadData(pn:loadModel.page).then((list) {
+    await GankService.loadData(type: widget.type, pn: loadModel.page)
+        .then((list) {
       loadModel.setData(list.beans);
       setState(() {
-        print("refresh end.${loadModel.page}, ${loadModel.getCount()}");
+        //print("refresh end.${loadModel.page}, ${loadModel.getCount()}");
         if (list.beans.length < 1) {
           loadMoreStatus = (LoadMoreStatus.NOMORE);
         } else {
           loadMoreStatus = (LoadMoreStatus.IDLE);
         }
       });
-    }).catchError((_) => setState(() {
-          print("refresh error");
-          loadMoreStatus = (LoadMoreStatus.FAIL);
-        }));
+    }).catchError((error) => setState(() {
+              print("refresh error:$error");
+              loadMoreStatus = (LoadMoreStatus.FAIL);
+            }));
   }
 
   Future<void> loadMore() async {
@@ -108,7 +114,7 @@ class _GankListPageState extends State<GankListPage>
     setState(() {
       loadMoreStatus = (LoadMoreStatus.LOADING);
     });
-    await GankService.loadMore(loadModel.page + 1).then((list) {
+    await GankService.loadMore(widget.type, loadModel.page + 1).then((list) {
       loadModel.updateDataAndPage(list.beans, loadModel.page + 1);
       setState(() {
         if (list.beans.length < 1) {
@@ -119,7 +125,8 @@ class _GankListPageState extends State<GankListPage>
         print(
             "loadMore end.$loadMoreStatus,${loadModel.page}, ${loadModel.getCount()}");
       });
-    }).catchError((_) => setState(() {
+    }).catchError((error) => setState(() {
+          print("refresh error:$error");
           loadMoreStatus = (LoadMoreStatus.FAIL);
         }));
   }

@@ -1,7 +1,6 @@
+import 'package:AFlutter/list/gank_json_list_page.dart';
 import 'package:AFlutter/list/gank_list_page.dart';
 import 'package:AFlutter/list/movie_list_page.dart';
-import 'package:AFlutter/list/gank_json_list_page.dart';
-import 'package:AFlutter/list/test_list_page.dart';
 import 'package:AFlutter/state/test_provider_page.dart';
 import 'package:flutter/material.dart';
 
@@ -20,16 +19,25 @@ class _TabBarPageWidgetState extends State<TabBarPageWidget> {
   final PageController pageControl = new PageController();
 
   final List<String> tabs = ["first", "second", "third", "fouth"];
+  final List<Widget> tabViews = [
+    new GankListPage(
+      type: '福利',
+    ),
+    new GankListPage(
+      type: 'Android',
+    ),
+    new MovieListPage(),
+  ];
 
   _renderTab() {
     List<Widget> list = new List();
-    for (int i = 0; i < tabs.length; i++) {
+    for (int i = 0; i < tabViews.length; i++) {
       list.add(new FlatButton(
           onPressed: () {
             pageControl.jumpTo(MediaQuery.of(context).size.width * i);
           },
           child: new Text(
-            tabs[i],
+            tabViews[i].toStringShort(),
             maxLines: 1,
           )));
     }
@@ -37,12 +45,16 @@ class _TabBarPageWidgetState extends State<TabBarPageWidget> {
   }
 
   _renderPage() {
-    return [
-      new GankListPage(),
-      new MovieListPage(),
-      new GankJsonListPage(),
-      new TestProviderPage(),
-    ];
+    return tabViews;
+    //return [
+    //  new GankListPage(),
+    //  new GankListPage(
+    //    type: 'Android',
+    //  ),
+    //  new MovieListPage(),
+    //  new GankJsonListPage(),
+    //  new TestProviderPage(),
+    //];
   }
 
   @override
