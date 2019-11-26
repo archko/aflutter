@@ -4,6 +4,8 @@ class BaseListViewModel {
   int page = 0;
   List data = new List();
 
+  BaseListViewModel({this.page});
+
   bool get value => hasMore;
 
   void setHasMore(bool hasMore) {

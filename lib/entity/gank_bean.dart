@@ -1,3 +1,5 @@
+import 'package:AFlutter/state/load_more_status.dart';
+
 /**
  * {
     "_id": "5c4572419d212264cbcc5bd7",
@@ -42,6 +44,10 @@ class GankBean {
     who = json['who'];
     images =
         json['images']?.map<String>((image) => image as String)?.toList() ?? [];
+    if ((images == null || images.length == 0) && "福利" == type) {
+      images = List();
+      images.add(url);
+    }
   }
 
   Map<String, dynamic> toJson() => {
@@ -60,6 +66,6 @@ class GankBean {
 
   @override
   String toString() {
-    return 'GankBean{ who: $who}';
+    return 'GankBean{ who: $who,$images}';
   }
 }

@@ -1,3 +1,4 @@
+import 'package:AFlutter/list/gank_list_page.dart';
 import 'package:AFlutter/list/movie_list_page.dart';
 import 'package:AFlutter/list/gank_json_list_page.dart';
 import 'package:AFlutter/list/test_list_page.dart';
@@ -37,6 +38,7 @@ class _TabBarPageWidgetState extends State<TabBarPageWidget> {
 
   _renderPage() {
     return [
+      new GankListPage(),
       new MovieListPage(),
       new GankJsonListPage(),
       new TestProviderPage(),

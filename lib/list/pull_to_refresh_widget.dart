@@ -1,4 +1,3 @@
-import 'package:AFlutter/state/list_state.dart';
 import 'package:AFlutter/state/load_more_status.dart';
 import 'package:flutter/material.dart';
 
