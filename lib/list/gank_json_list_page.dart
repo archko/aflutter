@@ -48,7 +48,7 @@ class _GankJsonListPageState extends State<GankJsonListPage>
     setState(() {
       if (mounted) {
         var gankToday = GankToday.fromJson(json.decode(httpResponse.data));
-        loadModel.addDataList(gankToday.beans);
+        loadModel.addData(gankToday.beans);
         print(
             "length:${gankToday?.category}, content:${gankToday?.items
                 ?.length}");
@@ -92,7 +92,7 @@ class _GankJsonListPageState extends State<GankJsonListPage>
     return new PullToRefreshWidget(
       itemBuilder: (BuildContext context, int index) =>
           _renderItem(index, context),
-      listCount: loadModel.dataList.length,
+      listCount: loadModel.data.length,
       onLoadMore: loadData,
       onRefresh: _pullToRefresh,
     );
@@ -102,7 +102,7 @@ class _GankJsonListPageState extends State<GankJsonListPage>
    * 列表的ltem
    */
   _renderItem(index, context) {
-    var bean = loadModel.dataList[index];
+    var bean = loadModel.data[index];
     if (bean.images == null || bean.images.length < 1) {
       return GankListNoImageItem(
           bean: bean,

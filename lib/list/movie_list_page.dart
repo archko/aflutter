@@ -3,6 +3,7 @@ import 'package:AFlutter/entity/Animate.dart';
 import 'package:AFlutter/model/base_list_view_model.dart';
 import 'package:AFlutter/state/list_state.dart';
 import 'package:AFlutter/state/load_more_status.dart';
+import 'package:AFlutter/widget/list_more_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'movie_list_item.dart';
@@ -18,10 +19,11 @@ class MovieListPage extends StatefulWidget {
 }
 
 class MovieListPageState extends State<MovieListPage>
-    with ListState<MovieListPage>, AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   BaseListViewModel loadModel = BaseListViewModel();
+  var loadMoreStatus = LoadMoreStatus.IDLE;
 
   @override
   void initState() {
@@ -36,10 +38,10 @@ class MovieListPageState extends State<MovieListPage>
     return PullToRefreshWidget(
       itemBuilder: (BuildContext context, int index) =>
           _renderItem(index, context),
-      listCount: loadModel.getCount(),
+      listCount: loadModel.getCount() + 1,
       onLoadMore: loadMore,
       onRefresh: refresh,
-      listState: this,
+      loadMoreStatus: loadMoreStatus,
     );
     /*return Scaffold(
       body: mlists.length == 0
@@ -62,48 +64,64 @@ class MovieListPageState extends State<MovieListPage>
    * 列表的ltem
    */
   _renderItem(index, context) {
-    return MovieListItem(bean: loadModel.dataList[index]);
+    //
+    if (index == loadModel.getCount()) {
+      return ListMoreWidget(
+        loadMoreStatus: loadMoreStatus,
+        retry: retry,
+      );
+    } else {
+      return MovieListItem(bean: loadModel.data[index]);
+    }
   }
 
-  @override
   Future refresh() async {
-    setStatus(LoadMoreStatus.LOADING);
+    loadMoreStatus = (LoadMoreStatus.LOADING);
     loadModel.setPage(0);
     await MovieService.loadData().then((list) {
-      loadModel.setDataList(list);
+      loadModel.setData(list);
       setState(() {
         print("refresh end.${loadModel.page}, ${loadModel.getCount()}");
         if (list.length < 1) {
-          setStatus(LoadMoreStatus.NOMORE);
+          loadMoreStatus = (LoadMoreStatus.NOMORE);
         } else {
-          setStatus(LoadMoreStatus.IDLE);
+          loadMoreStatus = (LoadMoreStatus.IDLE);
         }
       });
     }).catchError((_) => setState(() {
           print("refresh error");
-          setStatus(LoadMoreStatus.FAIL);
+          loadMoreStatus = (LoadMoreStatus.FAIL);
         }));
   }
 
-  @override
   Future<void> loadMore() async {
     if (loadModel.getCount() < 1) {
       return refresh();
     }
-    setStatus(LoadMoreStatus.LOADING);
+    setState(() {
+      loadMoreStatus = (LoadMoreStatus.LOADING);
+    });
     await MovieService.loadMore(loadModel.page + 1).then((list) {
-      loadModel.addDataList(list);
-      loadModel.setPage(loadModel.page + 1);
+      loadModel.updateDataAndPage(list, loadModel.page + 1);
       setState(() {
         if (list.length < 1) {
-          setStatus(LoadMoreStatus.NOMORE);
+          loadMoreStatus = (LoadMoreStatus.NOMORE);
         } else {
-          setStatus(LoadMoreStatus.IDLE);
+          loadMoreStatus = (LoadMoreStatus.IDLE);
         }
-        print("loadMore end.${loadModel.page}, ${loadModel.getCount()}");
+        print(
+            "loadMore end.$loadMoreStatus,${loadModel.page}, ${loadModel.getCount()}");
       });
     }).catchError((_) => setState(() {
-          setStatus(LoadMoreStatus.FAIL);
+          loadMoreStatus = (LoadMoreStatus.FAIL);
         }));
+  }
+
+  retry() {
+    if (loadModel.getCount() < 1) {
+      refresh();
+    } else {
+      loadMore();
+    }
   }
 }

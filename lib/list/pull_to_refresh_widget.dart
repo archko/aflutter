@@ -9,13 +9,13 @@ class PullToRefreshWidget extends StatefulWidget {
       this.listCount,
       this.onLoadMore,
       this.onRefresh,
-      this.listState})
+      this.loadMoreStatus})
       : super(key: key);
   final IndexedWidgetBuilder itemBuilder;
   final int listCount;
   final RefreshCallback onLoadMore;
   final RefreshCallback onRefresh;
-  final ListState listState;
+  final LoadMoreStatus loadMoreStatus;
 
   @override
   _PullToRefreshWidgetState createState() => new _PullToRefreshWidgetState();
@@ -36,7 +36,9 @@ class _PullToRefreshWidgetState extends State<PullToRefreshWidget> {
       ///判断当前滑动位置是不是到达底部，触发加载更多回调
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        if (widget.listState.loadMoreStatus == LoadMoreStatus.IDLE) {
+        if (widget.loadMoreStatus == LoadMoreStatus.IDLE ||
+            widget.loadMoreStatus == LoadMoreStatus.FAIL ||
+            widget.loadMoreStatus == LoadMoreStatus.EMPTY) {
           _onLoading();
         }
       }

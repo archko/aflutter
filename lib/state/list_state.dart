@@ -10,10 +10,4 @@ mixin ListState<T extends StatefulWidget> on State<T> {
   setStatus(LoadMoreStatus status) {
     loadMoreStatus = status;
   }
-
-  @protected
-  refresh() async {}
-
-  @protected
-  loadMore() async {}
 }

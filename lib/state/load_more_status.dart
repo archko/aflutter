@@ -18,4 +18,6 @@ enum LoadMoreStatus {
   ///
   /// not have more data
   NOMORE,
+  //no item
+  EMPTY,
 }

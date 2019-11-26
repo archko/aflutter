@@ -2,7 +2,7 @@ class BaseListViewModel {
   bool hasMore = true;
   bool isRefreshing = false;
   int page = 0;
-  List dataList = new List();
+  List data = new List();
 
   bool get value => hasMore;
 
@@ -22,21 +22,30 @@ class BaseListViewModel {
     this.page = page;
   }
 
-  List getDataList() {
-    return dataList;
+  List getData() {
+    return data;
   }
 
-  addDataList(List list) {
-    dataList.addAll(list);
+  void addData(List list) {
+    if (null != list) {
+      data.addAll(list);
+    }
   }
 
-  setDataList(List list) {
-    dataList = list;
-    dataList ??= [];
+  void updateDataAndPage(List list, int pageNumber) {
+    if (null != list) {
+      data.addAll(list);
+    }
+    page = pageNumber;
+  }
+
+  void setData(List list) {
+    data = list;
+    data ??= [];
   }
 
   int getCount() {
-    return dataList == null ? 0 : dataList.length;
+    return data == null ? 0 : data.length;
   }
 
   @override
@@ -44,6 +53,6 @@ class BaseListViewModel {
     return "hasMore:$hasMore,"
         "isRefreshing:$isRefreshing,"
         "page:$page,"
-        "data:${dataList.toString()}";
+        "data:${data.toString()}";
   }
 }
