@@ -1,168 +1,95 @@
-import 'package:AFlutter/list/pull_widget.dart';
-import 'package:AFlutter/list/test_list_item.dart';
+import 'package:AFlutter/model/base_list_view_model.dart';
+import 'package:AFlutter/service/MovieService.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+import 'movie_list_item.dart';
+import 'pull_widget.dart';
 
 class TestListPage extends StatefulWidget {
-  TestListPage({Key key, this.title}) : super(key: key);
-  final String title;
+  TestListPage({Key key}) : super(key: key);
 
   @override
-  _TestListPageState createState() => new _TestListPageState();
+  State<StatefulWidget> createState() {
+    return TestListPageState();
+  }
 }
 
-class _TestListPageState extends State<TestListPage>
+class TestListPageState extends State<TestListPage>
     with AutomaticKeepAliveClientMixin {
-  List items = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15",
-    "16",
-    "17",
-    "18",
-  ];
-
-  PullWidgetController _pullController = new PullWidgetController();
+  @override
+  bool get wantKeepAlive => true;
+  BaseListViewModel loadModel = BaseListViewModel();
+  RefreshController _refreshController =
+      new RefreshController(initialRefresh: true);
 
   @override
   void initState() {
     super.initState();
-    _pullController.dataList = items;
-  }
-
-  @override
-  bool get wantKeepAlive => true;
-  int page = 1;
-  bool isLoading = false;
-  bool isRefreshing = false;
-  bool isLoadMoring = false;
-
-  _lockToAwait() async {
-    ///if loading, lock to await
-    doDelayed() async {
-      await Future.delayed(Duration(seconds: 1)).then((_) async {
-        if (isLoading) {
-          return await doDelayed();
-        } else {
-          return null;
-        }
-      });
-    }
-
-    await doDelayed();
-  }
-
-  @protected
-  Future<Null> handleRefresh() async {
-    if (isLoading) {
-      if (isRefreshing) {
-        return null;
-      }
-      await _lockToAwait();
-    }
-    isLoading = true;
-    isRefreshing = true;
-    page = 1;
-    var res = await requestRefresh();
-    print("res:$res;");
-    if (res != null) {
-      resolveRefreshResult(res);
-      setState(() {
-        _pullController.needRefresh.value =  true;
-      });
-    }
-    isLoading = false;
-    isRefreshing = false;
-    return null;
-  }
-
-  @protected
-  resolveRefreshResult(res) {
-    if (res != null) {
-      _pullController?.dataList?.clear();
-      setState(() {
-        _pullController?.dataList?.addAll(res);
-        //print("resolveRefreshResult:$res;");
-      });
-    }
-  }
-
-  @protected
-  Future<Null> onLoadMore() async {
-    if (isLoading) {
-      if (isLoadMoring) {
-        return null;
-      }
-      await _lockToAwait();
-    }
-    isLoading = true;
-    isLoadMoring = true;
-    page++;
-    var res = await requestLoadMore();
-    if (res != null) {
-      setState(() {
-        _pullController?.dataList?.addAll(res);
-      });
-    }
-    setState(() {
-      _pullController.needLoadMore.value = (res != null);
-    });
-    isLoading = false;
-    isLoadMoring = false;
-    return null;
-  }
-
-  //下拉刷新数据
-  @protected
-  requestRefresh() async {
-    return [
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-    ];
-  }
-
-  ///上拉更多请求数据
-  @protected
-  requestLoadMore() async {
-    return [(_pullController.dataList.length + 1).toString()];
-  }
-
-  _renderItem(int index) {
-    if (_pullController.dataList.length == 0) {
-      return null;
-    }
-    //print("item:${_pullController.dataList[index]}");
-    switch (index) {
-      case 2:
-        return new TestListItem(bean: _pullController.dataList[index], onPressed: () {});
-      default:
-        return new TestListItem(bean: _pullController.dataList[index], onPressed: () {});
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return new PullWidget(
-      pullController: _pullController,
-      items: _pullController.dataList,
-      itemBuilder: (BuildContext context, int index) => _renderItem(index),
-      onLoadMore: onLoadMore,
-      onRefresh: handleRefresh,
+    return PullWidget(
+      pullController: _refreshController,
+      listCount: loadModel.getCount(),
+      itemBuilder: (BuildContext context, int index) =>
+          _renderItem(context, index),
+      header: MaterialClassicHeader(),
+      onLoadMore: loadMore,
+      onRefresh: refresh,
     );
+  }
+
+  //列表的ltem
+  _renderItem(context, index) {
+    return MovieListItem(bean: loadModel.data[index]);
+  }
+
+  Future refresh() async {
+    loadModel.setPage(0);
+    await MovieService.loadData().then((list) {
+      loadModel.setData(list);
+      setState(() {
+        print("refresh end.${loadModel.page}, ${loadModel.getCount()}");
+        if (list.length < 1) {
+          _refreshController.loadNoData();
+        } else {
+          _refreshController.refreshCompleted(resetFooterState: true);
+        }
+      });
+    }).catchError((_) => setState(() {
+          print("refresh error");
+          _refreshController.loadFailed();
+        }));
+  }
+
+  Future<void> loadMore() async {
+    if (loadModel.getCount() < 1) {
+      return refresh();
+    }
+
+    await MovieService.loadMore(loadModel.page + 1).then((list) {
+      loadModel.updateDataAndPage(list, loadModel.page + 1);
+      setState(() {
+        if (list.length < 1) {
+          _refreshController.loadNoData();
+        } else {
+          _refreshController.refreshCompleted(resetFooterState: true);
+        }
+        print(
+            "loadMore end.${_refreshController.footerStatus},${loadModel.page}, ${loadModel.getCount()}");
+      });
+    }).catchError((_) => setState(() {
+          _refreshController.loadFailed();
+        }));
+  }
+
+  retry() {
+    if (loadModel.getCount() < 1) {
+      refresh();
+    } else {
+      loadMore();
+    }
   }
 }
