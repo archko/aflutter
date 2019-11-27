@@ -1,7 +1,6 @@
-import 'package:AFlutter/list/gank_json_list_page.dart';
 import 'package:AFlutter/list/gank_list_page.dart';
 import 'package:AFlutter/list/movie_list_page.dart';
-import 'package:AFlutter/state/test_provider_page.dart';
+import 'package:AFlutter/list/test_list_page.dart';
 import 'package:flutter/material.dart';
 
 import 'gsy_tab_bar_widget.dart';
@@ -20,6 +19,7 @@ class _TabBarPageWidgetState extends State<TabBarPageWidget> {
 
   final List<String> tabs = ["first", "second", "third", "fouth"];
   final List<Widget> tabViews = [
+    new TestListPage(),
     new GankListPage(
       type: '福利',
     ),
