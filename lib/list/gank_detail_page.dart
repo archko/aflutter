@@ -13,8 +13,66 @@ class GankDetailPage extends StatefulWidget {
 }
 
 class _GankDetailPageState extends State<GankDetailPage> {
-  Widget detail(GankBean gankBean) {
+
+  @override
+  Widget build(BuildContext context) {
+    return _detail(widget.bean);
+  }
+
+  Widget _detail(GankBean gankBean) {
+    var children = <Widget>[];
+    var descWidget = Container(
+      child: Padding(
+          padding:
+              EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0, bottom: 5.0),
+          child: Text("${widget.bean.desc}")),
+    );
+    var headerWidget = Container(
+      margin: const EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('${widget.bean.who}',
+              style: TextStyle(fontSize: 14.0, color: Colors.blue)),
+          Text("  ${widget.bean.type}", style: TextStyle(fontSize: 13.0)),
+          Text("  ${widget.bean.publishedAt}",
+              style: TextStyle(fontSize: 13.0)),
+        ],
+      ),
+    );
     if (gankBean.images != null && gankBean.images.length > 0) {
+      children = <Widget>[
+        headerWidget,
+        descWidget,
+        Container(
+          margin: const EdgeInsets.all(5.0),
+          child: CachedNetworkImage(
+            imageUrl: gankBean.images[0],
+            placeholder: (context, url) => new CircularProgressIndicator(),
+            fit: BoxFit.fitWidth,
+          ),
+        ),
+      ];
+    } else {
+      children = <Widget>[
+        headerWidget,
+        descWidget,
+      ];
+    }
+
+    return Scaffold(
+      appBar: AppBar(),
+      body: ListView(
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: children,
+          )
+        ],
+      ),
+    );
+    /*if (gankBean.images != null && gankBean.images.length > 0) {
       return new Scaffold(
         appBar: new AppBar(),
         body: ListView(
@@ -55,36 +113,6 @@ class _GankDetailPageState extends State<GankDetailPage> {
                 ),
               ],
             ),
-            /*Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                    padding: EdgeInsets.only(
-                        left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                    child: Text("who:${gankBean.who}")),
-                Padding(
-                    padding: EdgeInsets.only(
-                        left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                    child: Text("type:${gankBean.type}")),
-                Padding(
-                    padding: EdgeInsets.only(
-                        left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                    child: Text("description:${gankBean.desc}")),
-                Padding(
-                    padding: EdgeInsets.only(
-                        left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                    child: Text("published:${gankBean.publishedAt}")),
-                Padding(
-                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: CachedNetworkImage(
-                    key: new ValueKey<String>(gankBean.images[0]),
-                    imageUrl: gankBean.images[0],
-                    placeholder: (context, url) =>
-                        new CircularProgressIndicator(),
-                  ),
-                ),
-              ],
-            ),*/
           ],
         ),
       );
@@ -126,11 +154,6 @@ class _GankDetailPageState extends State<GankDetailPage> {
           ],
         ),
       );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return detail(widget.bean);
+    }*/
   }
 }
