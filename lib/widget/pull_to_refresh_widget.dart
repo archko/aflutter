@@ -1,6 +1,9 @@
-import 'package:AFlutter/state/load_more_status.dart';
+import 'package:AFlutter/widget/load_more_status.dart';
 import 'package:flutter/material.dart';
 
+/**
+ * 参考了gsy的下拉刷新.
+ */
 class PullToRefreshWidget extends StatefulWidget {
   PullToRefreshWidget(
       {Key key,

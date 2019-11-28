@@ -1,4 +1,4 @@
-import 'package:AFlutter/entity/Animate.dart';
+import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/model/app_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

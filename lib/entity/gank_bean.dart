@@ -1,4 +1,4 @@
-import 'package:AFlutter/state/load_more_status.dart';
+import 'package:AFlutter/widget/load_more_status.dart';
 
 /**
  * {

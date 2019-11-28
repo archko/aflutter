@@ -1,6 +1,6 @@
 import 'package:AFlutter/model/base_list_view_model.dart';
-import 'package:AFlutter/service/GankService.dart';
-import 'package:AFlutter/state/load_more_status.dart';
+import 'package:AFlutter/service/gank_service.dart';
+import 'package:AFlutter/widget/load_more_status.dart';
 import 'package:AFlutter/widget/list_more_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +8,7 @@ import '../entity/gank_bean.dart';
 import 'gank_detail_page.dart';
 import 'gank_list_image_item.dart';
 import 'gank_list_noimage_item.dart';
-import 'pull_to_refresh_widget.dart';
+import '../widget/pull_to_refresh_widget.dart';
 
 class GankListPage extends StatefulWidget {
   GankListPage({Key key, this.title, this.type}) : super(key: key);

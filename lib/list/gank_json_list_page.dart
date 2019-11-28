@@ -10,7 +10,7 @@ import '../entity/gank_bean.dart';
 import '../entity/gank_today.dart';
 import 'gank_list_image_item.dart';
 import 'gank_list_noimage_item.dart';
-import 'pull_to_refresh_widget.dart';
+import '../widget/pull_to_refresh_widget.dart';
 
 class GankJsonListPage extends StatefulWidget {
   GankJsonListPage({Key key, this.title}) : super(key: key);

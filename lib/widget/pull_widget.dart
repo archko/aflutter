@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+/**
+ * 参考了gsy的下拉刷新
+ */
 class PullWidget extends StatefulWidget {
   PullWidget(
       {Key key,

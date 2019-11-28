@@ -1,5 +1,5 @@
-import 'package:AFlutter/entity/Animate.dart';
-import 'package:AFlutter/service/MovieService.dart';
+import 'package:AFlutter/entity/animate.dart';
+import 'package:AFlutter/service/movie_service.dart';
 import 'package:flutter/material.dart';
 
 class AppProvider with ChangeNotifier {
