@@ -4,7 +4,6 @@ import 'package:AFlutter/page/gank/gank_detail_page.dart';
 import 'package:AFlutter/page/gank/gank_list_image_item.dart';
 import 'package:AFlutter/page/gank/gank_list_noimage_item.dart';
 import 'package:AFlutter/service/gank_service.dart';
-import 'package:AFlutter/widget/list/load_more_status.dart';
 import 'package:AFlutter/widget/list/list_more_widget.dart';
 import 'package:AFlutter/widget/list/pull_to_refresh_widget.dart';
 import 'package:flutter/material.dart';
