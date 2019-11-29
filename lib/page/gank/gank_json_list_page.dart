@@ -4,6 +4,7 @@ import 'package:AFlutter/entity/gank_bean.dart';
 import 'package:AFlutter/entity/gank_today.dart';
 import 'package:AFlutter/http/http_client.dart';
 import 'package:AFlutter/http/http_response.dart';
+import 'package:AFlutter/model/gank_view_model.dart';
 import 'package:AFlutter/page/gank/gank_detail_page.dart';
 import 'package:AFlutter/model/base_list_view_model.dart';
 import 'package:AFlutter/page/gank/gank_list_image_item.dart';
@@ -22,7 +23,7 @@ class GankJsonListPage extends StatefulWidget {
 
 class _GankJsonListPageState extends State<GankJsonListPage>
     with AutomaticKeepAliveClientMixin {
-  BaseListViewModel loadModel = new BaseListViewModel();
+  BaseListViewModel loadModel = new GankViewModel();
 
   @override
   void initState() {

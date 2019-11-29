@@ -6,7 +6,7 @@ import 'package:AFlutter/service/movie_service.dart';
 import 'package:flutter/foundation.dart';
 
 class MovieViewModel extends BaseListViewModel {
-  Future<List<Animate>> loadData({int pn}) async {
+  Future<List<Animate>> loadData(int pn, {String type}) async {
     pn ??= 0;
     List<Animate> list;
     String url =
@@ -24,6 +24,6 @@ class MovieViewModel extends BaseListViewModel {
   }
 
   Future<List<Animate>> loadMore(int pn) async {
-    return loadData(pn: pn);
+    return loadData(pn);
   }
 }

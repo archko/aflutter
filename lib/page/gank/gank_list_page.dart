@@ -1,5 +1,6 @@
 import 'package:AFlutter/entity/gank_bean.dart';
 import 'package:AFlutter/model/gank_view_model.dart';
+import 'package:AFlutter/page/base_list_state.dart';
 import 'package:AFlutter/page/gank/gank_detail_page.dart';
 import 'package:AFlutter/page/gank/gank_list_image_item.dart';
 import 'package:AFlutter/page/gank/gank_list_noimage_item.dart';
@@ -22,26 +23,27 @@ class GankListPage extends StatefulWidget {
 }
 
 class _GankListPageState extends State<GankListPage>
-    with AutomaticKeepAliveClientMixin {
+    with BaseListState<GankListPage>, AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  GankViewModel loadModel = GankViewModel(page: 1);
   var loadMoreStatus = LoadMoreStatus.IDLE;
 
   @override
   void initState() {
     super.initState();
+    viewModel = GankViewModel(page: 1);
+    startPage = 1;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (loadModel.getCount() < 1 && loadMoreStatus == LoadMoreStatus.IDLE) {
+    if (viewModel.getCount() < 1 && loadMoreStatus == LoadMoreStatus.IDLE) {
       refresh();
     }
     return PullToRefreshWidget(
       itemBuilder: (BuildContext context, int index) =>
           _renderItem(index, context),
-      listCount: loadModel.getCount() + 1,
+      listCount: viewModel.getCount() + 1,
       onLoadMore: loadMore,
       onRefresh: refresh,
       loadMoreStatus: loadMoreStatus,
@@ -62,13 +64,13 @@ class _GankListPageState extends State<GankListPage>
 
   //列表的ltem
   _renderItem(index, context) {
-    if (index == loadModel.getCount()) {
+    if (index == viewModel.getCount()) {
       return ListMoreWidget(
         loadMoreStatus: loadMoreStatus,
         retry: retry,
       );
     }
-    var bean = loadModel.data[index];
+    var bean = viewModel.data[index];
     if (bean.images == null || bean.images.length < 1) {
       return GankListNoImageItem(
           bean: bean,
@@ -86,13 +88,13 @@ class _GankListPageState extends State<GankListPage>
 
   Future refresh() async {
     loadMoreStatus = (LoadMoreStatus.LOADING);
-    loadModel.setPage(1);
-    await loadModel
-        .loadData(type: widget.type, pn: loadModel.page)
+    viewModel.setPage(startPage);
+    await (viewModel as GankViewModel)
+        .loadData(viewModel.page, type: widget.type)
         .then((list) {
-      loadModel.setData(list.beans);
+      viewModel.setData(list.beans);
       setState(() {
-        //print("refresh end.${loadModel.page}, ${loadModel.getCount()}");
+        //print("refresh end.${viewModel.page}, ${viewModel.getCount()}");
         if (list.beans.length < 1) {
           loadMoreStatus = (LoadMoreStatus.NOMORE);
         } else {
@@ -106,14 +108,16 @@ class _GankListPageState extends State<GankListPage>
   }
 
   Future<void> loadMore() async {
-    if (loadModel.getCount() < 1) {
+    if (viewModel.getCount() < 1) {
       return refresh();
     }
     setState(() {
       loadMoreStatus = (LoadMoreStatus.LOADING);
     });
-    await loadModel.loadMore(widget.type, loadModel.page + 1).then((list) {
-      loadModel.updateDataAndPage(list.beans, loadModel.page + 1);
+    await (viewModel as GankViewModel)
+        .loadMore(viewModel.page + 1, type: widget.type)
+        .then((list) {
+      viewModel.updateDataAndPage(list.beans, viewModel.page + 1);
       setState(() {
         if (list.beans.length < 1) {
           loadMoreStatus = (LoadMoreStatus.NOMORE);
@@ -121,19 +125,11 @@ class _GankListPageState extends State<GankListPage>
           loadMoreStatus = (LoadMoreStatus.IDLE);
         }
         print(
-            "loadMore end.$loadMoreStatus,${loadModel.page}, ${loadModel.getCount()}");
+            "loadMore end.$loadMoreStatus,${viewModel.page}, ${viewModel.getCount()}");
       });
     }).catchError((error) => setState(() {
-          print("refresh error:$error");
-          loadMoreStatus = (LoadMoreStatus.FAIL);
-        }));
-  }
-
-  retry() {
-    if (loadModel.getCount() < 1) {
-      refresh();
-    } else {
-      loadMore();
-    }
+              print("refresh error:$error");
+              loadMoreStatus = (LoadMoreStatus.FAIL);
+            }));
   }
 }

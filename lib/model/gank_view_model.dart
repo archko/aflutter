@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 class GankViewModel extends BaseListViewModel {
   GankViewModel({page}) : super();
 
-  Future<GankListBean> loadData({String type, int pn}) async {
+  Future<GankListBean> loadData(int pn, {String type}) async {
     pn ??= 0;
     type ??= "福利";
     GankListBean data;
@@ -25,7 +25,7 @@ class GankViewModel extends BaseListViewModel {
     return data;
   }
 
-  Future<GankListBean> loadMore(String type, int pn) async {
-    return loadData(type: type, pn: pn);
+  Future<GankListBean> loadMore(int pn, {String type}) async {
+    return loadData(pn, type: type);
   }
 }

@@ -1,4 +1,4 @@
-class BaseListViewModel<T> {
+abstract class BaseListViewModel<T> {
   bool hasMore = true;
   bool isRefreshing = false;
   int page = 0;
@@ -57,4 +57,8 @@ class BaseListViewModel<T> {
         "page:$page,"
         "data:${data.toString()}";
   }
+
+  Future loadData(int pn);
+
+  Future loadMore(int pn);
 }

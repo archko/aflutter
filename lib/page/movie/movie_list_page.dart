@@ -1,6 +1,6 @@
-import 'package:AFlutter/model/base_list_view_model.dart';
+import 'package:AFlutter/model/movie_view_model.dart';
+import 'package:AFlutter/page/base_list_state.dart';
 import 'package:AFlutter/page/movie/movie_list_item.dart';
-import 'package:AFlutter/service/movie_service.dart';
 import 'package:AFlutter/widget/list/list_more_widget.dart';
 import 'package:AFlutter/widget/list/pull_to_refresh_widget.dart';
 import 'package:flutter/material.dart';
@@ -10,74 +10,58 @@ class MovieListPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return MovieListPageState();
+    return _MovieListPageState();
   }
 }
 
-class MovieListPageState extends State<MovieListPage>
-    with AutomaticKeepAliveClientMixin {
+class _MovieListPageState extends State<MovieListPage>
+    with BaseListState<MovieListPage>, AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  BaseListViewModel loadModel = BaseListViewModel();
   var loadMoreStatus = LoadMoreStatus.IDLE;
 
   @override
   void initState() {
     super.initState();
+    viewModel = new MovieViewModel();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (loadModel.getCount() < 1 && loadMoreStatus == LoadMoreStatus.IDLE) {
+    if (viewModel.getCount() < 1 && loadMoreStatus == LoadMoreStatus.IDLE) {
       refresh();
     }
     return PullToRefreshWidget(
       itemBuilder: (BuildContext context, int index) =>
           _renderItem(index, context),
-      listCount: loadModel.getCount() + 1,
+      listCount: viewModel.getCount() + 1,
       onLoadMore: loadMore,
       onRefresh: refresh,
       loadMoreStatus: loadMoreStatus,
     );
-    /*return Scaffold(
-      body: mlists.length == 0
-          ? Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              child: ListView.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemCount: mlists.length,
-                itemBuilder: (context, index) {
-                  return _renderItem(index, context);
-                },
-                controller: _scrollController, //指明控制器加载更多使用
-              ),
-              onRefresh: _pullToRefresh,
-            ),
-    );*/
   }
 
   /**
    * 列表的ltem
    */
   _renderItem(index, context) {
-    //
-    if (index == loadModel.getCount()) {
+    if (index == viewModel.getCount()) {
       return ListMoreWidget(
         loadMoreStatus: loadMoreStatus,
         retry: retry,
       );
     } else {
-      return MovieListItem(bean: loadModel.data[index]);
+      return MovieListItem(bean: viewModel.data[index]);
     }
   }
 
   Future refresh() async {
     loadMoreStatus = (LoadMoreStatus.LOADING);
-    loadModel.setPage(0);
-    await MovieService.loadData().then((list) {
-      loadModel.setData(list);
+    viewModel.setPage(startPage);
+    await viewModel.loadData(viewModel.page).then((list) {
+      viewModel.setData(list);
       setState(() {
-        print("refresh end.${loadModel.page}, ${loadModel.getCount()}");
+        print("refresh end.${viewModel.page}, ${viewModel.getCount()}");
         if (list.length < 1) {
           loadMoreStatus = (LoadMoreStatus.NOMORE);
         } else {
@@ -91,14 +75,14 @@ class MovieListPageState extends State<MovieListPage>
   }
 
   Future<void> loadMore() async {
-    if (loadModel.getCount() < 1) {
+    if (viewModel.getCount() < 1) {
       return refresh();
     }
     setState(() {
       loadMoreStatus = (LoadMoreStatus.LOADING);
     });
-    await MovieService.loadMore(loadModel.page + 1).then((list) {
-      loadModel.updateDataAndPage(list, loadModel.page + 1);
+    await viewModel.loadMore(viewModel.page + 1).then((list) {
+      viewModel.updateDataAndPage(list, viewModel.page + 1);
       setState(() {
         if (list.length < 1) {
           loadMoreStatus = (LoadMoreStatus.NOMORE);
@@ -106,18 +90,10 @@ class MovieListPageState extends State<MovieListPage>
           loadMoreStatus = (LoadMoreStatus.IDLE);
         }
         print(
-            "loadMore end.$loadMoreStatus,${loadModel.page}, ${loadModel.getCount()}");
+            "loadMore end.$loadMoreStatus,${viewModel.page}, ${viewModel.getCount()}");
       });
     }).catchError((_) => setState(() {
           loadMoreStatus = (LoadMoreStatus.FAIL);
         }));
-  }
-
-  retry() {
-    if (loadModel.getCount() < 1) {
-      refresh();
-    } else {
-      loadMore();
-    }
   }
 }
