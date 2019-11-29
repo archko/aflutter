@@ -1,16 +1,16 @@
 import 'dart:convert';
 
-import 'package:AFlutter/api/http_client.dart';
-import 'package:AFlutter/api/http_response.dart';
-import 'package:AFlutter/list/gank_detail_page.dart';
+import 'package:AFlutter/http/http_client.dart';
+import 'package:AFlutter/http/http_response.dart';
+import 'package:AFlutter/page/gank/gank_detail_page.dart';
 import 'package:AFlutter/model/base_list_view_model.dart';
 import 'package:flutter/material.dart';
 
-import '../entity/gank_bean.dart';
-import '../entity/gank_today.dart';
+import '../../entity/gank_bean.dart';
+import '../../entity/gank_today.dart';
 import 'gank_list_image_item.dart';
 import 'gank_list_noimage_item.dart';
-import '../widget/pull_to_refresh_widget.dart';
+import '../../widget/list/pull_to_refresh_widget.dart';
 
 class GankJsonListPage extends StatefulWidget {
   GankJsonListPage({Key key, this.title}) : super(key: key);

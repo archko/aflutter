@@ -1,22 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../entity/gank_bean.dart';
+import '../../entity/gank_bean.dart';
 
-class GankListNoImageItem extends StatefulWidget {
-  GankListNoImageItem({Key key, this.bean, this.onPressed}) : super(key: key);
-  GankBean bean;
-  VoidCallback onPressed;
-
-  @override
-  _GankListNoImageItemState createState() =>
-      new _GankListNoImageItemState(bean, onPressed);
-}
-
-class _GankListNoImageItemState extends State<GankListNoImageItem> {
-  _GankListNoImageItemState(this.bean, this.onPressed);
-
-  GankBean bean;
-  VoidCallback onPressed;
+class GankListImageItem extends StatelessWidget {
+  GankListImageItem({Key key, this.bean, this.onPressed}) : super(key: key);
+  final GankBean bean;
+  final VoidCallback onPressed;
 
   void detail(GankBean bean) {}
 
@@ -50,6 +40,13 @@ class _GankListNoImageItemState extends State<GankListNoImageItem> {
                   padding: EdgeInsets.only(
                       left: 5.0, right: 5.0, top: 5.0, bottom: 5.0),
                   child: Text("${bean.desc}")),
+            ),
+            Container(
+              margin: const EdgeInsets.all(5.0),
+              child: Image(
+                image: CachedNetworkImageProvider('${bean.images[0]}'),
+                fit: BoxFit.fitWidth,
+              ),
             ),
           ],
         ),

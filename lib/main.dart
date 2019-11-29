@@ -1,10 +1,8 @@
-import 'package:AFlutter/home/home_tabs_page.dart';
-import 'package:AFlutter/state/test_provider_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'model/app_provider.dart';
-import 'tabs/tab_bar_widget.dart';
+import 'widget/tabs/tab_bar_widget.dart';
 
 void main() {
   runApp(StateDemoApp());

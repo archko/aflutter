@@ -1,6 +1,6 @@
-import 'package:AFlutter/list/gank_list_page.dart';
-import 'package:AFlutter/list/movie_list_page.dart';
-import 'package:AFlutter/list/test_list_page.dart';
+import 'package:AFlutter/page/gank/gank_list_page.dart';
+import 'package:AFlutter/page/movie/movie_list_page.dart';
+import 'package:AFlutter/page/movie/test_list_page.dart';
 import 'package:flutter/material.dart';
 
 import 'gsy_tab_bar_widget.dart';

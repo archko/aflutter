@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:dio/dio.dart';
 
-import 'HttpLogInterceptor.dart';
+import 'interceptor/HttpLogInterceptor.dart';
 import 'http_response.dart';
 
 class HttpClient {

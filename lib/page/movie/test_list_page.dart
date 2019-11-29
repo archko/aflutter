@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'movie_list_item.dart';
-import '../widget/pull_widget.dart';
+import '../../widget/list/pull_widget.dart';
 
 class TestListPage extends StatefulWidget {
   TestListPage({Key key}) : super(key: key);

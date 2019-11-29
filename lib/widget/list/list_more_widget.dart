@@ -1,4 +1,4 @@
-import 'package:AFlutter/widget/load_more_status.dart';
+import 'package:AFlutter/widget/list/load_more_status.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

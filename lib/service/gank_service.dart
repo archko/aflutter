@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:AFlutter/api/http_client.dart';
-import 'package:AFlutter/api/http_response.dart';
+import 'package:AFlutter/http/http_client.dart';
+import 'package:AFlutter/http/http_response.dart';
 import 'package:AFlutter/entity/gank_list_bean.dart';
 
 class GankService {

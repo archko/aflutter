@@ -2,12 +2,12 @@ import 'package:AFlutter/service/movie_service.dart';
 import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/model/base_list_view_model.dart';
 import 'package:AFlutter/state/list_state.dart';
-import 'package:AFlutter/widget/load_more_status.dart';
-import 'package:AFlutter/widget/list_more_widget.dart';
+import 'package:AFlutter/widget/list/load_more_status.dart';
+import 'package:AFlutter/widget/list/list_more_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'movie_list_item.dart';
-import '../widget/pull_to_refresh_widget.dart';
+import '../../widget/list/pull_to_refresh_widget.dart';
 
 class MovieListPage extends StatefulWidget {
   MovieListPage({Key key}) : super(key: key);
