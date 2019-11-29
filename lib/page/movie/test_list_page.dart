@@ -1,6 +1,5 @@
-import 'package:AFlutter/model/base_list_view_model.dart';
+import 'package:AFlutter/model/movie_view_model.dart';
 import 'package:AFlutter/page/movie/movie_list_item.dart';
-import 'package:AFlutter/service/movie_service.dart';
 import 'package:AFlutter/widget/list/pull_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -18,13 +17,19 @@ class TestListPageState extends State<TestListPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  BaseListViewModel loadModel = BaseListViewModel();
+  MovieViewModel loadModel = MovieViewModel();
   RefreshController _refreshController =
       new RefreshController(initialRefresh: true);
 
   @override
   void initState() {
     super.initState();
+    print("initState");
+  }
+
+  @override
+  void dispose() {
+    print("dispose");
   }
 
   @override
@@ -47,7 +52,7 @@ class TestListPageState extends State<TestListPage>
 
   Future refresh() async {
     loadModel.setPage(0);
-    await MovieService.loadData().then((list) {
+    await loadModel.loadData().then((list) {
       loadModel.setData(list);
       setState(() {
         print("refresh end.${loadModel.page}, ${loadModel.getCount()}");
@@ -68,7 +73,7 @@ class TestListPageState extends State<TestListPage>
       return refresh();
     }
 
-    await MovieService.loadMore(loadModel.page + 1).then((list) {
+    await loadModel.loadMore(loadModel.page + 1).then((list) {
       loadModel.updateDataAndPage(list, loadModel.page + 1);
       setState(() {
         if (list.length < 1) {

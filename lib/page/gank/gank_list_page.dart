@@ -1,9 +1,8 @@
 import 'package:AFlutter/entity/gank_bean.dart';
-import 'package:AFlutter/model/base_list_view_model.dart';
+import 'package:AFlutter/model/gank_view_model.dart';
 import 'package:AFlutter/page/gank/gank_detail_page.dart';
 import 'package:AFlutter/page/gank/gank_list_image_item.dart';
 import 'package:AFlutter/page/gank/gank_list_noimage_item.dart';
-import 'package:AFlutter/service/gank_service.dart';
 import 'package:AFlutter/widget/list/list_more_widget.dart';
 import 'package:AFlutter/widget/list/pull_to_refresh_widget.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +25,7 @@ class _GankListPageState extends State<GankListPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  BaseListViewModel loadModel = BaseListViewModel(page: 1);
+  GankViewModel loadModel = GankViewModel(page: 1);
   var loadMoreStatus = LoadMoreStatus.IDLE;
 
   @override
@@ -88,7 +87,8 @@ class _GankListPageState extends State<GankListPage>
   Future refresh() async {
     loadMoreStatus = (LoadMoreStatus.LOADING);
     loadModel.setPage(1);
-    await GankService.loadData(type: widget.type, pn: loadModel.page)
+    await loadModel
+        .loadData(type: widget.type, pn: loadModel.page)
         .then((list) {
       loadModel.setData(list.beans);
       setState(() {
@@ -112,7 +112,7 @@ class _GankListPageState extends State<GankListPage>
     setState(() {
       loadMoreStatus = (LoadMoreStatus.LOADING);
     });
-    await GankService.loadMore(widget.type, loadModel.page + 1).then((list) {
+    await loadModel.loadMore(widget.type, loadModel.page + 1).then((list) {
       loadModel.updateDataAndPage(list.beans, loadModel.page + 1);
       setState(() {
         if (list.beans.length < 1) {
