@@ -1,10 +1,9 @@
 import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/model/app_provider.dart';
+import 'package:AFlutter/page/movie/movie_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
-import '../page/movie/movie_list_item.dart';
 
 class TestProviderPage extends StatefulWidget {
   TestProviderPage({Key key}) : super(key: key);

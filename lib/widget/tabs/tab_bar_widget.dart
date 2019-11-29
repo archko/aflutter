@@ -1,9 +1,8 @@
 import 'package:AFlutter/page/gank/gank_list_page.dart';
 import 'package:AFlutter/page/movie/movie_list_page.dart';
 import 'package:AFlutter/page/movie/test_list_page.dart';
+import 'package:AFlutter/widget/tabs/gsy_tab_bar_widget.dart';
 import 'package:flutter/material.dart';
-
-import 'gsy_tab_bar_widget.dart';
 
 class TabBarPageWidget extends StatefulWidget {
   final String title;

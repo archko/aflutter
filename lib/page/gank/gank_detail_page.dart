@@ -1,7 +1,7 @@
+import 'package:AFlutter/entity/gank_bean.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../entity/gank_bean.dart';
 
 class GankDetailPage extends StatefulWidget {
   GankDetailPage({Key key, this.bean}) : super(key: key);

@@ -1,10 +1,9 @@
 import 'package:AFlutter/model/base_list_view_model.dart';
+import 'package:AFlutter/page/movie/movie_list_item.dart';
 import 'package:AFlutter/service/movie_service.dart';
+import 'package:AFlutter/widget/list/pull_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
-import 'movie_list_item.dart';
-import '../../widget/list/pull_widget.dart';
 
 class TestListPage extends StatefulWidget {
   TestListPage({Key key}) : super(key: key);

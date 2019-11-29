@@ -1,6 +1,6 @@
+import 'package:AFlutter/entity/gank_bean.dart';
 import 'package:flutter/material.dart';
 
-import '../../entity/gank_bean.dart';
 
 class GankListNoImageItem extends StatefulWidget {
   GankListNoImageItem({Key key, this.bean, this.onPressed}) : super(key: key);

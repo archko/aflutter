@@ -1,6 +1,5 @@
+import 'package:AFlutter/widget/list/list_more_widget.dart';
 import 'package:flutter/widgets.dart';
-
-import '../widget/list/load_more_status.dart';
 
 mixin ListState<T extends StatefulWidget> on State<T> {
   @protected
