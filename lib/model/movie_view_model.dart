@@ -2,7 +2,7 @@ import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/http/http_client.dart';
 import 'package:AFlutter/http/http_response.dart';
 import 'package:AFlutter/model/base_list_view_model.dart';
-import 'package:AFlutter/service/movie_service.dart';
+import 'package:AFlutter/utils/json_utils.dart';
 import 'package:flutter/foundation.dart';
 
 class MovieViewModel extends BaseListViewModel {
@@ -16,7 +16,7 @@ class MovieViewModel extends BaseListViewModel {
       String result =
           httpResponse.data.replaceAll('cbs(', '').replaceAll(')', '');
       //print("result:$result");
-      list = await compute(MovieService.decodeListResult, result);
+      list = await compute(decodeListResult, result);
     } catch (e) {
       print(e);
     }
@@ -25,5 +25,12 @@ class MovieViewModel extends BaseListViewModel {
 
   Future<List<Animate>> loadMore(int pn) async {
     return loadData(pn);
+  }
+
+  static List<Animate> decodeListResult(String result) {
+    //return json.decode(data);
+    return JsonUtils.decodeAsMap(result)['data'][0]['result']
+        .map<Animate>((dynamic json) => Animate.fromJson(json))
+        .toList();
   }
 }

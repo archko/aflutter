@@ -2,7 +2,7 @@ import 'package:AFlutter/entity/gank_list_bean.dart';
 import 'package:AFlutter/http/http_client.dart';
 import 'package:AFlutter/http/http_response.dart';
 import 'package:AFlutter/model/base_list_view_model.dart';
-import 'package:AFlutter/service/gank_service.dart';
+import 'package:AFlutter/utils/json_utils.dart';
 import 'package:flutter/foundation.dart';
 
 class GankViewModel extends BaseListViewModel {
@@ -17,8 +17,7 @@ class GankViewModel extends BaseListViewModel {
       String url = "http://gank.io/api/data/$type/15/$pn";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
       //print("result:${httpResponse.data}");
-      data = await compute(
-          GankService.decodeListResult, httpResponse.data as String);
+      data = await compute(decodeListResult, httpResponse.data as String);
     } catch (e) {
       print(e);
     }
@@ -27,5 +26,9 @@ class GankViewModel extends BaseListViewModel {
 
   Future<GankListBean> loadMore(int pn, {String type}) async {
     return loadData(pn, type: type);
+  }
+
+  static GankListBean decodeListResult(String result) {
+    return GankListBean.fromJson(JsonUtils.decodeAsMap(result));
   }
 }
