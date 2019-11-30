@@ -1,14 +1,13 @@
-import 'dart:convert';
-
 import 'package:AFlutter/entity/gank_bean.dart';
 import 'package:AFlutter/entity/gank_today.dart';
 import 'package:AFlutter/http/http_client.dart';
 import 'package:AFlutter/http/http_response.dart';
+import 'package:AFlutter/model/base_list_view_model.dart';
 import 'package:AFlutter/model/gank_view_model.dart';
 import 'package:AFlutter/page/gank/gank_detail_page.dart';
-import 'package:AFlutter/model/base_list_view_model.dart';
 import 'package:AFlutter/page/gank/gank_list_image_item.dart';
 import 'package:AFlutter/page/gank/gank_list_noimage_item.dart';
+import 'package:AFlutter/utils/json_utils.dart';
 import 'package:AFlutter/widget/list/pull_to_refresh_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +22,7 @@ class GankJsonListPage extends StatefulWidget {
 
 class _GankJsonListPageState extends State<GankJsonListPage>
     with AutomaticKeepAliveClientMixin {
-  BaseListViewModel loadModel = new GankViewModel();
+  BaseListViewModel viewModel = new GankViewModel();
 
   @override
   void initState() {
@@ -48,8 +47,8 @@ class _GankJsonListPageState extends State<GankJsonListPage>
     HttpResponse httpResponse = await HttpClient.instance.get(dataURL);
     setState(() {
       if (mounted) {
-        var gankToday = GankToday.fromJson(json.decode(httpResponse.data));
-        loadModel.addData(gankToday.beans);
+        var gankToday = GankToday.fromJson(JsonUtils.decodeAsMap(httpResponse.data));
+        viewModel.addData(gankToday.beans);
         print(
             "length:${gankToday?.category}, content:${gankToday?.items
                 ?.length}");
@@ -72,7 +71,7 @@ class _GankJsonListPageState extends State<GankJsonListPage>
   bool get wantKeepAlive => true;
 
   Future _pullToRefresh() async {
-    loadModel.setPage(0);
+    viewModel.setPage(0);
     return loadData();
   }
 
@@ -93,7 +92,7 @@ class _GankJsonListPageState extends State<GankJsonListPage>
     return new PullToRefreshWidget(
       itemBuilder: (BuildContext context, int index) =>
           _renderItem(index, context),
-      listCount: loadModel.data.length,
+      listCount: viewModel.data.length,
       onLoadMore: loadData,
       onRefresh: _pullToRefresh,
     );
@@ -103,7 +102,7 @@ class _GankJsonListPageState extends State<GankJsonListPage>
    * 列表的ltem
    */
   _renderItem(index, context) {
-    var bean = loadModel.data[index];
+    var bean = viewModel.data[index];
     if (bean.images == null || bean.images.length < 1) {
       return GankListNoImageItem(
           bean: bean,
