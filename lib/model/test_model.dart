@@ -1,8 +1,9 @@
 import 'package:AFlutter/entity/animate.dart';
-import 'package:AFlutter/service/movie_service.dart';
+import 'package:AFlutter/model/movie_view_model.dart';
 import 'package:flutter/material.dart';
 
-class TestModel with ChangeNotifier {
+class TestProvider with ChangeNotifier {
+  MovieViewModel _viewModel = MovieViewModel();
   List<Animate> _animates;
 
   List<Animate> getMovies() {
@@ -14,7 +15,7 @@ class TestModel with ChangeNotifier {
   }
 
   void loadMovies() async {
-    _animates = await MovieService.loadData();
+    _animates = await _viewModel.loadData(0);
     notifyListeners();
   }
 

@@ -22,8 +22,8 @@ class TestProviderPage extends StatefulWidget {
 class TestProviderPageState extends State<TestProviderPage>
     with AutomaticKeepAliveClientMixin {
   RefreshController _controller = RefreshController();
-  var testModel = TestModel();
-  var testModel2 = TestModel2();
+  var testModel = TestProvider();
+  var testModel2 = TestProvider2();
 
   @override
   void initState() {
@@ -38,12 +38,42 @@ class TestProviderPageState extends State<TestProviderPage>
     return build2(context);
   }
 
+  Widget build3(BuildContext context) {
+    return Scaffold(
+      //appBar: AppBar(
+      //  title: Row(
+      //    children: <Widget>[
+      //      RaisedButton(
+      //        onPressed: () {
+      //          //model.loadMovies();
+      //        },
+      //        child: Text('load'),
+      //      ),
+      //      RaisedButton(
+      //        onPressed: () {
+      //          //model.clear();
+      //        },
+      //        child: Text('clear'),
+      //      )
+      //    ],
+      //  ),
+      //),
+      body: SmartRefresher(
+        controller: _controller,
+        onRefresh: testModel.loadMovies,
+        child: buildList(testModel.getMovies()),
+        enablePullUp: true,
+        header: MaterialClassicHeader(),
+      ),
+    );
+  }
+
   Widget build1(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(builder: (_) => testModel),
       ],
-      child: Consumer<TestModel>(
+      child: Consumer<TestProvider>(
         builder: (context, model, _) {
           return Scaffold(
             appBar: AppBar(
@@ -64,13 +94,6 @@ class TestProviderPageState extends State<TestProviderPage>
                 ],
               ),
             ),
-            //body: SmartRefresher(
-            //  controller: _controller,
-            //  onRefresh: model.loadMovies,
-            //  child: buildList(model.getMovies()),
-            //  enablePullUp: true,
-            //  header: MaterialClassicHeader(),
-            //),
             body: CustomScrollView(
               slivers: <Widget>[
                 SliverToBoxAdapter(
@@ -138,8 +161,8 @@ class TestProviderPageState extends State<TestProviderPage>
                 );
               }),
             ),
-            Consumer<TestModel2>(
-              builder: (BuildContext context,TestModel2 model,Widget _) {
+            Consumer<TestProvider>(
+              builder: (context, model, Widget _) {
                 return SliverGrid(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
@@ -151,14 +174,14 @@ class TestProviderPageState extends State<TestProviderPage>
                   ),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 5,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 0.7,
+                    mainAxisSpacing: 4,
+                    crossAxisSpacing: 4,
+                    childAspectRatio: 0.8,
                   ),
                 );
               },
             ),
-            Consumer<TestModel>(
+            Consumer<TestProvider2>(
               builder: (context, model, _) {
                 return SliverList(
                   delegate: SliverChildBuilderDelegate(
