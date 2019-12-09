@@ -2,12 +2,11 @@ import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/service/movie_service.dart';
 import 'package:flutter/material.dart';
 
-class AppProvider with ChangeNotifier {
+class TestModel2 with ChangeNotifier {
   List<Animate> _animates;
 
   List<Animate> getMovies() {
     if (_animates == null) {
-      Future(() => {loadMovies()});
       return <Animate>[];
     }
 
@@ -16,6 +15,11 @@ class AppProvider with ChangeNotifier {
 
   void loadMovies() async {
     _animates = await MovieService.loadData();
+    notifyListeners();
+  }
+
+  void clear() {
+    _animates.clear();
     notifyListeners();
   }
 }

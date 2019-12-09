@@ -1,4 +1,6 @@
-import 'package:AFlutter/model/app_provider.dart';
+import 'package:AFlutter/model/test_model.dart';
+import 'package:AFlutter/page/first_provider_page.dart';
+import 'package:AFlutter/state/test_provider_page.dart';
 import 'package:AFlutter/widget/tabs/tab_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,29 +19,34 @@ class StateDemoApp extends StatefulWidget {
 }
 
 class _StateDemoAppState extends State<StateDemoApp> {
-  AppProvider model;
+  TestModel model;
 
   @override
   void initState() {
     super.initState();
-    model = AppProvider(); //..loadMovies();
+    model = TestModel(); //..loadMovies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(builder: (_) => AppProvider()),
-      ],
-      child: Consumer<AppProvider>(
-        builder: (context, counter, _) {
-          return MaterialApp(
-            title: 'Flutter provider',
-            //home: TestProviderPage(),
-            home: TabBarPageWidget(),
-          );
-        },
-      ),
+    //return MultiProvider(
+    //  providers: [
+    //    ChangeNotifierProvider(builder: (_) => AppProvider()),
+    //  ],
+    //  child: Consumer<AppProvider>(
+    //    builder: (context, counter, _) {
+    //      return MaterialApp(
+    //        title: 'Flutter provider',
+    //        //home: TestProviderPage(),
+    //        home: TabBarPageWidget(),
+    //      );
+    //    },
+    //  ),
+    //);
+    return MaterialApp(
+      title: 'Flutter provider',
+      home: FirstProviderPage(),
+      //home: TabBarPageWidget(),
     );
   }
 }

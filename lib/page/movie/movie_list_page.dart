@@ -24,13 +24,13 @@ class _MovieListPageState extends State<MovieListPage>
   void initState() {
     super.initState();
     viewModel = new MovieViewModel();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      viewModel.setPage(startPage);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (viewModel.getCount() < 1 && loadMoreStatus == LoadMoreStatus.IDLE) {
-      refresh();
-    }
     return PullToRefreshWidget(
       itemBuilder: (BuildContext context, int index) =>
           _renderItem(index, context),
