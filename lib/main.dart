@@ -19,12 +19,10 @@ class StateDemoApp extends StatefulWidget {
 }
 
 class _StateDemoAppState extends State<StateDemoApp> {
-  TestProvider model;
 
   @override
   void initState() {
     super.initState();
-    model = TestProvider(); //..loadMovies();
   }
 
   @override

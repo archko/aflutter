@@ -5,7 +5,7 @@ import 'package:AFlutter/model/base_list_view_model.dart';
 import 'package:AFlutter/utils/json_utils.dart';
 import 'package:flutter/foundation.dart';
 
-class MovieViewModel extends BaseListViewModel {
+class MovieViewModel extends BaseListViewModel<Animate> {
   Future<List<Animate>> loadData(int pn, {String type}) async {
     pn ??= 0;
     List<Animate> list;

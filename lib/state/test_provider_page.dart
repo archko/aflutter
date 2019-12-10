@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:AFlutter/entity/animate.dart';
+import 'package:AFlutter/model/movie_view_model.dart';
+import 'package:AFlutter/model/provider_widget.dart';
 import 'package:AFlutter/model/test_provider.dart';
 import 'package:AFlutter/model/test_provider2.dart';
 import 'package:AFlutter/page/first_provider_page.dart';
@@ -22,14 +24,14 @@ class TestProviderPage extends StatefulWidget {
 class TestProviderPageState extends State<TestProviderPage>
     with AutomaticKeepAliveClientMixin {
   RefreshController _controller = RefreshController();
-  var testModel = TestProvider();
-  var testModel2 = TestProvider2();
+
+  var testProvider2 = TestProvider2();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      testModel2.loadMovies();
+      testProvider2.loadMovies();
     });
   }
 
@@ -38,114 +40,69 @@ class TestProviderPageState extends State<TestProviderPage>
     return build2(context);
   }
 
-  Widget build3(BuildContext context) {
-    return Scaffold(
-      //appBar: AppBar(
-      //  title: Row(
-      //    children: <Widget>[
-      //      RaisedButton(
-      //        onPressed: () {
-      //          //model.loadMovies();
-      //        },
-      //        child: Text('load'),
-      //      ),
-      //      RaisedButton(
-      //        onPressed: () {
-      //          //model.clear();
-      //        },
-      //        child: Text('clear'),
-      //      )
-      //    ],
-      //  ),
-      //),
-      body: SmartRefresher(
-        controller: _controller,
-        onRefresh: testModel.loadMovies,
-        child: buildList(testModel.getMovies()),
-        enablePullUp: true,
-        header: MaterialClassicHeader(),
+  Widget buildAppBar(BuildContext context) {
+    return AppBar(
+      title: Row(
+        children: <Widget>[
+          RaisedButton(
+            onPressed: () {
+              //model.loadMovies();
+            },
+            child: Text('load'),
+          ),
+          RaisedButton(
+            onPressed: () {
+              //model.clear();
+            },
+            child: Text('clear'),
+          )
+        ],
       ),
     );
   }
 
   Widget build1(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(builder: (_) => testModel),
-      ],
-      child: Consumer<TestProvider>(
-        builder: (context, model, _) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Row(
-                children: <Widget>[
-                  RaisedButton(
-                    onPressed: () {
-                      model.loadMovies();
-                    },
-                    child: Text('load'),
-                  ),
-                  RaisedButton(
-                    onPressed: () {
-                      model.clear();
-                    },
-                    child: Text('clear'),
-                  )
-                ],
-              ),
-            ),
-            body: CustomScrollView(
-              slivers: <Widget>[
-                SliverToBoxAdapter(
-                  child: TestText(
-                    child: Text("_currVideoItem.data.title"),
-                    onPressed: () {},
-                  ),
+    return ProviderWidget<TestProvider>(
+      model: TestProvider(
+          viewModel: MovieViewModel(), refreshController: _controller),
+      onModelInitial: (m) {
+        m.refresh();
+      },
+      builder: (context, model, child) {
+        return Scaffold(
+          appBar: buildAppBar(context),
+          body: CustomScrollView(
+            slivers: <Widget>[
+              SliverToBoxAdapter(
+                child: TestText(
+                  child: Text("_currVideoItem.data.title"),
+                  onPressed: () {},
                 ),
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      return buildItem(context, index, model.getMovies());
-                    },
-                    childCount: model.getMovies() == null
-                        ? 0
-                        : model.getMovies().length,
-                  ),
-                )
-              ],
-            ),
-          );
-        },
-      ),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return buildItem(context, index, model.getMovies());
+                  },
+                  childCount:
+                      model.getMovies() == null ? 0 : model.getMovies().length,
+                ),
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 
   Widget build2(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(builder: (_) => testModel),
-        ChangeNotifierProvider(builder: (_) => testModel2),
+        ChangeNotifierProvider(builder: (_) => testProvider2),
         ChangeNotifierProvider(builder: (_) => ValProvider()),
       ],
       child: Scaffold(
-        appBar: AppBar(
-          title: Row(
-            children: <Widget>[
-              RaisedButton(
-                onPressed: () {
-                  testModel.loadMovies();
-                },
-                child: Text('load'),
-              ),
-              RaisedButton(
-                onPressed: () {
-                  testModel.clear();
-                },
-                child: Text('clear'),
-              )
-            ],
-          ),
-        ),
+        appBar: buildAppBar(context),
         body: CustomScrollView(
           slivers: <Widget>[
             SliverToBoxAdapter(
@@ -161,8 +118,14 @@ class TestProviderPageState extends State<TestProviderPage>
                 );
               }),
             ),
-            Consumer<TestProvider>(
-              builder: (context, model, Widget _) {
+            ProviderWidget<TestProvider>(
+              model: TestProvider(
+                  viewModel: MovieViewModel()),
+              onModelInitial: (m) {
+                m.refresh();
+              },
+              builder: (context, model, child) {
+                print("grid");
                 return SliverGrid(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
@@ -183,6 +146,7 @@ class TestProviderPageState extends State<TestProviderPage>
             ),
             Consumer<TestProvider2>(
               builder: (context, model, _) {
+                print("list");
                 return SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {

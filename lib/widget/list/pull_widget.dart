@@ -9,6 +9,7 @@ class PullWidget extends StatefulWidget {
       {Key key,
       this.pullController,
       this.itemBuilder,
+      this.child,
       this.listCount,
       this.onLoadMore,
       this.onRefresh,
@@ -18,6 +19,7 @@ class PullWidget extends StatefulWidget {
   final int listCount;
   final RefreshController pullController;
   final IndexedWidgetBuilder itemBuilder;
+  final Widget child;
   final RefreshCallback onLoadMore;
   final RefreshCallback onRefresh;
   final Widget header;
@@ -93,16 +95,18 @@ class _PullWidgetState extends State<PullWidget> {
         controller: widget.pullController,
         onRefresh: _onRefresh,
         onLoading: _onLoading,
-        child: new ListView.builder(
-          ///保持ListView任何情况都能滚动，解决在RefreshIndicator的兼容问题。
-          physics: const AlwaysScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            return _getItem(index);
-          },
+        child: widget.child != null
+            ? widget.child
+            : new ListView.builder(
+                ///保持ListView任何情况都能滚动，解决在RefreshIndicator的兼容问题。
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return _getItem(index);
+                },
 
-          itemCount: _getListCount(),
-          controller: _scrollController,
-        ),
+                itemCount: _getListCount(),
+                controller: _scrollController,
+              ),
       ),
     );
   }
