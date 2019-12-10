@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:AFlutter/entity/animate.dart';
-import 'package:AFlutter/model/test_model.dart';
-import 'package:AFlutter/model/test_model2.dart';
+import 'package:AFlutter/model/test_provider.dart';
+import 'package:AFlutter/model/test_provider2.dart';
 import 'package:AFlutter/page/first_provider_page.dart';
 import 'package:AFlutter/page/movie/movie_list_item.dart';
 import 'package:cached_network_image/cached_network_image.dart';

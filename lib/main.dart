@@ -1,4 +1,4 @@
-import 'package:AFlutter/model/test_model.dart';
+import 'package:AFlutter/model/test_provider.dart';
 import 'package:AFlutter/page/first_provider_page.dart';
 import 'package:AFlutter/state/test_provider_page.dart';
 import 'package:AFlutter/widget/tabs/tab_bar_widget.dart';
