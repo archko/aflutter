@@ -35,10 +35,10 @@ class TestProvider with ChangeNotifier {
   Future loadMore() async {
     List<Animate> list = await viewModel.loadMore(1);
     viewModel.addData(list);
-    if (viewModel.getCount() <= 0) {
+    if (list == null || list.length < 1) {
       refreshController?.loadNoData();
     } else {
-      refreshController?.refreshCompleted();
+      refreshController?.loadComplete();
     }
 
     notifyListeners();

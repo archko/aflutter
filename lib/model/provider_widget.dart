@@ -49,7 +49,7 @@ class ProviderWidgetState<T extends ChangeNotifier>
 class ProviderWidget2<A extends ChangeNotifier, B extends ChangeNotifier>
     extends StatefulWidget {
   final Widget Function(BuildContext context, A model1, B model2, Widget child)
-      builder;
+  builder;
   final A model1;
   final B model2;
   final Widget child;
@@ -77,10 +77,11 @@ class _ProviderWidgetState2<A extends ChangeNotifier, B extends ChangeNotifier>
     model1 = widget.model1;
     model2 = widget.model2;
 
-    if (widget.onModelInitial != null) {
-      widget.onModelInitial(model1, model2);
-    }
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.onModelInitial != null) {
+        widget.onModelInitial(model1, model2);
+      }
+    });
     super.initState();
   }
 

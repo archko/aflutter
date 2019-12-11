@@ -70,6 +70,18 @@ class FirstProviderPageState extends State<FirstProviderPage> {
                 Navigator.of(context).push(
                   new MaterialPageRoute<void>(
                     builder: (BuildContext context) {
+                      return SecondProviderPage();
+                    },
+                  ),
+                );
+              },
+              child: Text('second provider list'),
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  new MaterialPageRoute<void>(
+                    builder: (BuildContext context) {
                       return TestProviderPage();
                     },
                   ),

@@ -23,7 +23,7 @@ class SecondProviderPageState extends State<SecondProviderPage> {
 
   @override
   Widget build(BuildContext context) {
-    return build2(context);
+    return build3(context);
   }
 
   Widget build1(BuildContext context) {
@@ -77,6 +77,31 @@ class SecondProviderPageState extends State<SecondProviderPage> {
                 child: buildList(model.getMovies()),
               ),
             ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget build3(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("test provider"),
+      ),
+      body: ProviderWidget<TestProvider>(
+        model: TestProvider(
+            viewModel: MovieViewModel(), refreshController: _controller),
+        onModelInitial: (m) {
+          m.refresh();
+        },
+        builder: (context, model, child) {
+          return SmartRefresher(
+            controller: _controller,
+            onRefresh: model.refresh,
+            onLoading: model.loadMore,
+            child: buildList(model.getMovies()),
+            enablePullUp: true,
+            header: MaterialClassicHeader(),
           );
         },
       ),
