@@ -37,7 +37,7 @@ class TestProviderPageState extends State<TestProviderPage>
 
   @override
   Widget build(BuildContext context) {
-    return build2(context);
+    return build1(context);
   }
 
   Widget buildAppBar(BuildContext context) {
@@ -71,24 +71,31 @@ class TestProviderPageState extends State<TestProviderPage>
       builder: (context, model, child) {
         return Scaffold(
           appBar: buildAppBar(context),
-          body: CustomScrollView(
-            slivers: <Widget>[
-              SliverToBoxAdapter(
-                child: TestText(
-                  child: Text("_currVideoItem.data.title"),
-                  onPressed: () {},
+          body: SmartRefresher(controller: _controller,
+            onRefresh: model.refresh,
+            onLoading: model.loadMore,
+            enablePullUp: true,
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverToBoxAdapter(
+                  child: TestText(
+                    child: Text("_currVideoItem.data.title"),
+                    onPressed: () {},
+                  ),
                 ),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return buildItem(context, index, model.getMovies());
-                  },
-                  childCount:
-                      model.getMovies() == null ? 0 : model.getMovies().length,
-                ),
-              )
-            ],
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                      return buildItem(context, index, model.getMovies());
+                    },
+                    childCount:
+                    model.getMovies() == null ? 0 : model
+                        .getMovies()
+                        .length,
+                  ),
+                )
+              ],
+            ),
           ),
         );
       },
@@ -109,11 +116,9 @@ class TestProviderPageState extends State<TestProviderPage>
               child: Consumer(
                   builder: (BuildContext context, ValProvider model, _) {
                 return TestText(
-                  child: Text("_currVideoItem.data.title"),
+                  child: Text("_currVideoItem.data.title:${model.value}"),
                   onPressed: () {
-                    print("before:${model.value}");
                     model.increment();
-                    print("after:${model.value}");
                   },
                 );
               }),
