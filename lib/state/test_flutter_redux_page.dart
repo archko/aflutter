@@ -21,11 +21,11 @@ class TestFlutterReduxPageState extends State<TestFlutterReduxPage>
     with AutomaticKeepAliveClientMixin {
   RefreshController _controller = RefreshController();
 
-  Store<ListState> _getStore() {
+  Store<ListState<Animate>> _getStore() {
     if (context == null) {
       return null;
     }
-    return StoreProvider.of<ListState>(context);
+    return StoreProvider.of<ListState<Animate>>(context);
   }
 
   @override
@@ -35,7 +35,7 @@ class TestFlutterReduxPageState extends State<TestFlutterReduxPage>
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<ListState, ListViewModel>(
+    return StoreConnector<ListState<Animate>, ListViewModel>(
       converter: (store) {
         return ListViewModel(
           state: store.state,
@@ -57,15 +57,16 @@ class TestFlutterReduxPageState extends State<TestFlutterReduxPage>
     );
   }
 
-  Widget buildList(ListState state) {
-    print("build:${state}");
+  Widget buildList(ListState<Animate> state) {
+    print("build:$state");
     if (state is ListPopulatedState) {
-      List<Animate> movies = state.result;
+      List<Animate> movies = state.data;
       print("buildList:${movies == null ? 0 : movies.length}");
+      _controller.refreshCompleted(resetFooterState: true);
       return ListView.builder(
         itemCount: movies == null ? 0 : movies.length,
         scrollDirection: Axis.vertical,
-        physics: ClampingScrollPhysics(),
+        physics: BouncingScrollPhysics(),
         itemBuilder: (BuildContext context, int index) =>
             buildItem(context, index, movies),
       );
@@ -77,7 +78,10 @@ class TestFlutterReduxPageState extends State<TestFlutterReduxPage>
       return Center(
         child: Text("loading."),
       );
+    } else if (state is ListErrorState) {
+      _controller?.loadFailed();
     } else if (state is ListEmptyState) {
+      _controller?.resetNoData();
       return GestureDetector(
         onTap: () {
           _getStore().dispatch(ListAction(""));
@@ -87,6 +91,7 @@ class TestFlutterReduxPageState extends State<TestFlutterReduxPage>
         ),
       );
     }
+    _controller.refreshCompleted(resetFooterState: true);
   }
 
   Widget buildItem(BuildContext context, int index, List<Animate> movies) {
