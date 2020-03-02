@@ -99,9 +99,9 @@ abstract class AbsListMiddleware<T> implements MiddlewareClass<ListState<T>> {
     next(action);
   }
 
-  Future<List<T>> refresh() async {}
+  Future<List<T>> refresh();
 
-  Future<List<T>> loadMore() async {}
+  Future<List<T>> loadMore();
 
   onResult(Store<ListState<T>> store, result, bool refresh) {
     if (refresh) {
