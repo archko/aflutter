@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:AFlutter/api/http_client.dart';
-import 'package:AFlutter/api/http_response.dart';
 import 'package:AFlutter/list/gank_detail_page.dart';
 import 'package:AFlutter/model/load_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_base/http/http_client.dart';
+import 'package:flutter_base/http/http_response.dart';
 
 import '../entity/gank_bean.dart';
 import '../entity/gank_today.dart';

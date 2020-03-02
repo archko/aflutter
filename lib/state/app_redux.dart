@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:AFlutter/api/http_client.dart';
-import 'package:AFlutter/api/http_response.dart';
 import 'package:AFlutter/list/movie_list_page.dart';
+import 'package:flutter_base/http/http_client.dart';
+import 'package:flutter_base/http/http_response.dart';
 import 'package:redux/redux.dart';
 
 abstract class SearchState {}

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:AFlutter/api/http_client.dart';
-import 'package:AFlutter/api/http_response.dart';
 import 'package:AFlutter/list/movie_list_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_base/http/http_client.dart';
+import 'package:flutter_base/http/http_response.dart';
 
 class AppProvider with ChangeNotifier {
   List<Animate> _animates;
