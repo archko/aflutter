@@ -1,23 +1,22 @@
 import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/model/list_view_model.dart';
+import 'package:AFlutter/page/movie_list_item.dart';
+import 'package:AFlutter/redux/app_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
 
-import '../page/movie_list_item.dart';
-import 'app_redux.dart';
-
-class TestFlutterReduxPage extends StatefulWidget {
-  TestFlutterReduxPage({Key key}) : super(key: key);
+class MovieFlutterReduxPage extends StatefulWidget {
+  MovieFlutterReduxPage({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return new TestFlutterReduxPageState();
+    return new MovieFlutterReduxPageState();
   }
 }
 
-class TestFlutterReduxPageState extends State<TestFlutterReduxPage>
+class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
     with AutomaticKeepAliveClientMixin {
   RefreshController _controller = RefreshController();
 

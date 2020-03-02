@@ -1,10 +1,11 @@
 import 'package:AFlutter/entity/animate.dart';
+import 'package:AFlutter/middleware/app_movie_middleware.dart';
+import 'package:AFlutter/page/movie_flutter_redux_page.dart';
+import 'package:AFlutter/redux/app_movie_reducer.dart';
+import 'package:AFlutter/redux/app_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-
-import 'state/app_redux.dart';
-import 'state/test_flutter_redux_page.dart';
 
 void main() {
   runReduxApp();
@@ -38,7 +39,7 @@ class FlutterReduxDemoApp extends StatelessWidget {
       store: store,
       child: MaterialApp(
         title: 'Flutter redux',
-        home: TestFlutterReduxPage(),
+        home: MovieFlutterReduxPage(),
       ),
     );
   }

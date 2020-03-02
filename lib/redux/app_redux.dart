@@ -3,13 +3,7 @@ import 'package:AFlutter/model/movie_view_model.dart';
 import 'package:redux/redux.dart';
 
 abstract class ListState<T> {
-  List<T> _data = [];
-
-  List<T> get data => _data;
-
-  void set data(List<T> _data) {
-    this._data = _data;
-  }
+  List<T> data = [];
 }
 
 class ListInitialState<T> extends ListState<T> {}
@@ -60,50 +54,33 @@ class ListErrorAction {
   ListErrorAction(this.e);
 }
 
-class ListResultAction {
-  final List<Animate> result;
+class ListResultAction<T> {
+  final List<T> result;
 
   ListResultAction(this.result);
 }
 
-class ListMoreResultAction {
-  final List<Animate> result;
+class ListMoreResultAction<T> {
+  final List<T> result;
 
   ListMoreResultAction(this.result);
 }
 
-//================================
+abstract class AbsListMiddleware<T> implements MiddlewareClass<ListState<T>> {
+  List<T> _data = [];
 
-/// Reducer
-final listReducer = combineReducers<ListState<Animate>>([
-  TypedReducer<ListState<Animate>, ListLoadingAction>(_onLoad),
-  TypedReducer<ListState<Animate>, ListErrorAction>(_onError),
-  TypedReducer<ListState<Animate>, ListResultAction>(_onResult),
-  TypedReducer<ListState<Animate>, ListMoreResultAction>(_onMore),
-]);
+  List<T> get data => _data;
 
-ListState<Animate> _onLoad(ListState state, ListLoadingAction action) =>
-    ListLoadingState();
+  void set data(List<T> _data) {
+    this._data = _data;
+  }
 
-ListState<Animate> _onError(ListState state, ListErrorAction action) =>
-    ListErrorState(action.e);
-
-ListState<Animate> _onResult(ListState state, ListResultAction action) =>
-    ListPopulatedState(action.result, true);
-
-ListState<Animate> _onMore(ListState state, ListMoreResultAction action) =>
-    ListPopulatedState(action.result, false);
-
-class ListMiddleware implements MiddlewareClass<ListState<Animate>> {
-  List<Animate> _data = [];
-
-  ListMiddleware() {
-    print("ListMiddleware:$ListMiddleware");
+  AbsListMiddleware() {
+    print("AbsListMiddleware:$this");
   }
 
   @override
-  void call(
-      Store<ListState<Animate>> store, dynamic action, NextDispatcher next) {
+  void call(Store<ListState<T>> store, dynamic action, NextDispatcher next) {
     if (action is ListAction) {
       store.dispatch(ListLoadingAction());
 
@@ -122,17 +99,11 @@ class ListMiddleware implements MiddlewareClass<ListState<Animate>> {
     next(action);
   }
 
-  refresh() async {
-    List<Animate> list = await MovieViewModel().loadData(0);
-    return list;
-  }
+  Future<List<T>> refresh() async {}
 
-  loadMore() async {
-    List<Animate> list = await MovieViewModel().loadMore(0);
-    return list;
-  }
+  Future<List<T>> loadMore() async {}
 
-  onResult(Store<ListState<Animate>> store, result, bool refresh) {
+  onResult(Store<ListState<T>> store, result, bool refresh) {
     if (refresh) {
       _data.clear();
     }
