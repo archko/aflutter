@@ -14,13 +14,11 @@ class MovieViewModel extends BaseListViewModel {
     try {
       HttpResponse httpResponse = await HttpClient.instance.get(url);
       String result =
-      httpResponse.data.replaceAll('cbs(', '').replaceAll(')', '');
+          httpResponse.data.replaceAll('cbs(', '').replaceAll(')', '');
       //print("result:$result");
       //list = await compute(decodeListResult, result);
       final lb = await loadBalancer;
-      list = await lb.run<List<Animate>, String>(
-          decodeListResult,
-          httpResponse.data as String);
+      list = await lb.run<List<Animate>, String>(decodeListResult, result);
     } catch (e) {
       print(e);
     }

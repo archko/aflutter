@@ -10,11 +10,11 @@ void main() {
 }
 
 void runReduxApp() {
-  final store = Store<SearchState>(
-    searchReducer,
-    initialState: SearchInitial(),
+  final store = Store<ListState>(
+    listReducer,
+    initialState: ListInitialState(),
     middleware: [
-      SearchMiddleware(),
+      ListMiddleware(),
     ],
   );
 
@@ -33,7 +33,7 @@ class FlutterReduxDemoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreProvider<SearchState>(
+    return StoreProvider<ListState>(
       store: store,
       child: MaterialApp(
         title: 'Flutter redux',

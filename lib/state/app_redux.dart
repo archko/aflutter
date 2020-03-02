@@ -1,94 +1,107 @@
-import 'dart:convert';
-
 import 'package:AFlutter/entity/animate.dart';
-import 'package:flutter_base/http/http_client.dart';
-import 'package:flutter_base/http/http_response.dart';
+import 'package:AFlutter/model/movie_view_model.dart';
 import 'package:redux/redux.dart';
 
-abstract class SearchState {}
+abstract class ListState {}
 
-class SearchInitial implements SearchState {}
+class ListInitialState implements ListState {}
 
-class SearchLoading implements SearchState {}
+class ListLoadingState implements ListState {}
 
-class SearchEmpty implements SearchState {}
+class ListEmptyState implements ListState {}
 
-class SearchPopulated implements SearchState {
+class ListNoMoreState implements ListState {}
+
+class ListPopulatedState implements ListState {
   final List<Animate> result;
 
-  SearchPopulated(this.result);
+  ListPopulatedState(this.result);
 }
 
-class SearchError implements SearchState {}
+class ListErrorState implements ListState {}
 
 /// Actions
-class SearchAction {
+class ListAction {
   final String term;
 
-  SearchAction(this.term);
+  ListAction(this.term);
 }
 
-class SearchLoadingAction {}
+class ListMoreAction {
+  final String term;
 
-class SearchErrorAction {}
+  ListMoreAction(this.term);
+}
 
-class SearchResultAction {
+class ListLoadingAction {}
+
+class ListErrorAction {}
+
+class ListResultAction {
   final List<Animate> result;
 
-  SearchResultAction(this.result);
+  ListResultAction(this.result);
+}
+
+class ListMoreResultAction {
+  final List<Animate> result;
+
+  ListMoreResultAction(this.result);
 }
 
 /// Reducer
-final searchReducer = combineReducers<SearchState>([
-  TypedReducer<SearchState, SearchLoadingAction>(_onLoad),
-  TypedReducer<SearchState, SearchErrorAction>(_onError),
-  TypedReducer<SearchState, SearchResultAction>(_onResult),
+final listReducer = combineReducers<ListState>([
+  TypedReducer<ListState, ListLoadingAction>(_onLoad),
+  TypedReducer<ListState, ListErrorAction>(_onError),
+  TypedReducer<ListState, ListResultAction>(_onResult),
+  TypedReducer<ListState, ListMoreResultAction>(_onMore),
 ]);
 
-SearchState _onLoad(SearchState state, SearchLoadingAction action) =>
-    SearchLoading();
+ListState _onLoad(ListState state, ListLoadingAction action) =>
+    ListLoadingState();
 
-SearchState _onError(SearchState state, SearchErrorAction action) =>
-    SearchError();
+ListState _onError(ListState state, ListErrorAction action) => ListErrorState();
 
-SearchState _onResult(SearchState state, SearchResultAction action) =>
+ListState _onResult(ListState state, ListResultAction action) =>
     action.result.isEmpty
-        ? SearchEmpty()
-        : SearchPopulated(action.result);
+        ? ListEmptyState()
+        : ListPopulatedState(action.result);
 
-class SearchMiddleware implements MiddlewareClass<SearchState> {
+ListState _onMore(ListState state, ListMoreResultAction action) =>
+    action.result.isEmpty
+        ? ListNoMoreState()
+        : ListPopulatedState(action.result);
 
-  SearchMiddleware();
+class ListMiddleware implements MiddlewareClass<ListState> {
+  ListMiddleware();
 
   @override
-  void call(Store<SearchState> store, dynamic action, NextDispatcher next) {
-    if (action is SearchAction) {
-      store.dispatch(SearchLoadingAction());
+  void call(Store<ListState> store, dynamic action, NextDispatcher next) {
+    if (action is ListAction) {
+      store.dispatch(ListLoadingAction());
 
-      loadData()
-          .then((result) => store..dispatch(SearchResultAction(result)))
-          .catchError((e, s) => store..dispatch(SearchErrorAction()));
+      refresh()
+          .then((result) => store..dispatch(ListResultAction(result)))
+          .catchError((e, s) => store..dispatch(ListErrorAction()));
+    } else if (action is ListMoreAction) {
+      //store.dispatch(ListLoadingAction());
+
+      loadMore()
+          .then((result) => store..dispatch(ListMoreResultAction(result)))
+          .catchError((e, s) => store..dispatch(ListErrorAction()));
     }
 
     // Make sure to forward actions to the next middleware in the chain!
     next(action);
   }
 
-  loadData() async {
-    List<Animate> list;
-    final String url =
-        'https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?resource_id=28286&from_mid=1&&format=json&ie=utf-8&oe=utf-8&query=电影&sort_key=16&sort_type=1&stat0=&stat1=&stat2=&stat3=&pn=0&rn=25&cb=cbs';
-    try {
-      HttpResponse httpResponse = await HttpClient.instance.get(url);
-      var result = httpResponse.data.replaceAll('cbs(', '').replaceAll(')', '');
-      print("result:$result");
-      list = json
-          .decode(result)['data'][0]['result']
-          .map<Animate>((dynamic json) => Animate.fromJson(json))
-          .toList();
-    } catch (e) {
-      print(e);
-    }
+  refresh() async {
+    List<Animate> list = await MovieViewModel().loadData(0);
+    return list;
+  }
+
+  loadMore() async {
+    List<Animate> list = await MovieViewModel().loadMore(0);
     return list;
   }
 }
