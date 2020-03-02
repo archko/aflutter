@@ -1,6 +1,7 @@
 import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/model/list_view_model.dart';
 import 'package:AFlutter/page/movie_list_item.dart';
+import 'package:AFlutter/redux/app_list_redux.dart';
 import 'package:AFlutter/redux/app_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';

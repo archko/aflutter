@@ -1,6 +1,6 @@
 import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/model/movie_view_model.dart';
-import 'package:AFlutter/redux/app_redux.dart';
+import 'package:AFlutter/redux/app_list_redux.dart';
 
 class ListMiddleware extends AbsListMiddleware<Animate> {
   MovieViewModel _movieViewModel;

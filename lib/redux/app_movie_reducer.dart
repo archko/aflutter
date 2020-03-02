@@ -1,5 +1,5 @@
 import 'package:AFlutter/entity/animate.dart';
-import 'package:AFlutter/redux/app_redux.dart';
+import 'package:AFlutter/redux/app_list_redux.dart';
 import 'package:redux/redux.dart';
 
 /// Reducer
