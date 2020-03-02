@@ -1,10 +1,10 @@
-import 'package:AFlutter/list/movie_list_page.dart';
+import 'package:AFlutter/entity/animate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
 
-import '../list/movie_list_item.dart';
+import '../page/movie_list_item.dart';
 import 'app_redux.dart';
 
 class TestFlutterReduxPage extends StatefulWidget {

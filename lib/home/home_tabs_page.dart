@@ -1,5 +1,5 @@
-import 'package:AFlutter/tabs/tab_bar_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_base/widget/tabs/tab_bar_widget.dart';
 
 class HomeTabsPage extends StatelessWidget {
   @override

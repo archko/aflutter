@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:AFlutter/list/movie_list_page.dart';
+import 'package:AFlutter/entity/animate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base/http/http_client.dart';
 import 'package:flutter_base/http/http_response.dart';
