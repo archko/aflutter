@@ -45,9 +45,15 @@ android {
         }
     }
     compileSdkVersion 28
+    buildToolsVersion '29.0.2'
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 
     lintOptions {
         disable 'InvalidPackage'
+        abortOnError false
     }
 
     defaultConfig {
