@@ -1,6 +1,7 @@
 # aflutter
 
-A  Flutter sample application. base " https://sp0.baidu.com/"
+A  Flutter sample application.how to use redux and provider.
+list api: "https://sp0.baidu.com/"
 
 ## Getting Started
 
@@ -21,7 +22,8 @@ features:
 
 2020.3.3
 ## version 2.0
-- use flutter_base:https://github.com/archko/flutter_base.git
+- update to androidx,add kotlin
+- refector,add flutter_base plugin:https://github.com/archko/flutter_base.git
 - remove old demo
 - add redux list page
 - add provider list page
