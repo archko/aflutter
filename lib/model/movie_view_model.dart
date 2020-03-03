@@ -1,11 +1,11 @@
 import 'package:AFlutter/entity/animate.dart';
-import 'package:AFlutter/http/http_client.dart';
-import 'package:AFlutter/http/http_response.dart';
-import 'package:AFlutter/model/base_list_view_model.dart';
-import 'package:AFlutter/utils/json_utils.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_base/http/http_client.dart';
+import 'package:flutter_base/http/http_response.dart';
+import 'package:flutter_base/model/base_list_view_model.dart';
+import 'package:flutter_base/utils/isolate_utils.dart';
+import 'package:flutter_base/utils/json_utils.dart';
 
-class MovieViewModel extends BaseListViewModel<Animate> {
+class MovieViewModel extends BaseListViewModel {
   Future<List<Animate>> loadData(int pn, {String type}) async {
     pn ??= 0;
     List<Animate> list;
@@ -16,7 +16,9 @@ class MovieViewModel extends BaseListViewModel<Animate> {
       String result =
           httpResponse.data.replaceAll('cbs(', '').replaceAll(')', '');
       //print("result:$result");
-      list = await compute(decodeListResult, result);
+      //list = await compute(decodeListResult, result);
+      final lb = await loadBalancer;
+      list = await lb.run<List<Animate>, String>(decodeListResult, result);
     } catch (e) {
       print(e);
     }

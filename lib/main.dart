@@ -1,50 +1,46 @@
-import 'package:AFlutter/model/test_provider.dart';
-import 'package:AFlutter/page/first_provider_page.dart';
-import 'package:AFlutter/state/test_provider_page.dart';
-import 'package:AFlutter/widget/tabs/tab_bar_widget.dart';
+import 'package:AFlutter/entity/animate.dart';
+import 'package:AFlutter/home/home_tabs_page.dart';
+import 'package:AFlutter/middleware/app_movie_middleware.dart';
+import 'package:AFlutter/redux/app_list_redux.dart';
+import 'package:AFlutter/redux/app_movie_reducer.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 void main() {
-  runApp(StateDemoApp());
+  runReduxApp();
 }
 
-class StateDemoApp extends StatefulWidget {
-  const StateDemoApp({
+void runReduxApp() {
+  final store = Store<ListState<Animate>>(
+    listReducer,
+    initialState: ListInitialState(),
+    middleware: [
+      ListMiddleware(),
+    ],
+  );
+
+  runApp(FlutterReduxDemoApp(
+    store: store,
+  ));
+}
+
+class FlutterReduxDemoApp extends StatelessWidget {
+  const FlutterReduxDemoApp({
     Key key,
+    this.store,
   }) : super(key: key);
 
-  @override
-  _StateDemoAppState createState() => _StateDemoAppState();
-}
-
-class _StateDemoAppState extends State<StateDemoApp> {
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final Store store;
 
   @override
   Widget build(BuildContext context) {
-    //return MultiProvider(
-    //  providers: [
-    //    ChangeNotifierProvider(builder: (_) => AppProvider()),
-    //  ],
-    //  child: Consumer<AppProvider>(
-    //    builder: (context, counter, _) {
-    //      return MaterialApp(
-    //        title: 'Flutter provider',
-    //        //home: TestProviderPage(),
-    //        home: TabBarPageWidget(),
-    //      );
-    //    },
-    //  ),
-    //);
-    return MaterialApp(
-      title: 'Flutter provider',
-      home: FirstProviderPage(),
-      //home: TabBarPageWidget(),
+    return StoreProvider<ListState<Animate>>(
+      store: store,
+      child: MaterialApp(
+        //title: 'Flutter redux',
+        home: HomeTabsPage(),
+      ),
     );
   }
 }

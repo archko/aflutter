@@ -1,6 +1,6 @@
 # aflutter
 
-A  Flutter sample application. base "http://gank.io/api"
+A  Flutter sample application. base " https://sp0.baidu.com/"
 
 ## Getting Started
 
@@ -19,6 +19,10 @@ features:
 - json decode sample
 - http/dio sample
 
-## 2019.11.24
-add provider demo
-add provider movie list to tabwidget
+2020.3.3
+## version 2.0
+- use flutter_base:https://github.com/archko/flutter_base.git
+- remove old demo
+- add redux list page
+- add provider list page
+- add theme redux demo
