@@ -24,7 +24,7 @@ class MovieFlutterReduxPage extends StatefulWidget {
 
 class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
     with AutomaticKeepAliveClientMixin {
-  RefreshController _controller = RefreshController();
+  RefreshController _controller;
 
   Store<ListState<Animate>> _getStore() {
     if (context == null) {
@@ -36,6 +36,7 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
   @override
   void initState() {
     super.initState();
+    _controller = RefreshController(initialRefresh: true);
   }
 
   @override
@@ -50,6 +51,7 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
         return Scaffold(
           //appBar: AppBar(title: Text('Flutter redux')),
           body: SmartRefresher(
+            physics: BouncingScrollPhysics(),
             controller: _controller,
             child: buildList(vm.state),
             onRefresh: refresh,
@@ -71,7 +73,6 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
       return ListView.builder(
         itemCount: movies == null ? 0 : movies.length,
         scrollDirection: Axis.vertical,
-        physics: BouncingScrollPhysics(),
         itemBuilder: (BuildContext context, int index) =>
             buildItem(context, index, movies),
       );
