@@ -2,23 +2,23 @@ import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/model/movie_view_model.dart';
 import 'package:AFlutter/redux/app_list_redux.dart';
 
-class ListMiddleware extends AbsListMiddleware<Animate> {
+class MovieMiddleware extends AbsListMiddleware<Animate> {
   MovieViewModel _movieViewModel;
 
-  ListMiddleware() {
+  MovieMiddleware() {
     _movieViewModel = MovieViewModel();
   }
 
   @override
   Future<List<Animate>> refresh() async {
-    print("ListMiddleware.refresh");
+    print("MovieMiddleware.refresh");
     List<Animate> list = await _movieViewModel.loadData(0);
     return list;
   }
 
   @override
   Future<List<Animate>> loadMore() async {
-    print("ListMiddleware.loadMore");
+    print("MovieMiddleware.loadMore");
     List<Animate> list = await _movieViewModel.loadMore(0);
     return list;
   }

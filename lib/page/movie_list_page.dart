@@ -15,7 +15,7 @@ class MovieListPage extends StatefulWidget {
 
   @override
   String toStringShort() {
-    return "StatePage";
+    return "State";
   }
 }
 

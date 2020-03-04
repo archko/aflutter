@@ -18,7 +18,7 @@ class MovieFlutterReduxPage extends StatefulWidget {
 
   @override
   String toStringShort() {
-    return "ReduxPage";
+    return "Redux";
   }
 }
 
@@ -42,6 +42,9 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
   @override
   Widget build(BuildContext context) {
     return StoreConnector<ListState<Animate>, ListViewModel>(
+      onInit: (state) {
+        state.dispatch(ListAction(""));
+      },
       converter: (store) {
         return ListViewModel(
           state: store.state,

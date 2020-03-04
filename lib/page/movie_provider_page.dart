@@ -16,7 +16,7 @@ class MovieProviderPage extends StatefulWidget {
 
   @override
   String toStringShort() {
-    return "ProviderPage";
+    return "Provider";
   }
 }
 

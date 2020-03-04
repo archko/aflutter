@@ -13,6 +13,11 @@ class ThemeReduxPage extends StatefulWidget {
   State<StatefulWidget> createState() {
     return new ThemeReduxPageState();
   }
+
+  @override
+  String toStringShort() {
+    return "Theme";
+  }
 }
 
 class ThemeReduxPageState extends State<ThemeReduxPage> {
@@ -21,7 +26,7 @@ class ThemeReduxPageState extends State<ThemeReduxPage> {
     super.initState();
   }
 
-  List<MaterialColor> list = [
+  List<MaterialColor> colors = [
     Colors.red,
     Colors.green,
     Colors.blue,
@@ -52,7 +57,7 @@ class ThemeReduxPageState extends State<ThemeReduxPage> {
       },
       builder: (BuildContext context, ListViewModel vm) {
         return Scaffold(
-          appBar: AppBar(title: Text('Flutter redux')),
+          //appBar: AppBar(title: Text('Flutter redux')),
           body: Center(
             child: RaisedButton(
               onPressed: () {
@@ -67,11 +72,11 @@ class ThemeReduxPageState extends State<ThemeReduxPage> {
   }
 
   void changeTheme() {
-    if (index >= list.length) {
+    if (index >= colors.length) {
       index = 0;
     }
     StoreProvider.of<AppState>(context).dispatch(RefreshThemeDataAction(
         ThemeData(
-            primarySwatch: list[index++], platform: TargetPlatform.android)));
+            primarySwatch: colors[index++], platform: TargetPlatform.android)));
   }
 }

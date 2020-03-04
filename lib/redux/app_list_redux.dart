@@ -80,7 +80,7 @@ abstract class AbsListMiddleware<T> implements MiddlewareClass<ListState<T>> {
   @override
   void call(Store<ListState<T>> store, dynamic action, NextDispatcher next) {
     if (action is ListAction) {
-      store.dispatch(ListLoadingAction());
+      //store.dispatch(ListLoadingAction());
 
       refresh()
           .then((result) => onResult(store, result, true))
