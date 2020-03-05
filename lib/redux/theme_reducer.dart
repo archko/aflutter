@@ -19,4 +19,9 @@ class RefreshThemeDataAction {
   final ThemeData themeData;
 
   RefreshThemeDataAction(this.themeData);
+
+  @override
+  String toString() {
+    return 'RefreshThemeDataAction{themeData: $themeData}';
+  }
 }

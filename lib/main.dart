@@ -10,8 +10,8 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 void main() {
-  runReduxApp();
-  //runThemeApp();
+  //runReduxApp();
+  runThemeApp();
 }
 
 void runReduxApp() {
@@ -79,6 +79,7 @@ class ThemeApp extends StatelessWidget {
           return MaterialApp(
             //title: 'Flutter redux',
             home: HomeTabsPage(),
+            //home: ThemeReduxPage(),
             theme: store.state.themeData,
           );
         },

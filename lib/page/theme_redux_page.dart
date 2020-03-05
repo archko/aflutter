@@ -57,7 +57,7 @@ class ThemeReduxPageState extends State<ThemeReduxPage> {
       },
       builder: (BuildContext context, ListViewModel vm) {
         return Scaffold(
-          //appBar: AppBar(title: Text('Flutter redux')),
+          appBar: AppBar(title: Text('Flutter redux')),
           body: Center(
             child: RaisedButton(
               onPressed: () {
