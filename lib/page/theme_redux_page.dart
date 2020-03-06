@@ -1,8 +1,5 @@
-import 'dart:async';
-
-import 'package:AFlutter/model/list_view_model.dart';
-import 'package:AFlutter/redux/app_redux.dart';
 import 'package:AFlutter/redux/theme_reducer.dart';
+import 'package:AFlutter/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -33,7 +30,7 @@ class ThemeReduxPageState extends State<ThemeReduxPage> {
     Colors.yellow,
     Colors.orange,
     Colors.cyan,
-    Colors.pink
+    Colors.purple
   ];
   int index = 0;
 
@@ -51,11 +48,11 @@ class ThemeReduxPageState extends State<ThemeReduxPage> {
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<AppState, ListViewModel>(
+    return StoreConnector<AppState, ThemeModel>(
       converter: (store) {
-        return ListViewModel();
+        return ThemeModel(store.state.themeData);
       },
-      builder: (BuildContext context, ListViewModel vm) {
+      builder: (BuildContext context, ThemeModel vm) {
         return Scaffold(
           appBar: AppBar(title: Text('Flutter redux')),
           body: Center(
@@ -79,4 +76,10 @@ class ThemeReduxPageState extends State<ThemeReduxPage> {
         ThemeData(
             primarySwatch: colors[index++], platform: TargetPlatform.android)));
   }
+}
+
+class ThemeModel {
+  ThemeData themeData;
+
+  ThemeModel(this.themeData);
 }

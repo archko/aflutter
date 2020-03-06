@@ -1,7 +1,8 @@
 import 'package:AFlutter/action/action.dart';
 import 'package:AFlutter/model/movie_view_model.dart';
 import 'package:AFlutter/redux/list_result.dart';
-import 'package:AFlutter/redux/app_redux.dart';
+import 'package:AFlutter/redux/app_state_reducer.dart';
+import 'package:AFlutter/state/app_state.dart';
 import 'package:redux/redux.dart';
 
 List<Middleware<AppState>> createStoreMoviesMiddleware() {

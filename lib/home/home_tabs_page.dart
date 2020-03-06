@@ -1,13 +1,9 @@
-import 'package:AFlutter/model/list_view_model.dart';
 import 'package:AFlutter/page/movie_flutter_redux_page.dart';
 import 'package:AFlutter/page/movie_list_page.dart';
 import 'package:AFlutter/page/movie_provider_page.dart';
 import 'package:AFlutter/page/theme_redux_page.dart';
-import 'package:AFlutter/redux/app_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_base/widget/tabs/tab_bar_widget.dart';
 import 'package:flutter_base/widget/tabs/tabs_widget.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 
 const List<TabItem> tabItems = <TabItem>[
   TabItem(icon: Icons.grade, text: 'Redux'),

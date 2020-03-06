@@ -1,8 +1,9 @@
 import 'package:AFlutter/action/action.dart';
 import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/page/movie_list_item.dart';
-import 'package:AFlutter/redux/app_redux.dart';
+import 'package:AFlutter/redux/app_state_reducer.dart';
 import 'package:AFlutter/redux/list_result.dart';
+import 'package:AFlutter/state/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -112,9 +113,9 @@ class _ListViewModel {
   final Function() loadMore;
 
   _ListViewModel({
-    this.result,
-    this.refresh,
-    this.loadMore,
+    @required this.result,
+    @required this.refresh,
+    @required this.loadMore,
   });
 
   static _ListViewModel fromStore(Store<AppState> store) {
