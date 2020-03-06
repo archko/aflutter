@@ -1,25 +1,59 @@
-import 'package:AFlutter/entity/animate.dart';
+import 'package:AFlutter/action/action.dart';
 import 'package:AFlutter/model/movie_view_model.dart';
-import 'package:AFlutter/redux/app_list_redux.dart';
+import 'package:AFlutter/redux/list_result.dart';
+import 'package:AFlutter/redux/app_redux.dart';
+import 'package:redux/redux.dart';
 
-class ListMiddleware extends AbsListMiddleware<Animate> {
-  MovieViewModel _movieViewModel;
+List<Middleware<AppState>> createStoreMoviesMiddleware() {
+  final loadMovies = _createLoadMovies();
+  final loadMoreMovies = _createLoadMoreMovies();
 
-  ListMiddleware() {
-    _movieViewModel = MovieViewModel();
-  }
+  return [
+    TypedMiddleware<AppState, ListAction>(loadMovies),
+    TypedMiddleware<AppState, ListMoreAction>(loadMoreMovies),
+  ];
+}
 
-  @override
-  Future<List<Animate>> refresh() async {
-    print("ListMiddleware.refresh");
-    List<Animate> list = await _movieViewModel.loadData(0);
-    return list;
-  }
+Middleware<AppState> _createLoadMovies() {
+  return (Store<AppState> store, action, NextDispatcher next) {
+    MovieViewModel().loadData(0).then(
+      (movies) {
+        if (movies != null) {
+          store.dispatch(
+            ListResultAction(movies, ListStatus.success, null),
+          );
+        } else {
+          store.dispatch(
+            ListResultAction(movies, ListStatus.empty, null),
+          );
+        }
+      },
+    ).catchError((e) => store.dispatch(
+          ListResultAction(null, ListStatus.error, e.toString()),
+        ));
 
-  @override
-  Future<List<Animate>> loadMore() async {
-    print("ListMiddleware.loadMore");
-    List<Animate> list = await _movieViewModel.loadMore(0);
-    return list;
-  }
+    next(action);
+  };
+}
+
+Middleware<AppState> _createLoadMoreMovies() {
+  return (Store<AppState> store, action, NextDispatcher next) {
+    MovieViewModel().loadMore(0).then(
+      (movies) {
+        if (movies != null) {
+          store.dispatch(
+            ListResultAction(movies, ListStatus.success, null),
+          );
+        } else {
+          store.dispatch(
+            ListResultAction(movies, ListStatus.nomore, null),
+          );
+        }
+      },
+    ).catchError((e) => store.dispatch(
+          ListResultAction(null, ListStatus.error, e.toString()),
+        ));
+
+    next(action);
+  };
 }

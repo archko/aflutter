@@ -11,15 +11,16 @@ import 'package:flutter_redux/flutter_redux.dart';
 
 const List<TabItem> tabItems = <TabItem>[
   TabItem(icon: Icons.grade, text: 'Redux'),
+  TabItem(icon: Icons.grade, text: 'Theme'),
   TabItem(icon: Icons.playlist_add, text: 'Provider'),
   TabItem(icon: Icons.check_circle, text: 'SetState'),
 ];
 
 class HomeTabsPage extends StatefulWidget {
   final List<Widget> widgets = [
+    MovieFlutterReduxPage(),
     ThemeReduxPage(),
     MovieProviderPage(),
-    //MovieFlutterReduxPage(),
     MovieListPage(),
   ];
 

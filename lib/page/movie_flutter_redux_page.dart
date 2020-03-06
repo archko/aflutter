@@ -1,8 +1,8 @@
+import 'package:AFlutter/action/action.dart';
 import 'package:AFlutter/entity/animate.dart';
-import 'package:AFlutter/model/list_view_model.dart';
 import 'package:AFlutter/page/movie_list_item.dart';
-import 'package:AFlutter/redux/app_list_redux.dart';
 import 'package:AFlutter/redux/app_redux.dart';
+import 'package:AFlutter/redux/list_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -26,11 +26,11 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
     with AutomaticKeepAliveClientMixin {
   RefreshController _controller;
 
-  Store<ListState<Animate>> _getStore() {
+  Store<AppState> _getStore() {
     if (context == null) {
       return null;
     }
-    return StoreProvider.of<ListState<Animate>>(context);
+    return StoreProvider.of<AppState>(context);
   }
 
   @override
@@ -41,16 +41,16 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
 
   @override
   Widget build(BuildContext context) {
-    return StoreConnector<ListState<Animate>, ListViewModel>(
+    return StoreConnector<AppState, _ListViewModel>(
       onInit: (state) {
         state.dispatch(ListAction(""));
       },
       converter: (store) {
-        return ListViewModel(
-          state: store.state,
+        return _ListViewModel(
+          state: store.state.movies,
         );
       },
-      builder: (BuildContext context, ListViewModel vm) {
+      builder: (BuildContext context, _ListViewModel vm) {
         return Scaffold(
           //appBar: AppBar(title: Text('Flutter redux')),
           body: SmartRefresher(
@@ -67,10 +67,10 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
     );
   }
 
-  Widget buildList(ListState<Animate> state) {
-    print("build:$state");
-    if (state is ListPopulatedState) {
-      List<Animate> movies = state.data;
+  Widget buildList(ListResult<Animate> result) {
+    print("build:$result");
+    if (result.loadStatus == ListStatus.success) {
+      List<Animate> movies = result.data;
       print("buildList:${movies == null ? 0 : movies.length}");
       _controller.refreshCompleted(resetFooterState: true);
       return ListView.builder(
@@ -79,17 +79,17 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
         itemBuilder: (BuildContext context, int index) =>
             buildItem(context, index, movies),
       );
-    } else if (state is ListInitialState) {
+    } else if (result.loadStatus == ListStatus.initial) {
       return Center(
         child: Text("init."),
       );
-    } else if (state is ListLoadingState) {
+    } else if (result.loadStatus == ListStatus.loading) {
       return Center(
         child: Text("loading."),
       );
-    } else if (state is ListErrorState) {
+    } else if (result.loadStatus == ListStatus.error) {
       _controller?.loadFailed();
-    } else if (state is ListEmptyState) {
+    } else if (result.loadStatus == ListStatus.empty) {
       _controller?.resetNoData();
       return GestureDetector(
         onTap: () {
@@ -122,4 +122,12 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
     print("loadMore:");
     _getStore().dispatch(ListMoreAction(""));
   }
+}
+
+class _ListViewModel {
+  final ListResult<Animate> state;
+
+  _ListViewModel({
+    this.state,
+  });
 }

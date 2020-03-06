@@ -1,8 +1,8 @@
 import 'package:AFlutter/entity/animate.dart';
-import 'package:AFlutter/redux/app_list_redux.dart';
+import 'package:AFlutter/redux/list_result.dart';
 
 class ListViewModel {
-  final ListState<Animate> state;
+  final ListResult<Animate> state;
 
   ListViewModel({
     this.state,

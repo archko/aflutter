@@ -1,23 +1,12 @@
+import 'package:AFlutter/action/action.dart';
 import 'package:AFlutter/entity/animate.dart';
-import 'package:AFlutter/redux/app_list_redux.dart';
+import 'package:AFlutter/redux/list_result.dart';
 import 'package:redux/redux.dart';
 
 /// Reducer
-final listReducer = combineReducers<ListState<Animate>>([
-  TypedReducer<ListState<Animate>, ListLoadingAction>(_onLoad),
-  TypedReducer<ListState<Animate>, ListErrorAction>(_onError),
-  TypedReducer<ListState<Animate>, ListResultAction<Animate>>(_onResult),
-  TypedReducer<ListState<Animate>, ListMoreResultAction<Animate>>(_onMore),
+final movieReducer = combineReducers<ListResult<Animate>>([
+  TypedReducer<ListResult<Animate>, ListResultAction<Animate>>(_onResult),
 ]);
 
-ListState<Animate> _onLoad(ListState state, ListLoadingAction action) =>
-    ListLoadingState();
-
-ListState<Animate> _onError(ListState state, ListErrorAction action) =>
-    ListErrorState(action.e);
-
-ListState<Animate> _onResult(ListState state, ListResultAction action) =>
-    ListPopulatedState(action.result, true);
-
-ListState<Animate> _onMore(ListState state, ListMoreResultAction action) =>
-    ListPopulatedState(action.result, false);
+ListResult<Animate> _onResult(ListResult state, ListResultAction action) =>
+    ListResult(action.result, action.status, action.msg);

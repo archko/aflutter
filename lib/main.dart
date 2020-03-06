@@ -1,10 +1,8 @@
 import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/home/home_tabs_page.dart';
-import 'package:AFlutter/middleware/app_movie_middleware.dart';
-import 'package:AFlutter/middleware/movie_middleware.dart';
-import 'package:AFlutter/redux/app_list_redux.dart';
-import 'package:AFlutter/redux/app_movie_reducer.dart';
+import 'package:AFlutter/redux/list_result.dart';
 import 'package:AFlutter/redux/app_redux.dart';
+import 'package:AFlutter/middleware/app_movie_middleware.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
@@ -15,7 +13,7 @@ void main() {
 }
 
 void runReduxApp() {
-  final store = Store<ListState<Animate>>(
+  /*final store = Store<ListState<Animate>>(
     listReducer,
     initialState: ListInitialState(),
     middleware: [
@@ -26,7 +24,7 @@ void runReduxApp() {
 
   runApp(FlutterReduxDemoApp(
     store: store,
-  ));
+  ));*/
 }
 
 class FlutterReduxDemoApp extends StatelessWidget {
@@ -39,7 +37,7 @@ class FlutterReduxDemoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreProvider<ListState<Animate>>(
+    return StoreProvider<ListResult<Animate>>(
       store: store,
       child: MaterialApp(
         //title: 'Flutter redux',
@@ -54,7 +52,7 @@ void runThemeApp() {
   final store = Store<AppState>(
     appReducer,
     initialState: AppState(themeData: ThemeData(primarySwatch: Colors.red)),
-    middleware: middleware,
+    middleware: createStoreMoviesMiddleware(),
   );
 
   runApp(ThemeApp(
