@@ -26,13 +26,6 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
     with AutomaticKeepAliveClientMixin {
   RefreshController _controller;
 
-  Store<AppState> _getStore() {
-    if (context == null) {
-      return null;
-    }
-    return StoreProvider.of<AppState>(context);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -46,9 +39,7 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
         state.dispatch(ListAction(""));
       },
       converter: (store) {
-        return _ListViewModel(
-          state: store.state.movies,
-        );
+        return _ListViewModel.fromStore(store);
       },
       builder: (BuildContext context, _ListViewModel vm) {
         return Scaffold(
@@ -56,9 +47,9 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
           body: SmartRefresher(
             physics: BouncingScrollPhysics(),
             controller: _controller,
-            child: buildList(vm.state),
-            onRefresh: refresh,
-            onLoading: loadMore,
+            child: buildList(vm),
+            onRefresh: vm.refresh,
+            onLoading: vm.loadMore,
             enablePullUp: true,
             header: MaterialClassicHeader(),
           ),
@@ -67,7 +58,8 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
     );
   }
 
-  Widget buildList(ListResult<Animate> result) {
+  Widget buildList(_ListViewModel viewModel) {
+    ListResult<Animate> result = viewModel.result;
     print("build:$result");
     if (result.loadStatus == ListStatus.success) {
       List<Animate> movies = result.data;
@@ -93,7 +85,7 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
       _controller?.resetNoData();
       return GestureDetector(
         onTap: () {
-          _getStore().dispatch(ListAction(""));
+          viewModel.refresh();
         },
         child: Center(
           child: Text("no data."),
@@ -112,22 +104,30 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
 
   @override
   bool get wantKeepAlive => true;
-
-  void refresh() {
-    print("refresh:");
-    _getStore().dispatch(ListAction(""));
-  }
-
-  void loadMore() {
-    print("loadMore:");
-    _getStore().dispatch(ListMoreAction(""));
-  }
 }
 
 class _ListViewModel {
-  final ListResult<Animate> state;
+  final ListResult<Animate> result;
+  final Function() refresh;
+  final Function() loadMore;
 
   _ListViewModel({
-    this.state,
+    this.result,
+    this.refresh,
+    this.loadMore,
   });
+
+  static _ListViewModel fromStore(Store<AppState> store) {
+    return _ListViewModel(
+      result: store.state.movies,
+      refresh: () {
+        print("refresh:");
+        store.dispatch(ListAction(""));
+      },
+      loadMore: () {
+        print("loadMore:");
+        store.dispatch(ListMoreAction(""));
+      },
+    );
+  }
 }
