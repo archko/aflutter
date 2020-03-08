@@ -35,6 +35,7 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return StoreConnector<AppState, _ListViewModel>(
       onInit: (state) {
         state.dispatch(ListAction(""));

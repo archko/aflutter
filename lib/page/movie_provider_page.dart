@@ -37,6 +37,7 @@ class _MovieProviderPageState extends State<MovieProviderPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ProviderWidget<MovieProvider>(
       model: _movieProvider,
       onModelInitial: (m) {

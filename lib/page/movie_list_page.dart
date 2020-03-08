@@ -33,6 +33,7 @@ class _MovieListPageState extends State<MovieListPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (viewModel.getCount() < 1 && loadMoreStatus == LoadMoreStatus.IDLE) {
       refresh();
     }
