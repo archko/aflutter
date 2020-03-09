@@ -1,4 +1,5 @@
 import 'package:AFlutter/action/action.dart';
+import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/model/movie_view_model.dart';
 import 'package:AFlutter/redux/list_result.dart';
 import 'package:AFlutter/redux/app_state_reducer.dart';
@@ -42,8 +43,10 @@ Middleware<AppState> _createLoadMoreMovies() {
     MovieViewModel().loadMore(0).then(
       (movies) {
         if (movies != null) {
+          List<Animate> old = store.state.movies.data ?? [];
+          old.addAll(movies);
           store.dispatch(
-            ListResultAction(movies, ListStatus.success, null),
+            ListResultAction(old, ListStatus.success, null),
           );
         } else {
           store.dispatch(
