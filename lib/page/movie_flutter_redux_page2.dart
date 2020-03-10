@@ -1,20 +1,20 @@
 import 'package:AFlutter/action/action.dart';
 import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/model/movie_view_model.dart';
+import 'package:AFlutter/page/list_state.dart';
 import 'package:AFlutter/page/movie_list_item.dart';
-import 'package:AFlutter/redux/app_movie_reducer.dart';
 import 'package:AFlutter/redux/list_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:redux/redux.dart';
 
-class MovieFlutterReduxPage extends StatefulWidget {
-  MovieFlutterReduxPage({Key key}) : super(key: key);
+class MovieFlutterReduxPage2 extends StatefulWidget {
+  MovieFlutterReduxPage2({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return new MovieFlutterReduxPageState();
+    return new MovieFlutterReduxPage2State();
   }
 
   @override
@@ -23,29 +23,25 @@ class MovieFlutterReduxPage extends StatefulWidget {
   }
 }
 
-class AState {
-  ListResult<Animate> movies;
+//ListState<Animate> asReducer(ListState<Animate> state, action) {
+//  return ListState<Animate>(list: movieReducer(state, action));
+//}
 
-  AState({
-    this.movies,
-  }) {
-    if (null == movies) {
-      movies = ListResult([], ListStatus.initial, null);
-    }
-  }
-}
+/// Reducer
+final movieReducer = combineReducers<ListState<Animate>>([
+  TypedReducer<ListState<Animate>, ListResultAction<Animate>>(_onResult),
+]);
 
-AState asReducer(AState state, action) {
-  return AState(movies: movieReducer(state.movies, action));
-}
+ListState<Animate> _onResult(ListState state, ListResultAction action) =>
+    ListState(list: action.result, pageIndex: 0);
 
-class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
+class MovieFlutterReduxPage2State extends State<MovieFlutterReduxPage2>
     with AutomaticKeepAliveClientMixin {
   RefreshController _controller;
-  final astore = Store<AState>(
-    asReducer,
+  final astore = Store<ListState<Animate>>(
+    movieReducer,
     middleware: createAStoreMoviesMiddleware(),
-    initialState: AState(),
+    initialState: ListState(),
   );
 
   @override
@@ -57,9 +53,9 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return StoreProvider<AState>(
+    return StoreProvider<ListState<Animate>>(
       store: astore,
-      child: StoreBuilder<AState>(
+      child: StoreBuilder<ListState<Animate>>(
         builder: (context, store) {
           return MaterialApp(
             home: buildRedux(context),
@@ -70,7 +66,7 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
   }
 
   Widget buildRedux(BuildContext context) {
-    return StoreConnector<AState, _ListViewModel>(
+    return StoreConnector<ListState<Animate>, _ListViewModel>(
       onInit: (state) {
         state.dispatch(ListAction(""));
       },
@@ -95,10 +91,10 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
   }
 
   Widget buildList(_ListViewModel viewModel) {
-    ListResult<Animate> result = viewModel.result;
+    ListState<Animate> result = viewModel.result;
     print("build:$result");
     if (result.loadStatus == ListStatus.success) {
-      List<Animate> movies = result.data;
+      List<Animate> movies = result.list;
       print("buildList:${movies == null ? 0 : movies.length}");
       _controller.refreshCompleted();
       _controller.loadComplete();
@@ -145,7 +141,7 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
 }
 
 class _ListViewModel {
-  final ListResult<Animate> result;
+  final ListState<Animate> result;
   final Function() refresh;
   final Function() loadMore;
 
@@ -155,9 +151,9 @@ class _ListViewModel {
     @required this.loadMore,
   });
 
-  static _ListViewModel fromStore(Store<AState> store) {
+  static _ListViewModel fromStore(Store<ListState> store) {
     return _ListViewModel(
-      result: store.state.movies,
+      result: store.state,
       refresh: () {
         print("refresh:");
         store.dispatch(ListAction(""));
@@ -170,20 +166,20 @@ class _ListViewModel {
   }
 }
 
-List<Middleware<AState>> createAStoreMoviesMiddleware() {
+List<Middleware<ListState>> createAStoreMoviesMiddleware() {
   final loadMovies = _createLoadMovies();
   final refreshMovies = _createLoadMovies();
   final loadMoreMovies = _createLoadMoreMovies();
 
   return [
-    TypedMiddleware<AState, ListAction>(loadMovies),
-    //TypedMiddleware<AState, ListAction>(refreshMovies),
-    TypedMiddleware<AState, ListMoreAction>(loadMoreMovies),
+    TypedMiddleware<ListState, ListAction>(loadMovies),
+    //TypedMiddleware<ListState, ListAction>(refreshMovies),
+    TypedMiddleware<ListState, ListMoreAction>(loadMoreMovies),
   ];
 }
 
-Middleware<AState> _createLoadMovies() {
-  return (Store<AState> store, action, NextDispatcher next) {
+Middleware<ListState> _createLoadMovies() {
+  return (Store<ListState> store, action, NextDispatcher next) {
     MovieViewModel().loadData(0).then(
       (movies) {
         if (movies != null) {
@@ -204,12 +200,12 @@ Middleware<AState> _createLoadMovies() {
   };
 }
 
-Middleware<AState> _createLoadMoreMovies() {
-  return (Store<AState> store, action, NextDispatcher next) {
+Middleware<ListState> _createLoadMoreMovies() {
+  return (Store<ListState> store, action, NextDispatcher next) {
     MovieViewModel().loadMore(0).then(
       (movies) {
         if (movies != null) {
-          List<Animate> old = store.state.movies.data ?? [];
+          List<Animate> old = store.state.list ?? [];
           old.addAll(movies);
           store.dispatch(
             ListResultAction(old, ListStatus.success, null),
