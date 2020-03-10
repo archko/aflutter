@@ -15,7 +15,7 @@ class MovieProvider with ChangeNotifier {
   }
 
   Future refresh() async {
-    print("refresh:$viewModel,$refreshController");
+    print("refresh:${refreshController.footerStatus},$viewModel");
     List<Animate> list = await viewModel.loadData(0);
     viewModel.setData(list);
     if (list == null || list.length == 0) {
@@ -35,14 +35,14 @@ class MovieProvider with ChangeNotifier {
   }
 
   Future loadMore() async {
-    print("loadMore:$viewModel,$refreshController");
+    print("loadMore:${refreshController.footerStatus},$viewModel");
     List<Animate> list = await viewModel.loadData(viewModel.page + 1);
     if (list != null && list.length > 0) {
       viewModel.addData(list);
 
       viewModel.setPage(viewModel.page + 1);
 
-      refreshController?.refreshCompleted();
+      refreshController?.loadComplete();
     } else {
       if (list == null) {
         refreshController?.loadFailed();
