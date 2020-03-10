@@ -66,7 +66,8 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
     if (result.loadStatus == ListStatus.success) {
       List<Animate> movies = result.data;
       print("buildList:${movies == null ? 0 : movies.length}");
-      _controller.refreshCompleted(resetFooterState: true);
+      _controller.refreshCompleted();
+      _controller.loadComplete();
       return ListView.builder(
         itemCount: movies == null ? 0 : movies.length,
         scrollDirection: Axis.vertical,
@@ -94,7 +95,8 @@ class MovieFlutterReduxPageState extends State<MovieFlutterReduxPage>
         ),
       );
     }
-    _controller.refreshCompleted(resetFooterState: true);
+    _controller.refreshCompleted();
+    _controller.loadComplete();
   }
 
   Widget buildItem(BuildContext context, int index, List<Animate> movies) {
