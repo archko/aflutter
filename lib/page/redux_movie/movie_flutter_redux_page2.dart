@@ -1,8 +1,8 @@
 import 'package:AFlutter/action/action.dart';
 import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/page/movie_list_item.dart';
-import 'package:AFlutter/page/movie_middleware.dart';
-import 'package:AFlutter/page/movie_reducer.dart';
+import 'package:AFlutter/page/redux_movie/movie_middleware.dart';
+import 'package:AFlutter/page/redux_movie/movie_reducer.dart';
 import 'package:AFlutter/redux/list_result.dart';
 import 'package:AFlutter/redux/list_state.dart';
 import 'package:flutter/material.dart';

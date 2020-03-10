@@ -1,8 +1,7 @@
-import 'package:AFlutter/page/movie_flutter_redux_page.dart';
-import 'package:AFlutter/page/movie_flutter_redux_page2.dart';
-import 'package:AFlutter/page/movie_list_page.dart';
-import 'package:AFlutter/page/movie_provider_page.dart';
-import 'package:AFlutter/page/theme_redux_page.dart';
+import 'package:AFlutter/page/redux_movie/movie_flutter_redux_page2.dart';
+import 'package:AFlutter/page/provider_movie/movie_provider_page.dart';
+import 'package:AFlutter/page/set_state_movie/movie_list_page.dart';
+import 'package:AFlutter/page/theme/theme_redux_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base/widget/tabs/tabs_widget.dart';
 
