@@ -1,9 +1,10 @@
 import 'package:AFlutter/action/action.dart';
 import 'package:AFlutter/entity/animate.dart';
-import 'package:AFlutter/model/movie_view_model.dart';
-import 'package:AFlutter/page/list_state.dart';
 import 'package:AFlutter/page/movie_list_item.dart';
+import 'package:AFlutter/page/movie_middleware.dart';
+import 'package:AFlutter/page/movie_reducer.dart';
 import 'package:AFlutter/redux/list_result.dart';
+import 'package:AFlutter/redux/list_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -23,33 +24,13 @@ class MovieFlutterReduxPage2 extends StatefulWidget {
   }
 }
 
-/// Reducer
-final movieReducer = combineReducers<ListState<Animate>>([
-  TypedReducer<ListState<Animate>, ListResultAction<Animate>>(_onResult),
-  TypedReducer<ListState<Animate>, ListMoreResultAction<Animate>>(
-      _onMoreResult),
-]);
-
-ListState<Animate> _onResult(ListState state, ListResultAction action) =>
-    state.clone()
-      ..list = action.result
-      ..pageIndex = state.pageIndex
-      ..loadStatus = action.status;
-
-ListState<Animate> _onMoreResult(
-        ListState state, ListMoreResultAction action) =>
-    state.clone()
-      ..list.addAll(action.result)
-      ..pageIndex = state.pageIndex + 1
-      ..loadStatus = action.status;
-
 class MovieFlutterReduxPage2State extends State<MovieFlutterReduxPage2>
     with AutomaticKeepAliveClientMixin {
   RefreshController _controller;
   final astore = Store<ListState<Animate>>(
     movieReducer,
-    middleware: createAStoreMoviesMiddleware(),
-    initialState: ListState(),
+    middleware: createMoviesMiddleware(),
+    initialState: ListState<Animate>(),
   );
 
   @override
@@ -172,60 +153,4 @@ class _ListViewModel {
       },
     );
   }
-}
-
-List<Middleware<ListState>> createAStoreMoviesMiddleware() {
-  final loadMovies = _createLoadMovies();
-  final refreshMovies = _createLoadMovies();
-  final loadMoreMovies = _createLoadMoreMovies();
-
-  return [
-    TypedMiddleware<ListState, ListAction>(loadMovies),
-    //TypedMiddleware<ListState, ListAction>(refreshMovies),
-    TypedMiddleware<ListState, ListMoreAction>(loadMoreMovies),
-  ];
-}
-
-Middleware<ListState> _createLoadMovies() {
-  return (Store<ListState> store, action, NextDispatcher next) {
-    MovieViewModel().loadData(store.state.pageIndex).then(
-      (movies) {
-        if (movies != null) {
-          store.dispatch(
-            ListResultAction(movies, ListStatus.success, null),
-          );
-        } else {
-          store.dispatch(
-            ListResultAction(movies, ListStatus.empty, null),
-          );
-        }
-      },
-    ).catchError((e) => store.dispatch(
-          ListResultAction(null, ListStatus.error, e.toString()),
-        ));
-
-    next(action);
-  };
-}
-
-Middleware<ListState> _createLoadMoreMovies() {
-  return (Store<ListState> store, action, NextDispatcher next) {
-    MovieViewModel().loadMore(store.state.pageIndex + 1).then(
-      (movies) {
-        if (movies != null) {
-          store.dispatch(
-            ListMoreResultAction(movies, ListStatus.success, null),
-          );
-        } else {
-          store.dispatch(
-            ListMoreResultAction(movies, ListStatus.nomore, null),
-          );
-        }
-      },
-    ).catchError((e) => store.dispatch(
-          ListMoreResultAction(null, ListStatus.error, e.toString()),
-        ));
-
-    next(action);
-  };
 }

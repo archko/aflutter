@@ -6,5 +6,5 @@ import 'package:redux/redux.dart';
 AppState appReducer(AppState appState, action) {
   return AppState(
       themeData: themeDataReducer(appState.themeData, action),
-      movies: movieReducer(appState.movies, action));
+      movies: appMovieReducer(appState.movies, action));
 }

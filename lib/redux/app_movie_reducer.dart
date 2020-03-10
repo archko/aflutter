@@ -4,9 +4,9 @@ import 'package:AFlutter/redux/list_result.dart';
 import 'package:redux/redux.dart';
 
 /// Reducer
-final movieReducer = combineReducers<ListResult<Animate>>([
-  TypedReducer<ListResult<Animate>, ListResultAction<Animate>>(_onResult),
+final appMovieReducer = combineReducers<ListResult<Animate>>([
+  TypedReducer<ListResult<Animate>, ListResultAction<Animate>>(_onMovieResult),
 ]);
 
-ListResult<Animate> _onResult(ListResult state, ListResultAction action) =>
+ListResult<Animate> _onMovieResult(ListResult state, ListResultAction action) =>
     ListResult(action.result, action.status, action.msg);
