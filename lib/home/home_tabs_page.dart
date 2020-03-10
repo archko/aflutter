@@ -1,4 +1,5 @@
 import 'package:AFlutter/page/movie_flutter_redux_page.dart';
+import 'package:AFlutter/page/movie_flutter_redux_page2.dart';
 import 'package:AFlutter/page/movie_list_page.dart';
 import 'package:AFlutter/page/movie_provider_page.dart';
 import 'package:AFlutter/page/theme_redux_page.dart';
@@ -14,7 +15,7 @@ const List<TabItem> tabItems = <TabItem>[
 
 class HomeTabsPage extends StatefulWidget {
   final List<Widget> widgets = [
-    MovieFlutterReduxPage(),
+    MovieFlutterReduxPage2(),
     ThemeReduxPage(),
     MovieProviderPage(),
     MovieListPage(),

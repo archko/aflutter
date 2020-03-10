@@ -25,4 +25,9 @@ class ListState<R> implements Cloneable<ListState<R>> {
       ..pageIndex = pageIndex
       ..list = list;
   }
+
+  @override
+  String toString() {
+    return 'ListState{pageIndex: $pageIndex, loadStatus: $loadStatus, list: $list,}';
+  }
 }

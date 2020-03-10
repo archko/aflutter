@@ -20,3 +20,11 @@ class ListResultAction<T> {
 
   ListResultAction(this.result, this.status, this.msg);
 }
+
+class ListMoreResultAction<T> {
+  final List<T> result;
+  final ListStatus status;
+  final String msg;
+
+  ListMoreResultAction(this.result, this.status, this.msg);
+}

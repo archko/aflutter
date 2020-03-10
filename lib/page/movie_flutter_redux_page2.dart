@@ -23,17 +23,25 @@ class MovieFlutterReduxPage2 extends StatefulWidget {
   }
 }
 
-//ListState<Animate> asReducer(ListState<Animate> state, action) {
-//  return ListState<Animate>(list: movieReducer(state, action));
-//}
-
 /// Reducer
 final movieReducer = combineReducers<ListState<Animate>>([
   TypedReducer<ListState<Animate>, ListResultAction<Animate>>(_onResult),
+  TypedReducer<ListState<Animate>, ListMoreResultAction<Animate>>(
+      _onMoreResult),
 ]);
 
 ListState<Animate> _onResult(ListState state, ListResultAction action) =>
-    ListState(list: action.result, pageIndex: 0);
+    state.clone()
+      ..list = action.result
+      ..pageIndex = state.pageIndex
+      ..loadStatus = action.status;
+
+ListState<Animate> _onMoreResult(
+        ListState state, ListMoreResultAction action) =>
+    state.clone()
+      ..list.addAll(action.result)
+      ..pageIndex = state.pageIndex + 1
+      ..loadStatus = action.status;
 
 class MovieFlutterReduxPage2State extends State<MovieFlutterReduxPage2>
     with AutomaticKeepAliveClientMixin {
@@ -155,11 +163,11 @@ class _ListViewModel {
     return _ListViewModel(
       result: store.state,
       refresh: () {
-        print("refresh:");
+        print("refresh:${store.state.pageIndex}");
         store.dispatch(ListAction(""));
       },
       loadMore: () {
-        print("loadMore:");
+        print("loadMore:${store.state.pageIndex}");
         store.dispatch(ListMoreAction(""));
       },
     );
@@ -180,7 +188,7 @@ List<Middleware<ListState>> createAStoreMoviesMiddleware() {
 
 Middleware<ListState> _createLoadMovies() {
   return (Store<ListState> store, action, NextDispatcher next) {
-    MovieViewModel().loadData(0).then(
+    MovieViewModel().loadData(store.state.pageIndex).then(
       (movies) {
         if (movies != null) {
           store.dispatch(
@@ -202,22 +210,20 @@ Middleware<ListState> _createLoadMovies() {
 
 Middleware<ListState> _createLoadMoreMovies() {
   return (Store<ListState> store, action, NextDispatcher next) {
-    MovieViewModel().loadMore(0).then(
+    MovieViewModel().loadMore(store.state.pageIndex + 1).then(
       (movies) {
         if (movies != null) {
-          List<Animate> old = store.state.list ?? [];
-          old.addAll(movies);
           store.dispatch(
-            ListResultAction(old, ListStatus.success, null),
+            ListMoreResultAction(movies, ListStatus.success, null),
           );
         } else {
           store.dispatch(
-            ListResultAction(movies, ListStatus.nomore, null),
+            ListMoreResultAction(movies, ListStatus.nomore, null),
           );
         }
       },
     ).catchError((e) => store.dispatch(
-          ListResultAction(null, ListStatus.error, e.toString()),
+          ListMoreResultAction(null, ListStatus.error, e.toString()),
         ));
 
     next(action);
