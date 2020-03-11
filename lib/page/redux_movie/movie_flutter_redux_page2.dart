@@ -44,13 +44,7 @@ class MovieFlutterReduxPage2State extends State<MovieFlutterReduxPage2>
     super.build(context);
     return StoreProvider<ListState<Animate>>(
       store: astore,
-      child: StoreBuilder<ListState<Animate>>(
-        builder: (context, store) {
-          return MaterialApp(
-            home: buildRedux(context),
-          );
-        },
-      ),
+      child: buildRedux(context),
     );
   }
 
