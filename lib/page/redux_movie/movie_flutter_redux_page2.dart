@@ -36,7 +36,7 @@ class MovieFlutterReduxPage2State extends State<MovieFlutterReduxPage2>
   @override
   void initState() {
     super.initState();
-    _controller = RefreshController(initialRefresh: true);
+    _controller = RefreshController(initialRefresh: false);
   }
 
   @override
