@@ -37,6 +37,7 @@ build/
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
 .flutter-plugins-dependencies
+.gradle
 
 # iOS/XCode related
 **/ios/**/*.mode1v3

@@ -50,12 +50,10 @@ class MovieFlutterReduxPage2State extends State<MovieFlutterReduxPage2>
 
   Widget buildRedux(BuildContext context) {
     return StoreConnector<ListState<Animate>, _ListViewModel>(
-      onInit: (state) {
-        state.dispatch(ListAction(""));
+      onInit: (store) {
+        store.dispatch(ListAction(""));
       },
-      converter: (store) {
-        return _ListViewModel.fromStore(store);
-      },
+      converter: _ListViewModel.fromStore,
       builder: (BuildContext context, _ListViewModel vm) {
         return Scaffold(
           //appBar: AppBar(title: Text('Flutter redux')),
@@ -74,7 +72,7 @@ class MovieFlutterReduxPage2State extends State<MovieFlutterReduxPage2>
   }
 
   Widget buildList(_ListViewModel viewModel) {
-    ListState<Animate> result = viewModel.result;
+    ListState<Animate> result = viewModel.state;
     print("build:$result");
     if (result.loadStatus == ListStatus.success) {
       List<Animate> movies = result.list;
@@ -124,19 +122,19 @@ class MovieFlutterReduxPage2State extends State<MovieFlutterReduxPage2>
 }
 
 class _ListViewModel {
-  final ListState<Animate> result;
+  final ListState<Animate> state;
   final Function() refresh;
   final Function() loadMore;
 
   _ListViewModel({
-    @required this.result,
+    @required this.state,
     @required this.refresh,
     @required this.loadMore,
   });
 
   static _ListViewModel fromStore(Store<ListState> store) {
     return _ListViewModel(
-      result: store.state,
+      state: store.state,
       refresh: () {
         print("refresh:${store.state.pageIndex}");
         store.dispatch(ListAction(""));

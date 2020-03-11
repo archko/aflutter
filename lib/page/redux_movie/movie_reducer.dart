@@ -14,7 +14,7 @@ ListState<Animate> _onResult(
         ListState<Animate> state, ListResultAction<Animate> action) =>
     state.clone()
       ..list = action.result
-      ..pageIndex = state.pageIndex
+      ..pageIndex = 0
       ..loadStatus = action.status;
 
 ListState<Animate> _onMoreResult(

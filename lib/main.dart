@@ -5,10 +5,12 @@ import 'package:AFlutter/redux/app_state_reducer.dart';
 import 'package:AFlutter/middleware/app_movie_middleware.dart';
 import 'package:AFlutter/state/app_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_base/log/logger.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 void main() {
+  Logger.init(debuggable: true);
   //runReduxApp();
   runThemeApp();
 }
