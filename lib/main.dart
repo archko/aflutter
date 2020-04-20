@@ -34,7 +34,7 @@ void runThemeApp() {
     middleware: createStoreMoviesMiddleware(),
   );
 
-  runApp(ThemeApp(
+  runApp(App(
     store: store,
   ));
 }

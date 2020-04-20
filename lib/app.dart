@@ -1,5 +1,6 @@
 import 'package:AFlutter/entity/animate.dart';
 import 'package:AFlutter/home/home_tabs_page.dart';
+import 'package:AFlutter/page/layout/layout_page.dart';
 import 'package:AFlutter/redux/list_result.dart';
 import 'package:AFlutter/state/app_state.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +17,9 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoreProvider<ListResult<Animate>>(
-      store: store,
-      child: MaterialApp(
-        //title: 'Flutter redux',
-        home: HomeTabsPage(),
-      ),
+    return MaterialApp(
+      //title: 'Flutter redux',
+      home: LayoutPage(),
     );
   }
 }
