@@ -45,11 +45,16 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-    compileSdkVersion ANDROID_BUILD_SDK_VERSION as int
-    buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
+    compileSdkVersion 28
+    buildToolsVersion '29.0.2'
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 
     lintOptions {
         disable 'InvalidPackage'
+        abortOnError false
     }
 
     defaultConfig {
@@ -57,14 +62,18 @@ android {
         applicationId "com.example.flutterapp"
         minSdkVersion ANDROID_BUILD_MIN_SDK_VERSION
         targetSdkVersion ANDROID_BUILD_TARGET_SDK_VERSION
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        versionCode VERSION_CODE as int
+        versionName VERSION_NAME
         ndk.abiFilters 'armeabi-v7a', 'arm64-v8a'
         signingConfig signingConfigs.release
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        profile {
+            initWith debug
+        }
         debug {
             signingConfig signingConfigs.release
             jniDebuggable true
@@ -76,13 +85,18 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'META-INF/proguard/androidx-annotations.pro'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/androidx.core_core.version'
+        exclude 'META-INF/androidx.versionedparcelable_versionedparcelable.version'
+    }
+
     compileOptions {
         encoding "UTF-8"
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    lintOptions { abortOnError false }
 }
 
 flutter {
@@ -92,6 +106,6 @@ flutter {
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }
