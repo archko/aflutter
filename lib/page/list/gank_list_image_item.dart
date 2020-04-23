@@ -28,9 +28,15 @@ class GankListImageItem extends StatelessWidget {
                 children: [
                   Text('${bean.author}',
                       style: TextStyle(fontSize: 14.0, color: Colors.blue)),
-                  Text("  ${bean.title}", style: TextStyle(fontSize: 14.0)),
-                  Text("  ${bean.publishedAt}",
-                      style: TextStyle(fontSize: 14.0)),
+                  Expanded(
+                    child: Text(
+                      "  ${bean.title}",
+                      style: TextStyle(fontSize: 14.0),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  //Text("  ${bean.publishedAt}",
+                  //    style: TextStyle(fontSize: 14.0)),
                 ],
               ),
             ),

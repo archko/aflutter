@@ -38,9 +38,15 @@ class _GankListNoImageItemState extends State<GankListNoImageItem> {
                 children: [
                   Text('${bean.author}',
                       style: TextStyle(fontSize: 14.0, color: Colors.blue)),
-                  Text("  ${bean.type}", style: TextStyle(fontSize: 13.0)),
-                  Text("  ${bean.publishedAt}",
-                      style: TextStyle(fontSize: 13.0)),
+                  Expanded(
+                    child: Text(
+                      "  ${bean.title}",
+                      style: TextStyle(fontSize: 14.0),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  //Text("  ${bean.publishedAt}",
+                  //    style: TextStyle(fontSize: 13.0)),
                 ],
               ),
             ),
