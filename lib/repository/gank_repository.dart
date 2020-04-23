@@ -37,8 +37,9 @@ class GankRepository {
     return GankListBean.fromJson(json.decode(result));
   }
 
-  Future<GankListBean> loadMoreGankListBean(String type, int pn) async {
-    return loadGankListBean(type: type, pn: pn);
+  Future<GankListBean> loadMoreGankListBean(
+      String category, String type, int pn) async {
+    return loadGankListBean(category: category, type: type, pn: pn);
   }
 
   ///=============================

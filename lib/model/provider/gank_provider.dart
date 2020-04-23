@@ -20,6 +20,7 @@ class GankProvider extends BaseListViewModel with ChangeNotifier {
     this.day,
     this.refreshController,
   }) {
+    page = 0;
     _gankResposity = GankRepository.singleton;
   }
 
@@ -50,9 +51,11 @@ class GankProvider extends BaseListViewModel with ChangeNotifier {
     print("refresh end:$gankListBean");
   }
 
-  Future loadMore(int pn) async {
+  Future loadMore(int pn) async {}
+
+  Future loadMoreGank() async {
     GankListBean gankListBean =
-        await _gankResposity.loadMoreGankListBean("", page + 1);
+        await _gankResposity.loadMoreGankListBean("Girl", "Girl", page + 1);
     if (gankListBean != null &&
         gankListBean.beans != null &&
         gankListBean.beans.length > 0) {

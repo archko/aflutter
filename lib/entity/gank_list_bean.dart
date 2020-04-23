@@ -6,7 +6,6 @@ class GankListBean {
   int status;
   int total_counts;
 
-  bool error;
   List<GankBean> beans = [];
 
   GankListBean();
@@ -33,6 +32,6 @@ class GankListBean {
 
   @override
   String toString() {
-    return 'GankListBean{error: $error, beans: $beans}';
+    return 'GankListBean{page: $page, page_count: $page_count, status: $status, total_counts: $total_counts, beans: $beans}';
   }
 }

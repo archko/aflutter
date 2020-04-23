@@ -63,15 +63,12 @@ class _GankListPageState extends State<GankListPage>
           return Container(
             margin: EdgeInsets.only(top: 10, bottom: 5),
             child: SmartRefresher(
-              physics: BouncingScrollPhysics(),
-              enablePullDown: false,
-              enablePullUp: false,
+              enablePullDown: true,
+              enablePullUp: true,
               controller: _refreshController,
               onRefresh: model.refresh,
+              onLoading: model.loadMoreGank,
               header: MaterialClassicHeader(),
-              footer: ClassicFooter(
-                loadStyle: LoadStyle.HideAlways,
-              ),
               //onLoading: model.loadMore,
               child: ListView.builder(
                 itemCount: model.getCount(),
