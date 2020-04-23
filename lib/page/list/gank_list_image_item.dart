@@ -26,11 +26,11 @@ class GankListImageItem extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${bean.who}',
+                  Text('${bean.author}',
                       style: TextStyle(fontSize: 14.0, color: Colors.blue)),
-                  Text("  ${bean.type}", style: TextStyle(fontSize: 13.0)),
+                  Text("  ${bean.title}", style: TextStyle(fontSize: 14.0)),
                   Text("  ${bean.publishedAt}",
-                      style: TextStyle(fontSize: 13.0)),
+                      style: TextStyle(fontSize: 14.0)),
                 ],
               ),
             ),
@@ -42,9 +42,21 @@ class GankListImageItem extends StatelessWidget {
             ),
             Container(
               margin: const EdgeInsets.all(5.0),
-              child: Image(
-                image: CachedNetworkImageProvider('${bean.images[0]}'),
+              //child: Image(
+              //  image: CachedNetworkImageProvider('${bean.images[0]}',),
+              //  fit: BoxFit.fitWidth,
+              //),
+              child: CachedNetworkImage(
                 fit: BoxFit.fitWidth,
+                imageUrl: bean.images[0],
+                placeholder: (context, url) => Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    backgroundColor: Colors.deepPurple[600],
+                  ),
+                ),
               ),
             ),
           ],

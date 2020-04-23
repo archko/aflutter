@@ -36,7 +36,7 @@ class _GankListNoImageItemState extends State<GankListNoImageItem> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${bean.who}',
+                  Text('${bean.author}',
                       style: TextStyle(fontSize: 14.0, color: Colors.blue)),
                   Text("  ${bean.type}", style: TextStyle(fontSize: 13.0)),
                   Text("  ${bean.publishedAt}",

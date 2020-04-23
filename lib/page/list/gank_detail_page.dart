@@ -28,7 +28,7 @@ class _GankDetailPageState extends State<GankDetailPage> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('${widget.bean.who}',
+                      Text('${widget.bean.author}',
                           style: TextStyle(fontSize: 14.0, color: Colors.blue)),
                       Text("  ${widget.bean.type}",
                           style: TextStyle(fontSize: 13.0)),
@@ -103,7 +103,7 @@ class _GankDetailPageState extends State<GankDetailPage> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${widget.bean.who}',
+                        Text('${widget.bean.author}',
                             style:
                                 TextStyle(fontSize: 14.0, color: Colors.blue)),
                         Text("  ${widget.bean.type}",

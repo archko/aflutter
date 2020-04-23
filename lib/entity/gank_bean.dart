@@ -1,69 +1,73 @@
 /**
- * {
-    "_id": "5c4572419d212264cbcc5bd7",
-    "createdAt": "2019-01-21T07:18:25.158Z",
-    "desc": "此库应用视频过滤器生成Mp4和ExoPlayer视频以及使用Camera2进行视频录制。",
-    "images": [
-    "https://ww1.sinaimg.cn/large/0073sXn7ly1fze97qh5sxg308w050tkd",
-    "https://ww1.sinaimg.cn/large/0073sXn7ly1fze97s5aung308w050qks",
-    "https://ww1.sinaimg.cn/large/0073sXn7ly1fze97u1e6mg308w050nh3"
-    ],
-    "publishedAt": "2019-04-10T00:00:00.0Z",
-    "source": "chrome",
-    "type": "Android",
-    "url": "https://github.com/MasayukiSuda/GPUVideo-android",
-    "used": true,
-    "who": "lijinshanmx"
+    {
+    "_id": "5e8c80ae2bce50b3ceaa80f0",
+    "author": "\u9e22\u5a9b",
+    "category": "Girl",
+    "createdAt": "2020-04-11 08:00:00",
+    "desc": "\u6211\u6ca1\u90a3\u4e48\u575a\u5f3a\uff0c\u53ea\u662f\u4e60\u60ef\u4e86\u4ec0\u4e48\u4e8b\u90fd\u81ea\u5df1\u625b\u3002 \u200b\u200b\u200b\u200b",
+    "images": ["http://gank.io/images/1c5cebd307fd49eaa75b368b11118b61"],
+    "likeCounts": 0,
+    "publishedAt": "2020-04-11 08:00:00",
+    "stars": 1,
+    "title": "\u7b2c52\u671f",
+    "type": "Girl",
+    "url": "http://gank.io/images/1c5cebd307fd49eaa75b368b11118b61",
+    "views": 274
     }
  */
 class GankBean {
   String id;
+  String author;
+  String category;
   String createdAt;
   String desc;
   String publishedAt;
-  String source;
+  int likeCounts;
+  int stars;
+  String title;
   String type;
   String url;
-  bool used;
-  String who;
+  int views;
   List<String> images;
 
   GankBean.fromJson(Map<String, dynamic> json) {
-    //print("item:$json");
     id = json['_id'];
+    author = json['author'];
+    category = json['category'];
     createdAt = json['createdAt'];
     desc = json['desc'];
     publishedAt = json['publishedAt'];
-    source = json['source'];
+    likeCounts = json['likeCounts'];
+    stars = json['stars'];
+    title = json['title'];
     type = json['type'];
     url = json['url'];
-    used = json['used'];
-    desc = json['desc'];
-    who = json['who'];
-    images =
-        json['images']?.map<String>((image) => image as String)?.toList() ?? [];
-    if ((images == null || images.length == 0) && "福利" == type) {
-      images = List();
-      images.add(url);
+    views = json['views'];
+
+    if (json.containsKey('images')) {
+      var tags = json['images'];
+      images = tags.map<String>((json) => json.toString()).toList();
     }
   }
 
   Map<String, dynamic> toJson() => {
         "_id": id,
+        "author": author,
+        "category": category,
         "createdAt": createdAt,
         'desc': desc,
         "publishedAt": publishedAt,
-        "source": source,
+        "likeCounts": likeCounts,
+        "stars": stars,
+        "title": title,
         'type': type,
         "url": url,
-        "used": used,
-        'desc': desc,
-        'who': who,
+        "views": views,
         'images': images,
       };
 
   @override
   String toString() {
-    return 'GankBean{ who: $who,$images}';
+    return 'GankBean{id: $id, author: $author, category: $category, createdAt: $createdAt, desc: $desc, publishedAt: $publishedAt, likeCounts: $likeCounts, stars: $stars, title: $title, type: $type, url: $url, views: $views, images: $images}';
   }
 }
