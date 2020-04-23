@@ -105,7 +105,7 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
           0,
           GankListPage(
               category: GankCategory(title: "Girl"),
-              category_type: category_type));
+              category_type: "Girl"));
       tabItems.insert(0, TabItem(text: 'Girl'));
     }
 
