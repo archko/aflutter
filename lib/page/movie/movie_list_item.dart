@@ -1,4 +1,4 @@
-import 'package:AFlutter/entity/Animate.dart';
+import 'package:AFlutter/entity/animate.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
