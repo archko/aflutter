@@ -14,13 +14,16 @@ class GankRepository {
   static String dataURL = "http://gank.io/api/data/福利/%s/%s";
 
   //加载列表数据
-  Future<GankListBean> loadGankListBean({String type, int pn}) async {
+  Future<GankListBean> loadGankListBean(
+      {String category, String type, int pn}) async {
     pn ??= 0;
-    type ??= "福利";
+    category ??= "Girl";
+    type ??= "Girl";
     GankListBean data;
 
     try {
-      String url = "http://gank.io/api/data/$type/15/$pn";
+      String url =
+          "https://gank.io/api/v2/data/category/$category/type/$type/page/$pn/count/15";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
       //print("result:${httpResponse.data}");
       data = decodeListResult(httpResponse.data as String);
