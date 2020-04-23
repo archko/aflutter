@@ -43,17 +43,17 @@ class _GankListPageState extends State<GankListPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-          child: AppBar(
-            title: Text("往期精选"),
-            centerTitle: true,
-            leading: Icon(Icons.arrow_back),
-            iconTheme: IconThemeData(color: Color(0xFFD8D8D8)),
-            backgroundColor: Color(0xFF2A2F36),
-            textTheme: TextTheme(
-                title: TextStyle(fontSize: 17.0, color: Color(0xFFFFFFFF))),
-          ),
-          preferredSize: Size.fromHeight(48)),
+      //appBar: PreferredSize(
+      //    child: AppBar(
+      //      title: Text("往期精选"),
+      //      centerTitle: true,
+      //      leading: Icon(Icons.arrow_back),
+      //      iconTheme: IconThemeData(color: Color(0xFFD8D8D8)),
+      //      backgroundColor: Color(0xFF2A2F36),
+      //      textTheme: TextTheme(
+      //          title: TextStyle(fontSize: 17.0, color: Color(0xFFFFFFFF))),
+      //    ),
+      //    preferredSize: Size.fromHeight(48)),
       body: ProviderWidget<GankProvider>(
         model: _gankProvider,
         onModelInitial: (m) {
