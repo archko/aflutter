@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class GankListNoImageItem extends StatefulWidget {
   GankListNoImageItem({Key key, this.bean, this.onPressed}) : super(key: key);
-  GankBean bean;
-  VoidCallback onPressed;
+  final GankBean bean;
+  final VoidCallback onPressed;
 
   @override
   _GankListNoImageItemState createState() =>

@@ -44,12 +44,12 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
         ),
   );
   HomeProvider _homeProvider;
-  String category_type = "Article";
+  String categoryType = "Article";
 
   @override
   void initState() {
     super.initState();
-    _homeProvider = HomeProvider(category_type);
+    _homeProvider = HomeProvider(categoryType);
   }
 
   @override
@@ -93,7 +93,7 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
     bool hasGirl = false;
     for (GankCategory category in list) {
       tabViews
-          .add(GankListPage(category: category, category_type: category_type));
+          .add(GankListPage(category: category, categoryType: categoryType));
       tabItems.add(TabItem(text: category.title));
       if ("Girl" == category.title) {
         hasGirl = true;
@@ -105,7 +105,7 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
           0,
           GankListPage(
               category: GankCategory(title: "Girl"),
-              category_type: "Girl"));
+              categoryType: "Girl"));
       tabItems.insert(0, TabItem(text: 'Girl'));
     }
 

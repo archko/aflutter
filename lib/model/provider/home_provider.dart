@@ -8,9 +8,9 @@ class HomeProvider extends BaseListViewModel with ChangeNotifier {
   GankRepository _gankResposity;
 
   int loadStatus = 0;
-  String category_type;
+  String categoryType;
 
-  HomeProvider(this.category_type) {
+  HomeProvider(this.categoryType) {
     _gankResposity = GankRepository.singleton;
   }
 
@@ -20,7 +20,7 @@ class HomeProvider extends BaseListViewModel with ChangeNotifier {
 
   Future loadCategories() async {
     GankResponse<List<GankCategory>> _gankResponse =
-        await _gankResposity.loadCategories(category_type: category_type);
+        await _gankResposity.loadCategories(categoryType: categoryType);
     print("refresh:$_gankResposity,$_gankResponse");
     if (_gankResponse == null || _gankResponse.data == null) {
       loadStatus = -1;

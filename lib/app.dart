@@ -1,7 +1,6 @@
 import 'package:AFlutter/page/home/home_tabs_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_base/widget/tabs/tab_bar_widget.dart';
 
 Widget createApp() {
   return StateDemoApp();

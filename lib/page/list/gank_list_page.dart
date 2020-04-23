@@ -1,21 +1,20 @@
 import 'package:AFlutter/entity/gank_bean.dart';
 import 'package:AFlutter/entity/gank_category.dart';
 import 'package:AFlutter/model/provider/gank_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_base/model/provider_widget.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'gank_detail_page.dart';
 import 'gank_list_image_item.dart';
 import 'gank_list_noimage_item.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class GankListPage extends StatefulWidget {
-  GankListPage({Key key, this.category, this.category_type}) : super(key: key);
+  GankListPage({Key key, this.category, this.categoryType}) : super(key: key);
   final GankCategory category;
-  final String category_type;
+  final String categoryType;
 
   @override
   _GankListPageState createState() => new _GankListPageState();
@@ -39,7 +38,7 @@ class _GankListPageState extends State<GankListPage>
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
     _gankProvider = GankProvider(
-      category: widget.category_type,
+      category: widget.categoryType,
       type: widget.category.type,
       refreshController: _refreshController,
     );
@@ -47,6 +46,7 @@ class _GankListPageState extends State<GankListPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       body: ProviderWidget<GankProvider>(
         model: _gankProvider,

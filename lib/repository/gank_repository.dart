@@ -84,11 +84,11 @@ class GankRepository {
   /// 请求方式: GET
   /// 注:
   /// post_id 可接受参数 文章id[分类数据API返回的_id字段]
-  Future<GankResponse<GankBean>> loadGankDetail(String post_id) async {
+  Future<GankResponse<GankBean>> loadGankDetail(String postId) async {
     GankResponse<GankBean> _gankResponse;
 
     try {
-      String url = "https://gank.io/api/v2/post/$post_id";
+      String url = "https://gank.io/api/v2/post/$postId";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
       _gankResponse = await compute(decodeGank, httpResponse.data as String);
     } catch (e) {
@@ -104,14 +104,14 @@ class GankRepository {
   /// category 可接受参数 Article | GanHuo | Girl
   /// count: [1, 20]
   Future<GankResponse<List<GankBean>>> loadWeekHotGankList(
-      {String category, String hot_type}) async {
+      {String category, String hotType}) async {
     category ??= "Girl";
-    hot_type ??= "views";
+    hotType ??= "views";
     GankResponse<List<GankBean>> _gankResponse;
 
     try {
       String url =
-          "https://gank.io/api/v2/hot/$hot_type/category/$category/count/15";
+          "https://gank.io/api/v2/hot/$hotType/category/$category/count/15";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
       _gankResponse =
           await compute(decodeGankList, httpResponse.data as String);
@@ -126,11 +126,11 @@ class GankRepository {
   /// 注:
   /// post_id 可接受参数 文章Id
   Future<GankResponse<List<GankBean>>> loadGankCommentList(
-      String post_id) async {
+      String postId) async {
     GankResponse<List<GankBean>> _gankResponse;
 
     try {
-      String url = "https://gank.io/api/v2/post/comments/$post_id";
+      String url = "https://gank.io/api/v2/post/comments/$postId";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
       _gankResponse =
           await compute(decodeGankList, httpResponse.data as String);
@@ -174,11 +174,11 @@ class GankRepository {
   /// Article: 专题分类、 GanHuo: 干货分类 、 Girl:妹子图
   ///
   Future<GankResponse<List<GankCategory>>> loadCategories(
-      {String category_type}) async {
-    category_type ??= "Article";
+      {String categoryType}) async {
+    categoryType ??= "Article";
     GankResponse<List<GankCategory>> _gankResponse;
     try {
-      String url = "https://gank.io/api/v2/categories/$category_type";
+      String url = "https://gank.io/api/v2/categories/$categoryType";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
       _gankResponse =
           await compute(decodeCategories, httpResponse.data as String);
