@@ -1,4 +1,5 @@
-import 'package:AFlutter/entity/gank_list_bean.dart';
+import 'package:AFlutter/entity/gank_bean.dart';
+import 'package:AFlutter/entity/gank_response.dart';
 import 'package:AFlutter/repository/gank_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base/model/base_list_view_model.dart';
@@ -29,43 +30,44 @@ class GankProvider extends BaseListViewModel with ChangeNotifier {
   }
 
   Future refresh() async {
-    GankListBean gankListBean = await _gankResposity.loadGankListBean();
-    print("refresh:$_gankResposity,$gankListBean");
-    data = gankListBean.beans;
-    if (gankListBean == null ||
-        gankListBean.beans == null ||
-        gankListBean.beans.length == 0) {
+    GankResponse<List<GankBean>> _gankResponse =
+        await _gankResposity.loadGankResponse();
+    print("refresh:$_gankResposity,$_gankResponse");
+    data = _gankResponse.data;
+    if (_gankResponse == null ||
+        _gankResponse.data == null ||
+        _gankResponse.data.length == 0) {
       refreshFailed = true;
       refreshController?.refreshCompleted();
       notifyListeners();
       return;
     }
     refreshFailed = false;
-    if (gankListBean.beans.length > 0) {
+    if (_gankResponse.data.length > 0) {
       refreshController?.refreshCompleted();
     } else {
       refreshController?.loadNoData();
     }
 
     notifyListeners();
-    print("refresh end:$gankListBean");
+    print("refresh end:$_gankResponse");
   }
 
   Future loadMore(int pn) async {}
 
   Future loadMoreGank() async {
-    GankListBean gankListBean =
-        await _gankResposity.loadMoreGankListBean("Girl", "Girl", page + 1);
-    if (gankListBean != null &&
-        gankListBean.beans != null &&
-        gankListBean.beans.length > 0) {
-      data.addAll(gankListBean.beans);
+    GankResponse _gankResponse =
+        await _gankResposity.loadMoreGankResponse("Girl", "Girl", page + 1);
+    if (_gankResponse != null &&
+        _gankResponse.data != null &&
+        _gankResponse.data.length > 0) {
+      data.addAll(_gankResponse.data);
 
       page += 1;
 
       refreshController?.loadComplete();
     } else {
-      if (gankListBean.beans == null) {
+      if (_gankResponse.data == null) {
         refreshController?.loadFailed();
       } else {
         refreshController?.resetNoData();

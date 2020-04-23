@@ -1,45 +1,240 @@
-import 'dart:convert';
+import 'dart:async';
+import 'dart:io';
 
 import 'package:AFlutter/entity/animate.dart';
-import 'package:AFlutter/entity/gank_list_bean.dart';
+import 'package:AFlutter/entity/gank_banner.dart';
+import 'package:AFlutter/entity/gank_bean.dart';
+import 'package:AFlutter/entity/gank_category.dart';
+import 'package:AFlutter/entity/gank_response.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_base/http/http_client.dart';
 import 'package:flutter_base/http/http_response.dart';
+import 'package:flutter_base/utils/json_utils.dart';
 
 class GankRepository {
   static final GankRepository _instance = GankRepository();
 
   static GankRepository get singleton => _instance;
 
-  static String dataURL = "http://gank.io/api/data/福利/%s/%s";
-
-  //加载列表数据
-  Future<GankListBean> loadGankListBean(
-      {String category, String type, int pn}) async {
-    pn ??= 0;
-    category ??= "Girl";
-    type ??= "Girl";
-    GankListBean data;
+  Future<GankResponse> loadGankResponseByUrl(String url) async {
+    GankResponse _gankResponse;
 
     try {
-      String url =
-          "https://gank.io/api/v2/data/category/$category/type/$type/page/$pn/count/15";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      //print("result:${httpResponse.data}");
-      data = decodeListResult(httpResponse.data as String);
+      _gankResponse =
+          await compute(decodeGankList, httpResponse.data as String);
     } catch (e) {
       print(e);
     }
-    return data;
+    return _gankResponse;
   }
 
-  static GankListBean decodeListResult(String result) {
-    return GankListBean.fromJson(json.decode(result));
+  /// 分类数据 API
+  /// https://gank.io/api/v2/data/category/<category>/type/<type>/page/<page>/count/<count>
+  /// 请求方式: GET
+  /// 注:
+  /// category 可接受参数 All(所有分类) | Article | GanHuo | Girl
+  /// type 可接受参数 All(全部类型) | Android | iOS | Flutter | Girl ...，即分类API返回的类型数据
+  /// count: [10, 50]
+  /// page: >=1
+  Future<GankResponse> loadGankResponse(
+      {String category, String type, int pn}) async {
+    pn ??= 1;
+    category ??= "Girl";
+    type ??= "Girl";
+    GankResponse _gankResponse;
+
+    String url =
+        "https://gank.io/api/v2/data/category/$category/type/$type/page/$pn/count/15";
+    try {
+      HttpResponse httpResponse = await HttpClient.instance.get(url);
+      _gankResponse =
+          await compute(decodeGankList, httpResponse.data as String);
+    } catch (e) {
+      print(e);
+    }
+    return _gankResponse;
   }
 
-  Future<GankListBean> loadMoreGankListBean(
+  /// 随机 API https://gank.io/api/v2/random/category/GanHuo/type/Android/count/10
+  /// 请求方式: GET
+  //注:
+  //category 可接受参数 Article | GanHuo | Girl
+  //type 可接受参数 Android | iOS | Flutter | Girl，即分类API返回的类型数据
+  //count: [1, 50]
+  Future<GankResponse> loadRandomGankList(
+      {String category, String type, int pn}) async {
+    GankResponse listBean;
+
+    try {
+      String url =
+          "https://gank.io/api/v2/random/category/GanHuo/type/Android/count/15";
+      HttpResponse httpResponse = await HttpClient.instance.get(url);
+      listBean = await compute(decodeGankList, httpResponse.data as String);
+    } catch (e) {
+      print(e);
+    }
+    return listBean;
+  }
+
+  /// 文章详情 API https://gank.io/api/v2/post/<post_id>
+  /// 请求方式: GET
+  //注:
+  //post_id 可接受参数 文章id[分类数据API返回的_id字段]
+  Future<GankResponse> loadGankDetail(String post_id) async {
+    GankResponse listBean;
+
+    try {
+      String url = "https://gank.io/api/v2/post/$post_id";
+      HttpResponse httpResponse = await HttpClient.instance.get(url);
+      listBean = await compute(decodeGankList, httpResponse.data as String);
+    } catch (e) {
+      print(e);
+    }
+    return listBean;
+  }
+
+  /// 本周最热 API https://gank.io/api/v2/hot/<hot_type>/category/<category>/count/<count>
+  /// 请求方式: GET
+  //注:
+  //hot_type 可接受参数 views（浏览数） | likes（点赞数） | comments（评论数）❌
+  //category 可接受参数 Article | GanHuo | Girl
+  //count: [1, 20]
+  Future<GankResponse> loadWeekHotGankList(String post_id) async {
+    GankResponse listBean;
+
+    try {
+      String url = "https://gank.io/api/v2/post/$post_id";
+      HttpResponse httpResponse = await HttpClient.instance.get(url);
+      listBean = await compute(decodeGankList, httpResponse.data as String);
+    } catch (e) {
+      print(e);
+    }
+    return listBean;
+  }
+
+  /// 文章评论获取 API https://gank.io/api/v2/post/comments/<post_id>
+  /// 请求方式: GET
+  //注:
+  //post_id 可接受参数 文章Id
+  Future<GankResponse> loadGankCommentList(String post_id) async {
+    GankResponse listBean;
+
+    try {
+      String url = "https://gank.io/api/v2/post/comments/$post_id";
+      HttpResponse httpResponse = await HttpClient.instance.get(url);
+      listBean = await compute(decodeGankList, httpResponse.data as String);
+    } catch (e) {
+      print(e);
+    }
+    return listBean;
+  }
+
+  /// 搜索 API https://gank.io/api/v2/search/<search>/category/<category>/type/<type>/page/<page>/count/<count>
+  /// 请求方式: GET
+  //注:
+  //search 可接受参数 要搜索的内容
+  //category 可接受参数 All[所有分类] | Article | GanHuo
+  //type 可接受参数 Android | iOS | Flutter ...，即分类API返回的类型数据
+  //count: [10, 50]
+  //page: >=1
+  Future<GankResponse> searchGank(
+      String search, String category, String type, int page) async {
+    GankResponse listBean;
+
+    try {
+      String url =
+          "https://gank.io/api/v2/search/$search/category/$category/type/$type/page/$page/count/15";
+      HttpResponse httpResponse = await HttpClient.instance.get(url);
+      listBean = await compute(decodeGankList, httpResponse.data as String);
+    } catch (e) {
+      print(e);
+    }
+    return listBean;
+  }
+
+  Future<GankResponse> loadMoreGankResponse(
       String category, String type, int pn) async {
-    return loadGankListBean(category: category, type: type, pn: pn);
+    return loadGankResponse(category: category, type: type, pn: pn);
+  }
+
+  /// https://gank.io/api/v2/categories/<category_type> 请求方式: GET
+  /// 注:获取所有分类具体子分类[types]数据
+  /// category_type 可接受参数 Article | GanHuo | Girl
+  /// Article: 专题分类、 GanHuo: 干货分类 、 Girl:妹子图
+  ///
+  Future loadCategories() async {
+    GankResponse<List<GankCategory>> _gankResponse;
+    try {
+      String url = "https://gank.io/api/v2/categories/Article";
+      HttpResponse httpResponse = await HttpClient.instance.get(url);
+      //print("result:${httpResponse.data}");
+      _gankResponse =
+          await compute(decodeCategories, httpResponse.data as String);
+      //_gankResponse = decodeCategories(httpResponse.data as String);
+    } catch (e) {
+      print(e);
+    }
+    return _gankResponse;
+  }
+
+  /// 首页banner轮播 https://gank.io/api/v2/banners 请求方式: GET
+  /// 注:返回首页banner轮播的数据
+  Future loadBanners() async {
+    GankResponse<List<GankBanner>> _gankResponse;
+    try {
+      String url = "https://gank.io/api/v2/banners";
+      HttpResponse httpResponse = await HttpClient.instance.get(url);
+      _gankResponse = await compute(decodeBanners, httpResponse.data as String);
+    } catch (e) {
+      print(e);
+    }
+    return _gankResponse;
+  }
+
+  static GankResponse<List<GankBean>> decodeGankList(String result) {
+    Map<String, dynamic> decode = JsonUtils.decodeAsMap(result);
+    GankResponse<List<GankBean>> response = GankResponse.fromJson(decode);
+    if (decode.containsKey("data")) {
+      var results = decode["data"];
+      List beans = List();
+      for (var item in results) {
+        //print("item:$item,");
+        beans.add(GankBean.fromJson(item));
+      }
+      response.data = beans;
+    }
+    return response;
+  }
+
+  static GankResponse<List<GankCategory>> decodeCategories(String result) {
+    Map<String, dynamic> decode = JsonUtils.decodeAsMap(result);
+    GankResponse<List<GankCategory>> response = GankResponse.fromJson(decode);
+    if (decode.containsKey("data")) {
+      var results = decode["data"];
+      List<GankCategory> beans = List();
+      for (var item in results) {
+        //print("item:$item,");
+        beans.add(GankCategory.fromJson(item));
+      }
+      response.data = beans;
+    }
+    return response;
+  }
+
+  static GankResponse<List<GankBanner>> decodeBanners(String result) {
+    Map<String, dynamic> decode = JsonUtils.decodeAsMap(result);
+    GankResponse<List<GankBanner>> response = GankResponse.fromJson(decode);
+    if (decode.containsKey("data")) {
+      var results = decode["data"];
+      List<GankBanner> beans = List();
+      for (var item in results) {
+        //print("item:$item,");
+        beans.add(GankBanner.fromJson(item));
+      }
+      response.data = beans;
+    }
+    return response;
   }
 
   ///=============================
@@ -62,9 +257,7 @@ class GankRepository {
   }
 
   static List<Animate> decodeMovieListResult(String result) {
-    //return json.decode(data);
-    return json
-        .decode(result)['data'][0]['result']
+    return JsonUtils.decodeAsMap(result)['data'][0]['result']
         .map<Animate>((dynamic json) => Animate.fromJson(json))
         .toList();
   }
