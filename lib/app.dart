@@ -25,9 +25,9 @@ class _StateDemoAppState extends State<StateDemoApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter provider',
-      //home: TestProviderPage(),
-      home: HomeTabsPage(),
+      home: Scaffold(
+        body: HomeTabsPage(),
+      ),
     );
   }
 }
