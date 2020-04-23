@@ -60,9 +60,15 @@ class _LayoutPagePageState extends State<LayoutPage>
                   ),
                   child: Row(
                     children: <Widget>[
-                      Container(
-                        child: Text(
-                          "红色按钮",
+                      Expanded(
+                        child: RaisedButton(
+                          onPressed: () {},
+                          color: Colors.red,
+                          child: Container(
+                            child: Text(
+                              "红色按钮",
+                            ),
+                          ),
                         ),
                       ),
                       Container(
