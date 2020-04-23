@@ -1,4 +1,5 @@
 import 'package:AFlutter/entity/gank_bean.dart';
+import 'package:AFlutter/entity/gank_category.dart';
 import 'package:AFlutter/model/provider/gank_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base/model/provider_widget.dart';
@@ -12,16 +13,16 @@ import 'package:flutter/widgets.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class GankListPage extends StatefulWidget {
-  GankListPage({Key key, this.title, this.type}) : super(key: key);
-  final String title;
-  final String type;
+  GankListPage({Key key, this.category, this.category_type}) : super(key: key);
+  final GankCategory category;
+  final String category_type;
 
   @override
   _GankListPageState createState() => new _GankListPageState();
 
   @override
   String toStringShort() {
-    return type == null ? super.toStringShort() : type;
+    return category.title;
   }
 }
 
@@ -37,23 +38,16 @@ class _GankListPageState extends State<GankListPage>
   void initState() {
     super.initState();
     _refreshController = RefreshController(initialRefresh: false);
-    _gankProvider = GankProvider(refreshController: _refreshController);
+    _gankProvider = GankProvider(
+      category: widget.category_type,
+      type: widget.category.type,
+      refreshController: _refreshController,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //appBar: PreferredSize(
-      //    child: AppBar(
-      //      title: Text("往期精选"),
-      //      centerTitle: true,
-      //      leading: Icon(Icons.arrow_back),
-      //      iconTheme: IconThemeData(color: Color(0xFFD8D8D8)),
-      //      backgroundColor: Color(0xFF2A2F36),
-      //      textTheme: TextTheme(
-      //          title: TextStyle(fontSize: 17.0, color: Color(0xFFFFFFFF))),
-      //    ),
-      //    preferredSize: Size.fromHeight(48)),
       body: ProviderWidget<GankProvider>(
         model: _gankProvider,
         onModelInitial: (m) {

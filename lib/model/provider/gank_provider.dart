@@ -9,19 +9,17 @@ class GankProvider extends BaseListViewModel with ChangeNotifier {
   GankRepository _gankResposity;
   RefreshController refreshController;
 
-  String from;
-  String day;
-  String cateid;
+  String category;
+  String type;
 
   bool refreshFailed = false;
 
   GankProvider({
-    this.from,
-    this.cateid,
-    this.day,
+    this.category,
+    this.type,
     this.refreshController,
   }) {
-    page = 0;
+    page = 1;
     _gankResposity = GankRepository.singleton;
   }
 
@@ -30,8 +28,8 @@ class GankProvider extends BaseListViewModel with ChangeNotifier {
   }
 
   Future refresh() async {
-    GankResponse<List<GankBean>> _gankResponse =
-        await _gankResposity.loadGankResponse();
+    GankResponse<List<GankBean>> _gankResponse = await _gankResposity
+        .loadGankResponse(category: category, type: type, pn: page);
     print("refresh:$_gankResposity,$_gankResponse");
     data = _gankResponse.data;
     if (_gankResponse == null ||
@@ -57,7 +55,7 @@ class GankProvider extends BaseListViewModel with ChangeNotifier {
 
   Future loadMoreGank() async {
     GankResponse _gankResponse =
-        await _gankResposity.loadMoreGankResponse("Girl", "Girl", page + 1);
+        await _gankResposity.loadMoreGankResponse(category, type, page + 1);
     if (_gankResponse != null &&
         _gankResponse.data != null &&
         _gankResponse.data.length > 0) {

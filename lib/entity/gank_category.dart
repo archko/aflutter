@@ -14,6 +14,14 @@ class GankCategory {
   String title;
   String type;
 
+  GankCategory({
+    this.id,
+    this.coverImageUrl,
+    this.desc,
+    this.title,
+    this.type,
+  });
+
   GankCategory.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
     coverImageUrl = json['coverImageUrl'];

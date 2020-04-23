@@ -7,9 +7,10 @@ import 'package:flutter_base/model/base_list_view_model.dart';
 class HomeProvider extends BaseListViewModel with ChangeNotifier {
   GankRepository _gankResposity;
 
-  bool refreshFailed = false;
+  int loadStatus = 0;
+  String category_type;
 
-  HomeProvider() {
+  HomeProvider(this.category_type) {
     _gankResposity = GankRepository.singleton;
   }
 
@@ -19,14 +20,15 @@ class HomeProvider extends BaseListViewModel with ChangeNotifier {
 
   Future loadCategories() async {
     GankResponse<List<GankCategory>> _gankResponse =
-        await _gankResposity.loadCategories();
+        await _gankResposity.loadCategories(category_type: category_type);
     print("refresh:$_gankResposity,$_gankResponse");
     if (_gankResponse == null || _gankResponse.data == null) {
-      refreshFailed = true;
+      loadStatus = -1;
       notifyListeners();
       return;
     }
-    refreshFailed = false;
+    data = _gankResponse.data;
+    loadStatus = 1;
 
     notifyListeners();
     print("refresh end:$_gankResponse");
