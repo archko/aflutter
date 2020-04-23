@@ -18,7 +18,7 @@ class HomeProvider extends BaseListViewModel with ChangeNotifier {
   }
 
   Future loadCategories() async {
-    GankResponse<GankCategory> _gankResponse =
+    GankResponse<List<GankCategory>> _gankResponse =
         await _gankResposity.loadCategories();
     print("refresh:$_gankResposity,$_gankResponse");
     if (_gankResponse == null || _gankResponse.data == null) {

@@ -16,8 +16,8 @@ class GankRepository {
 
   static GankRepository get singleton => _instance;
 
-  Future<GankResponse> loadGankResponseByUrl(String url) async {
-    GankResponse _gankResponse;
+  Future<GankResponse<List<GankBean>>> loadGankResponseByUrl(String url) async {
+    GankResponse<List<GankBean>> _gankResponse;
 
     try {
       HttpResponse httpResponse = await HttpClient.instance.get(url);
@@ -37,12 +37,12 @@ class GankRepository {
   /// type 可接受参数 All(全部类型) | Android | iOS | Flutter | Girl ...，即分类API返回的类型数据
   /// count: [10, 50]
   /// page: >=1
-  Future<GankResponse> loadGankResponse(
+  Future<GankResponse<List<GankBean>>> loadGankResponse(
       {String category, String type, int pn}) async {
     pn ??= 1;
     category ??= "Girl";
     type ??= "Girl";
-    GankResponse _gankResponse;
+    GankResponse<List<GankBean>> _gankResponse;
 
     String url =
         "https://gank.io/api/v2/data/category/$category/type/$type/page/$pn/count/15";
@@ -58,103 +58,113 @@ class GankRepository {
 
   /// 随机 API https://gank.io/api/v2/random/category/GanHuo/type/Android/count/10
   /// 请求方式: GET
-  //注:
-  //category 可接受参数 Article | GanHuo | Girl
-  //type 可接受参数 Android | iOS | Flutter | Girl，即分类API返回的类型数据
-  //count: [1, 50]
-  Future<GankResponse> loadRandomGankList(
+  /// 注:
+  /// category 可接受参数 Article | GanHuo | Girl
+  /// type 可接受参数 Android | iOS | Flutter | Girl，即分类API返回的类型数据
+  /// count: [1, 50]
+  Future<GankResponse<List<GankBean>>> loadRandomGankList(
       {String category, String type, int pn}) async {
-    GankResponse listBean;
+    category ??= "GanHuo";
+    type ??= "Android";
+    GankResponse<List<GankBean>> _gankResponse;
 
     try {
       String url =
-          "https://gank.io/api/v2/random/category/GanHuo/type/Android/count/15";
+          "https://gank.io/api/v2/random/category/$category/type/$type/count/15";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      listBean = await compute(decodeGankList, httpResponse.data as String);
+      _gankResponse =
+          await compute(decodeGankList, httpResponse.data as String);
     } catch (e) {
       print(e);
     }
-    return listBean;
+    return _gankResponse;
   }
 
   /// 文章详情 API https://gank.io/api/v2/post/<post_id>
   /// 请求方式: GET
-  //注:
-  //post_id 可接受参数 文章id[分类数据API返回的_id字段]
-  Future<GankResponse> loadGankDetail(String post_id) async {
-    GankResponse listBean;
+  /// 注:
+  /// post_id 可接受参数 文章id[分类数据API返回的_id字段]
+  Future<GankResponse<GankBean>> loadGankDetail(String post_id) async {
+    GankResponse<GankBean> _gankResponse;
 
     try {
       String url = "https://gank.io/api/v2/post/$post_id";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      listBean = await compute(decodeGankList, httpResponse.data as String);
+      _gankResponse = await compute(decodeGank, httpResponse.data as String);
     } catch (e) {
       print(e);
     }
-    return listBean;
+    return _gankResponse;
   }
 
   /// 本周最热 API https://gank.io/api/v2/hot/<hot_type>/category/<category>/count/<count>
   /// 请求方式: GET
-  //注:
-  //hot_type 可接受参数 views（浏览数） | likes（点赞数） | comments（评论数）❌
-  //category 可接受参数 Article | GanHuo | Girl
-  //count: [1, 20]
-  Future<GankResponse> loadWeekHotGankList(String post_id) async {
-    GankResponse listBean;
+  /// 注:
+  /// hot_type 可接受参数 views（浏览数） | likes（点赞数） | comments（评论数）❌
+  /// category 可接受参数 Article | GanHuo | Girl
+  /// count: [1, 20]
+  Future<GankResponse<List<GankBean>>> loadWeekHotGankList(
+      {String category, String hot_type}) async {
+    category ??= "Girl";
+    hot_type ??= "views";
+    GankResponse<List<GankBean>> _gankResponse;
 
     try {
-      String url = "https://gank.io/api/v2/post/$post_id";
+      String url =
+          "https://gank.io/api/v2/hot/$hot_type/category/$category/count/15";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      listBean = await compute(decodeGankList, httpResponse.data as String);
+      _gankResponse =
+          await compute(decodeGankList, httpResponse.data as String);
     } catch (e) {
       print(e);
     }
-    return listBean;
+    return _gankResponse;
   }
 
   /// 文章评论获取 API https://gank.io/api/v2/post/comments/<post_id>
   /// 请求方式: GET
-  //注:
-  //post_id 可接受参数 文章Id
-  Future<GankResponse> loadGankCommentList(String post_id) async {
-    GankResponse listBean;
+  /// 注:
+  /// post_id 可接受参数 文章Id
+  Future<GankResponse<List<GankBean>>> loadGankCommentList(
+      String post_id) async {
+    GankResponse<List<GankBean>> _gankResponse;
 
     try {
       String url = "https://gank.io/api/v2/post/comments/$post_id";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      listBean = await compute(decodeGankList, httpResponse.data as String);
+      _gankResponse =
+          await compute(decodeGankList, httpResponse.data as String);
     } catch (e) {
       print(e);
     }
-    return listBean;
+    return _gankResponse;
   }
 
   /// 搜索 API https://gank.io/api/v2/search/<search>/category/<category>/type/<type>/page/<page>/count/<count>
   /// 请求方式: GET
-  //注:
-  //search 可接受参数 要搜索的内容
-  //category 可接受参数 All[所有分类] | Article | GanHuo
-  //type 可接受参数 Android | iOS | Flutter ...，即分类API返回的类型数据
-  //count: [10, 50]
-  //page: >=1
-  Future<GankResponse> searchGank(
+  /// 注:
+  /// search 可接受参数 要搜索的内容
+  /// category 可接受参数 All[所有分类] | Article | GanHuo
+  /// type 可接受参数 Android | iOS | Flutter ...，即分类API返回的类型数据
+  /// count: [10, 50]
+  /// page: >=1
+  Future<GankResponse<List<GankBean>>> searchGank(
       String search, String category, String type, int page) async {
-    GankResponse listBean;
+    GankResponse<List<GankBean>> _gankResponse;
 
     try {
       String url =
           "https://gank.io/api/v2/search/$search/category/$category/type/$type/page/$page/count/15";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      listBean = await compute(decodeGankList, httpResponse.data as String);
+      _gankResponse =
+          await compute(decodeGankList, httpResponse.data as String);
     } catch (e) {
       print(e);
     }
-    return listBean;
+    return _gankResponse;
   }
 
-  Future<GankResponse> loadMoreGankResponse(
-      String category, String type, int pn) async {
+  Future loadMoreGankResponse(String category, String type, int pn) async {
     return loadGankResponse(category: category, type: type, pn: pn);
   }
 
@@ -163,12 +173,13 @@ class GankRepository {
   /// category_type 可接受参数 Article | GanHuo | Girl
   /// Article: 专题分类、 GanHuo: 干货分类 、 Girl:妹子图
   ///
-  Future loadCategories() async {
+  Future<GankResponse<List<GankCategory>>> loadCategories(
+      {String category_type}) async {
+    category_type ??= "Article";
     GankResponse<List<GankCategory>> _gankResponse;
     try {
-      String url = "https://gank.io/api/v2/categories/Article";
+      String url = "https://gank.io/api/v2/categories/$category_type";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      //print("result:${httpResponse.data}");
       _gankResponse =
           await compute(decodeCategories, httpResponse.data as String);
       //_gankResponse = decodeCategories(httpResponse.data as String);
@@ -192,12 +203,23 @@ class GankRepository {
     return _gankResponse;
   }
 
+  static GankResponse<GankBean> decodeGank(String result) {
+    Map<String, dynamic> decode = JsonUtils.decodeAsMap(result);
+    GankResponse<GankBean> response = GankResponse.fromJson(decode);
+    if (decode.containsKey("data")) {
+      var results = decode["data"];
+
+      response.data = GankBean.fromJson(results);
+    }
+    return response;
+  }
+
   static GankResponse<List<GankBean>> decodeGankList(String result) {
     Map<String, dynamic> decode = JsonUtils.decodeAsMap(result);
     GankResponse<List<GankBean>> response = GankResponse.fromJson(decode);
     if (decode.containsKey("data")) {
       var results = decode["data"];
-      List beans = List();
+      List<GankBean> beans = List();
       for (var item in results) {
         //print("item:$item,");
         beans.add(GankBean.fromJson(item));
