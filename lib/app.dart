@@ -24,6 +24,9 @@ class _StateDemoAppState extends State<StateDemoApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
       home: Scaffold(
         body: HomeTabsPage(),
       ),

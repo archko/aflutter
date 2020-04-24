@@ -13,6 +13,7 @@ class GankProvider extends BaseListViewModel with ChangeNotifier {
   String type;
 
   bool refreshFailed = false;
+  GankResponse<List<GankBean>> gankResponse;
 
   GankProvider({
     this.category,
@@ -31,7 +32,6 @@ class GankProvider extends BaseListViewModel with ChangeNotifier {
     GankResponse<List<GankBean>> _gankResponse = await _gankResposity
         .loadGankResponse(category: category, type: type, pn: page);
     print("refresh:$_gankResposity,$_gankResponse");
-    data = _gankResponse.data;
     if (_gankResponse == null ||
         _gankResponse.data == null ||
         _gankResponse.data.length == 0) {
@@ -40,6 +40,8 @@ class GankProvider extends BaseListViewModel with ChangeNotifier {
       notifyListeners();
       return;
     }
+    gankResponse = _gankResponse;
+    data = _gankResponse.data;
     refreshFailed = false;
     if (_gankResponse.data.length > 0) {
       refreshController?.refreshCompleted();
@@ -61,9 +63,14 @@ class GankProvider extends BaseListViewModel with ChangeNotifier {
         _gankResponse.data.length > 0) {
       data.addAll(_gankResponse.data);
 
+      gankResponse.total_counts = _gankResponse.total_counts;
       page += 1;
 
-      refreshController?.loadComplete();
+      if (data.length == gankResponse.total_counts) {
+        refreshController?.resetNoData();
+      } else {
+        refreshController?.loadComplete();
+      }
     } else {
       if (_gankResponse.data == null) {
         refreshController?.loadFailed();
