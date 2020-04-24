@@ -1,6 +1,8 @@
+import 'package:AFlutter/entity/gank_banner.dart';
 import 'package:AFlutter/entity/gank_category.dart';
 import 'package:AFlutter/entity/gank_response.dart';
 import 'package:AFlutter/repository/gank_repository.dart';
+import 'package:flutter_base/widget/banner/custom_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base/model/base_list_view_model.dart';
 
@@ -9,6 +11,7 @@ class HomeProvider extends BaseListViewModel with ChangeNotifier {
 
   int loadStatus = 0;
   String categoryType;
+  GankResponse<List<GankBanner>> gankBannerResponse;
 
   HomeProvider(this.categoryType) {
     _gankResposity = GankRepository.singleton;
@@ -36,8 +39,25 @@ class HomeProvider extends BaseListViewModel with ChangeNotifier {
 
   Future loadMore(int pn) async {}
 
-  Future loadMoreGank() async {
+  Future loadBanner() async {
+    GankResponse<List<GankBanner>> _gankResponse =
+        await _gankResposity.loadBanners();
+    gankBannerResponse = _gankResponse;
+
     notifyListeners();
+  }
+
+  List<BannerBean> getBannerBeans() {
+    if (gankBannerResponse == null ||
+        gankBannerResponse.data == null ||
+        gankBannerResponse.data.length == 0) {
+      return [];
+    }
+    List<BannerBean> banners = [];
+    for (var banner in gankBannerResponse.data) {
+      banners.add(BannerBean(imageUrl: banner.image, title: banner.title));
+    }
+    return banners;
   }
 
   @override
