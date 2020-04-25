@@ -4,7 +4,8 @@ import 'package:AFlutter/page/list/gank_list_page.dart';
 import 'package:AFlutter/page/movie/movie_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base/model/provider_widget.dart';
-import 'package:flutter_base/widget/banner/custom_banner.dart';
+
+//import 'package:flutter_base/widget/banner/custom_banner.dart';
 import 'package:flutter_base/widget/tabs/tabs_widget.dart';
 
 class HomeTabsPage extends StatefulWidget {
@@ -23,7 +24,10 @@ class HomeTabsPage extends StatefulWidget {
 
 class _HomeTabsPageState extends State<HomeTabsPage> {
   List<Widget> defaultTabViews = [
-    GankListPage(),
+    GankListPage(
+      category: GankCategory(type: "Girl"),
+      categoryType: "Girl",
+    ),
     MovieListPage(),
   ];
   List<TabItem> defaultTabItems = <TabItem>[
@@ -122,13 +126,13 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
 
   Widget _bar(BuildContext context, HomeProvider model) {
     Widget widget;
-    if (model.getBannerBeans() == null) {
-      widget = Center(
-        child: CircularProgressIndicator(),
-      );
-    } else {
-      widget = CustomBanner(model.getBannerBeans());
-    }
+    //if (model.getBannerBeans() == null) {
+    //  widget = Center(
+    //    child: CircularProgressIndicator(),
+    //  );
+    //} else {
+    //  widget = CustomBanner(model.getBannerBeans());
+    //}
     return SliverAppBar(
       centerTitle: true,
       expandedHeight: 200.0,
@@ -160,7 +164,6 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
           height: double.maxFinite,
           child: widget,
         ),
-        //title: Text("老板圈每日精选动态"),
         centerTitle: true,
         collapseMode: CollapseMode.pin,
         stretchModes: [StretchMode.fadeTitle],
@@ -176,9 +179,8 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
       );
     } else if (model.loadStatus == 1) {
       content = initTabs(model.data);
-    } else {
-      content = buildDefaultTabs();
-    }
+    } else {}
+    content = buildDefaultTabs();
 
     return content;
   }
@@ -205,33 +207,29 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
     }
 
     return TabsWidget(
-      type: TabsWidget.BOTTOM_TAB,
+      tabsViewStyle: TabsViewStyle.noAppbarTopTab,
       tabStyle: TabsStyle.textOnly,
       tabViews: tabViews,
       tabItems: tabItems,
       isScrollable: true,
       customIndicator: true,
       decoration: _decoration,
-      showAppBar: false,
       backgroundColor: Theme.of(context).accentColor,
       title: Text("干货"),
     );
   }
 
-  MaterialApp buildDefaultTabs() {
-    return MaterialApp(
-      home: TabsWidget(
-        type: TabsWidget.BOTTOM_TAB,
-        tabStyle: TabsStyle.textOnly,
-        tabViews: defaultTabViews,
-        tabItems: defaultTabItems,
-        isScrollable: true,
-        customIndicator: true,
-        decoration: _decoration,
-        showAppBar: false,
-        backgroundColor: Theme.of(context).accentColor,
-        title: Text("干货"),
-      ),
+  Widget buildDefaultTabs() {
+    return TabsWidget(
+      tabsViewStyle: TabsViewStyle.noAppbarTopTab,
+      tabStyle: TabsStyle.textOnly,
+      tabViews: defaultTabViews,
+      tabItems: defaultTabItems,
+      isScrollable: true,
+      customIndicator: true,
+      decoration: _decoration,
+      backgroundColor: Theme.of(context).accentColor,
+      title: Text("干货"),
     );
   }
 }

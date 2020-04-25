@@ -47,41 +47,31 @@ class _GankListPageState extends State<GankListPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      body: ProviderWidget<GankProvider>(
-        model: _gankProvider,
-        onModelInitial: (m) {
-          _gankProvider.refresh();
-        },
-        builder: (context, model, childWidget) {
-          return Container(
-            margin: EdgeInsets.only(top: 10, bottom: 5),
-            child: SmartRefresher(
-              enablePullDown: true,
-              enablePullUp: true,
-              controller: _refreshController,
-              onRefresh: model.refresh,
-              onLoading: model.loadMoreGank,
-              header: MaterialClassicHeader(),
-              //onLoading: model.loadMore,
-              child: ListView.builder(
-                itemCount: model.getCount(),
-                itemBuilder: (BuildContext context, int index) =>
-                    _renderItem(context, index, model.getCount()),
-              ),
+    return ProviderWidget<GankProvider>(
+      model: _gankProvider,
+      onModelInitial: (m) {
+        _gankProvider.refresh();
+      },
+      builder: (context, model, childWidget) {
+        return Container(
+          margin: EdgeInsets.only(top: 10, bottom: 5),
+          child: SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: true,
+            controller: _refreshController,
+            onRefresh: model.refresh,
+            onLoading: model.loadMoreGank,
+            header: MaterialClassicHeader(),
+            //onLoading: model.loadMore,
+            child: ListView.builder(
+              itemCount: model.getCount(),
+              itemBuilder: (BuildContext context, int index) =>
+                  _renderItem(context, index, model.getCount()),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
-    //return PullToRefreshWidget(
-    //  itemBuilder: (BuildContext context, int index) =>
-    //      _renderItem(index, context),
-    //  listCount: loadModel.getCount() + 1,
-    //  onLoadMore: loadMore,
-    //  onRefresh: refresh,
-    //  loadMoreStatus: loadMoreStatus,
-    //);
   }
 
   void detail(GankBean bean) {
