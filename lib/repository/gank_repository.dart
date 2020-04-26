@@ -78,8 +78,7 @@ class GankRepository {
     try {
       String url = "https://gank.io/api/v2/post/$postId";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      final lb = await loadBalancer;
-      _gankResponse = await lb.run<GankResponse<GankBean>, String>(
+      _gankResponse = await loadWithBalancer<GankResponse<GankBean>, String>(
           decodeGank, httpResponse.data as String);
     } catch (e) {
       print(e);
@@ -159,7 +158,6 @@ class GankRepository {
   /// 注:获取所有分类具体子分类[types]数据
   /// category_type 可接受参数 Article | GanHuo | Girl
   /// Article: 专题分类、 GanHuo: 干货分类 、 Girl:妹子图
-  ///
   Future<GankResponse<List<GankCategory>>> loadCategories(
       {String categoryType}) async {
     categoryType ??= "Article";
@@ -167,9 +165,9 @@ class GankRepository {
     try {
       String url = "https://gank.io/api/v2/categories/$categoryType";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      final lb = await loadBalancer;
-      _gankResponse = await lb.run<GankResponse<List<GankCategory>>, String>(
-          decodeCategories, httpResponse.data as String);
+      _gankResponse =
+          await loadWithBalancer<GankResponse<List<GankCategory>>, String>(
+              decodeCategories, httpResponse.data as String);
     } catch (e) {
       print(e);
     }
@@ -183,9 +181,9 @@ class GankRepository {
     try {
       String url = "https://gank.io/api/v2/banners";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      final lb = await loadBalancer;
-      _gankResponse = await lb.run<GankResponse<List<GankBanner>>, String>(
-          decodeBanners, httpResponse.data as String);
+      _gankResponse =
+          await loadWithBalancer<GankResponse<List<GankBanner>>, String>(
+              decodeBanners, httpResponse.data as String);
     } catch (e) {
       print(e);
     }
@@ -204,9 +202,9 @@ class GankRepository {
   }
 
   Future<GankResponse<List<GankBean>>> decodeGankList(String data) async {
-    final lb = await loadBalancer;
-    GankResponse<List<GankBean>> _gankResponse = await lb
-        .run<GankResponse<List<GankBean>>, String>(_doDecodeGankList, data);
+    GankResponse<List<GankBean>> _gankResponse =
+        await loadWithBalancer<GankResponse<List<GankBean>>, String>(
+            _doDecodeGankList, data);
     return _gankResponse;
   }
 
@@ -257,7 +255,7 @@ class GankRepository {
   }
 
   ///=============================
-  //加载列表数据
+  /// 加载列表数据
   Future<List<Animate>> loadMovie({int pn}) async {
     pn ??= 0;
     List<Animate> list;
@@ -268,8 +266,8 @@ class GankRepository {
       String result =
           httpResponse.data.replaceAll('cbs(', '').replaceAll(')', '');
       //print("result:$result");
-      final lb = await loadBalancer;
-      list = await lb.run<List<Animate>, String>(decodeMovieList, result);
+      list = await loadWithBalancer<List<Animate>, String>(
+          decodeMovieList, result);
     } catch (e) {
       print(e);
     }
