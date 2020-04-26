@@ -28,7 +28,8 @@ class GankProvider extends BaseListViewModel with ChangeNotifier {
     return data == null ? 0 : data.length;
   }
 
-  Future refresh() async {
+  @override
+  Future loadData({int pn}) async {
     GankResponse<List<GankBean>> _gankResponse = await _gankResposity
         .loadGankResponse(category: category, type: type, pn: page);
     print("refresh:$_gankResposity,$_gankResponse");
@@ -53,9 +54,7 @@ class GankProvider extends BaseListViewModel with ChangeNotifier {
     print("refresh end:$_gankResponse");
   }
 
-  Future loadMore(int pn) async {}
-
-  Future loadMoreGank() async {
+  Future loadMore({int pn}) async {
     GankResponse _gankResponse =
         await _gankResposity.loadMoreGankResponse(category, type, page + 1);
     if (_gankResponse != null &&
@@ -80,10 +79,5 @@ class GankProvider extends BaseListViewModel with ChangeNotifier {
     }
 
     notifyListeners();
-  }
-
-  @override
-  Future loadData(int pn) {
-    return null;
   }
 }

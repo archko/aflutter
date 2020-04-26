@@ -162,8 +162,9 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
       );
     } else if (model.loadStatus == 1) {
       content = _initTabs(model.data);
-    } else {}
-    content = _buildDefaultTabs();
+    } else {
+      content = _buildDefaultTabs();
+    }
 
     return content;
   }
@@ -187,6 +188,8 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
           GankListPage(
               category: GankCategory(title: "Girl"), categoryType: "Girl"));
       tabItems.insert(0, TabItem(text: 'Girl'));
+      tabViews.insert(1, MovieListPage());
+      tabItems.insert(1, TabItem(text: 'Movie'));
     }
 
     return TabsWidget(

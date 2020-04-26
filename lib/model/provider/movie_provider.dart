@@ -15,7 +15,8 @@ class MovieProvider extends BaseListViewModel with ChangeNotifier {
     _gankResposity = GankRepository.singleton;
   }
 
-  Future refresh() async {
+  @override
+  Future loadData({int pn}) async {
     print("refresh:${refreshController.footerStatus},$_gankResposity");
     List<Animate> list = await _gankResposity.loadMovie(pn: 0);
     setData(list);
@@ -35,7 +36,8 @@ class MovieProvider extends BaseListViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future loadMore([int pn]) async {
+  @override
+  Future loadMore({int pn}) async {
     print("loadMore:${refreshController.footerStatus},$_gankResposity");
     List<Animate> list = await _gankResposity.loadMovie(pn: page + 1);
     if (list != null && list.length > 0) {
@@ -53,10 +55,5 @@ class MovieProvider extends BaseListViewModel with ChangeNotifier {
     }
 
     notifyListeners();
-  }
-
-  @override
-  Future loadData(int pn) {
-    return null;
   }
 }

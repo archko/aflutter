@@ -21,6 +21,13 @@ class HomeProvider extends BaseListViewModel with ChangeNotifier {
     return data == null ? 0 : data.length;
   }
 
+  @override
+  Future loadData({int pn}) {
+    return null;
+  }
+
+  Future loadMore({int pn}) async {}
+
   Future loadCategories() async {
     GankResponse<List<GankCategory>> _gankResponse =
         await _gankResposity.loadCategories(categoryType: categoryType);
@@ -36,8 +43,6 @@ class HomeProvider extends BaseListViewModel with ChangeNotifier {
     notifyListeners();
     print("refresh end:$_gankResponse");
   }
-
-  Future loadMore(int pn) async {}
 
   Future loadBanner() async {
     GankResponse<List<GankBanner>> _gankResponse =
@@ -58,10 +63,5 @@ class HomeProvider extends BaseListViewModel with ChangeNotifier {
       banners.add(BannerBean(imageUrl: banner.image, title: banner.title));
     }
     return banners;
-  }
-
-  @override
-  Future loadData(int pn) {
-    return null;
   }
 }

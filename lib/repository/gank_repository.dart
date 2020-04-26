@@ -6,28 +6,15 @@ import 'package:AFlutter/entity/gank_banner.dart';
 import 'package:AFlutter/entity/gank_bean.dart';
 import 'package:AFlutter/entity/gank_category.dart';
 import 'package:AFlutter/entity/gank_response.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_base/http/http_client.dart';
 import 'package:flutter_base/http/http_response.dart';
+import 'package:flutter_base/utils/isolate_utils.dart';
 import 'package:flutter_base/utils/json_utils.dart';
 
 class GankRepository {
   static final GankRepository _instance = GankRepository();
 
   static GankRepository get singleton => _instance;
-
-  Future<GankResponse<List<GankBean>>> loadGankResponseByUrl(String url) async {
-    GankResponse<List<GankBean>> _gankResponse;
-
-    try {
-      HttpResponse httpResponse = await HttpClient.instance.get(url);
-      _gankResponse =
-          await compute(decodeGankList, httpResponse.data as String);
-    } catch (e) {
-      print(e);
-    }
-    return _gankResponse;
-  }
 
   /// 分类数据 API
   /// https://gank.io/api/v2/data/category/<category>/type/<type>/page/<page>/count/<count>
@@ -48,8 +35,10 @@ class GankRepository {
         "https://gank.io/api/v2/data/category/$category/type/$type/page/$pn/count/15";
     try {
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      _gankResponse =
-          await compute(decodeGankList, httpResponse.data as String);
+      //_gankResponse =
+      //    await compute(decodeGankList, httpResponse.data as String);
+
+      _gankResponse = await decodeGankList(httpResponse.data as String);
     } catch (e) {
       print(e);
     }
@@ -72,8 +61,7 @@ class GankRepository {
       String url =
           "https://gank.io/api/v2/random/category/$category/type/$type/count/15";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      _gankResponse =
-          await compute(decodeGankList, httpResponse.data as String);
+      _gankResponse = await decodeGankList(httpResponse.data as String);
     } catch (e) {
       print(e);
     }
@@ -90,7 +78,9 @@ class GankRepository {
     try {
       String url = "https://gank.io/api/v2/post/$postId";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      _gankResponse = await compute(decodeGank, httpResponse.data as String);
+      final lb = await loadBalancer;
+      _gankResponse = await lb.run<GankResponse<GankBean>, String>(
+          decodeGank, httpResponse.data as String);
     } catch (e) {
       print(e);
     }
@@ -113,8 +103,7 @@ class GankRepository {
       String url =
           "https://gank.io/api/v2/hot/$hotType/category/$category/count/15";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      _gankResponse =
-          await compute(decodeGankList, httpResponse.data as String);
+      _gankResponse = await decodeGankList(httpResponse.data as String);
     } catch (e) {
       print(e);
     }
@@ -132,8 +121,7 @@ class GankRepository {
     try {
       String url = "https://gank.io/api/v2/post/comments/$postId";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      _gankResponse =
-          await compute(decodeGankList, httpResponse.data as String);
+      _gankResponse = await decodeGankList(httpResponse.data as String);
     } catch (e) {
       print(e);
     }
@@ -156,8 +144,7 @@ class GankRepository {
       String url =
           "https://gank.io/api/v2/search/$search/category/$category/type/$type/page/$page/count/15";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      _gankResponse =
-          await compute(decodeGankList, httpResponse.data as String);
+      _gankResponse = await decodeGankList(httpResponse.data as String);
     } catch (e) {
       print(e);
     }
@@ -180,9 +167,9 @@ class GankRepository {
     try {
       String url = "https://gank.io/api/v2/categories/$categoryType";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      _gankResponse =
-          await compute(decodeCategories, httpResponse.data as String);
-      //_gankResponse = decodeCategories(httpResponse.data as String);
+      final lb = await loadBalancer;
+      _gankResponse = await lb.run<GankResponse<List<GankCategory>>, String>(
+          decodeCategories, httpResponse.data as String);
     } catch (e) {
       print(e);
     }
@@ -196,14 +183,16 @@ class GankRepository {
     try {
       String url = "https://gank.io/api/v2/banners";
       HttpResponse httpResponse = await HttpClient.instance.get(url);
-      _gankResponse = await compute(decodeBanners, httpResponse.data as String);
+      final lb = await loadBalancer;
+      _gankResponse = await lb.run<GankResponse<List<GankBanner>>, String>(
+          decodeBanners, httpResponse.data as String);
     } catch (e) {
       print(e);
     }
     return _gankResponse;
   }
 
-  static GankResponse<GankBean> decodeGank(String result) {
+  GankResponse<GankBean> decodeGank(String result) {
     Map<String, dynamic> decode = JsonUtils.decodeAsMap(result);
     GankResponse<GankBean> response = GankResponse.fromJson(decode);
     if (decode.containsKey("data")) {
@@ -214,7 +203,15 @@ class GankRepository {
     return response;
   }
 
-  static GankResponse<List<GankBean>> decodeGankList(String result) {
+  Future<GankResponse<List<GankBean>>> decodeGankList(String data) async {
+    final lb = await loadBalancer;
+    GankResponse<List<GankBean>> _gankResponse = await lb
+        .run<GankResponse<List<GankBean>>, String>(_doDecodeGankList, data);
+    return _gankResponse;
+  }
+
+  /// need to be top level,or static
+  static GankResponse<List<GankBean>> _doDecodeGankList(String result) {
     Map<String, dynamic> decode = JsonUtils.decodeAsMap(result);
     GankResponse<List<GankBean>> response = GankResponse.fromJson(decode);
     if (decode.containsKey("data")) {
@@ -229,7 +226,7 @@ class GankRepository {
     return response;
   }
 
-  static GankResponse<List<GankCategory>> decodeCategories(String result) {
+  GankResponse<List<GankCategory>> decodeCategories(String result) {
     Map<String, dynamic> decode = JsonUtils.decodeAsMap(result);
     GankResponse<List<GankCategory>> response = GankResponse.fromJson(decode);
     if (decode.containsKey("data")) {
@@ -244,7 +241,7 @@ class GankRepository {
     return response;
   }
 
-  static GankResponse<List<GankBanner>> decodeBanners(String result) {
+  GankResponse<List<GankBanner>> decodeBanners(String result) {
     Map<String, dynamic> decode = JsonUtils.decodeAsMap(result);
     GankResponse<List<GankBanner>> response = GankResponse.fromJson(decode);
     if (decode.containsKey("data")) {
@@ -271,14 +268,15 @@ class GankRepository {
       String result =
           httpResponse.data.replaceAll('cbs(', '').replaceAll(')', '');
       //print("result:$result");
-      list = await compute(decodeMovieListResult, result);
+      final lb = await loadBalancer;
+      list = await lb.run<List<Animate>, String>(decodeMovieList, result);
     } catch (e) {
       print(e);
     }
     return list;
   }
 
-  static List<Animate> decodeMovieListResult(String result) {
+  static List<Animate> decodeMovieList(String result) {
     return JsonUtils.decodeAsMap(result)['data'][0]['result']
         .map<Animate>((dynamic json) => Animate.fromJson(json))
         .toList();

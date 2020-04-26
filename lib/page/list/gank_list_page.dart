@@ -50,7 +50,7 @@ class _GankListPageState extends State<GankListPage>
     return ProviderWidget<GankProvider>(
       model: _gankProvider,
       onModelInitial: (m) {
-        _gankProvider.refresh();
+        _gankProvider.loadData();
       },
       builder: (context, model, childWidget) {
         return Container(
@@ -60,8 +60,8 @@ class _GankListPageState extends State<GankListPage>
             enablePullDown: true,
             enablePullUp: true,
             controller: _refreshController,
-            onRefresh: model.refresh,
-            onLoading: model.loadMoreGank,
+            onRefresh: model.loadData,
+            onLoading: model.loadMore,
             header: MaterialClassicHeader(),
             child: ListView.builder(
               itemCount: model.getCount(),
