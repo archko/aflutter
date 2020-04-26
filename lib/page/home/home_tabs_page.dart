@@ -124,7 +124,7 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
       snap: false,
       primary: true,
       //backgroundColor: Theme.of(context).backgroundColor,
-      backgroundColor: Color(0xFF303030),
+      //backgroundColor: Color(0xFF303030),
       elevation: 10.0,
       forceElevated: true,
       title: Text("干货"),
