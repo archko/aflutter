@@ -35,7 +35,7 @@ class MovieProvider extends BaseListViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future loadMore(int pn) async {
+  Future loadMore([int pn]) async {
     print("loadMore:${refreshController.footerStatus},$_gankResposity");
     List<Animate> list = await _gankResposity.loadMovie(pn: page + 1);
     if (list != null && list.length > 0) {

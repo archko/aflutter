@@ -50,7 +50,7 @@ class _MovieListPageState extends State<MovieListPage>
             enablePullUp: true,
             controller: refreshController,
             onRefresh: model.refresh,
-            //onLoading: model.loadMore,
+            onLoading: model.loadMore,
             header: MaterialClassicHeader(),
             footer: ClassicFooter(),
             child: ListView.builder(
