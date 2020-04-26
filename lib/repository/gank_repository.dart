@@ -226,7 +226,7 @@ class GankRepository {
     return response;
   }
 
-  GankResponse<List<GankCategory>> decodeCategories(String result) {
+  static GankResponse<List<GankCategory>> decodeCategories(String result) {
     Map<String, dynamic> decode = JsonUtils.decodeAsMap(result);
     GankResponse<List<GankCategory>> response = GankResponse.fromJson(decode);
     if (decode.containsKey("data")) {
@@ -241,7 +241,7 @@ class GankRepository {
     return response;
   }
 
-  GankResponse<List<GankBanner>> decodeBanners(String result) {
+  static GankResponse<List<GankBanner>> decodeBanners(String result) {
     Map<String, dynamic> decode = JsonUtils.decodeAsMap(result);
     GankResponse<List<GankBanner>> response = GankResponse.fromJson(decode);
     if (decode.containsKey("data")) {
