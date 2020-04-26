@@ -1,9 +1,12 @@
+import 'package:AFlutter/entity/gank_banner.dart';
 import 'package:AFlutter/entity/gank_category.dart';
+import 'package:AFlutter/entity/gank_response.dart';
 import 'package:AFlutter/model/provider/home_provider.dart';
 import 'package:AFlutter/page/list/gank_list_page.dart';
 import 'package:AFlutter/page/movie/movie_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base/model/provider_widget.dart';
+import 'package:provider/provider.dart';
 
 import 'package:flutter_base/widget/banner/custom_banner.dart';
 import 'package:flutter_base/widget/tabs/tabs_widget.dart';
@@ -81,7 +84,7 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
         m.loadCategories();
         m.loadBanner();
       },
-      builder: (context, model, childWidget) {
+      /*builder: (context, model, childWidget) {
         return NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
@@ -103,7 +106,48 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
           },
           body: _buildBody(context, model),
         );
-      },
+      },*/
+      child: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+
+              ///SliverAppBar也可以实现吸附在顶部的TabBar，但是高度不好计算，总是会有AppBar的空白高度，
+              ///所以我就用了SliverPersistentHeader来实现这个效果，SliverAppBar的bottom中只放TabBar顶部的布局
+              child: Selector<HomeProvider, GankResponse<List<GankBanner>>>(
+                builder: (_, GankResponse<List<GankBanner>> data, child) {
+                  return _bar(context, _homeProvider);
+                },
+                selector: (_, HomeProvider homeProvider) {
+                  return homeProvider.gankBannerResponse;
+                },
+                shouldRebuild: (GankResponse<List<GankBanner>> prev,
+                    GankResponse<List<GankBanner>> dt) {
+                  return prev == null || prev.data != dt.data;
+                },
+              ),
+            ),
+
+            ///停留在顶部的TabBar
+            //SliverPersistentHeader(
+            //  delegate: _SliverAppBarDelegate(_timeSelection()),
+            //  pinned: true,
+            //),
+          ];
+        },
+        body: Selector<HomeProvider, List<GankCategory>>(
+          builder: (_, List<GankCategory> data, child) {
+            return _buildBody(context, _homeProvider);
+          },
+          selector: (_, HomeProvider homeProvider) {
+            return homeProvider.data;
+          },
+          shouldRebuild: (List<GankCategory> prev, List<GankCategory> dt) {
+            return prev == null || prev != dt;
+          },
+        ),
+      ),
     );
   }
 
