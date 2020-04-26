@@ -5,7 +5,7 @@ import 'package:AFlutter/page/movie/movie_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base/model/provider_widget.dart';
 
-//import 'package:flutter_base/widget/banner/custom_banner.dart';
+import 'package:flutter_base/widget/banner/custom_banner.dart';
 import 'package:flutter_base/widget/tabs/tabs_widget.dart';
 
 class HomeTabsPage extends StatefulWidget {
@@ -23,14 +23,14 @@ class HomeTabsPage extends StatefulWidget {
 }
 
 class _HomeTabsPageState extends State<HomeTabsPage> {
-  List<Widget> defaultTabViews = [
+  List<Widget> _defaultTabViews = [
     GankListPage(
       category: GankCategory(type: "Girl"),
       categoryType: "Girl",
     ),
     MovieListPage(),
   ];
-  List<TabItem> defaultTabItems = <TabItem>[
+  List<TabItem> _defaultTabItems = <TabItem>[
     TabItem(text: 'GankGirl'),
     TabItem(text: 'Movie'),
   ];
@@ -49,20 +49,20 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
         ),
   );
   HomeProvider _homeProvider;
-  String categoryType = "Article";
+  String _categoryType = "Article";
 
   @override
   void initState() {
     super.initState();
-    _homeProvider = HomeProvider(categoryType);
+    _homeProvider = HomeProvider(_categoryType);
   }
 
   @override
   Widget build(BuildContext context) {
-    return buildContent(context);
+    return _buildContent(context);
   }
 
-  Widget buildContent(BuildContext context) {
+  Widget _buildContent(BuildContext context) {
     double statusBarHeight = MediaQuery.of(context).padding.top;
 
     ///轮播图高度
@@ -82,23 +82,6 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
         m.loadBanner();
       },
       builder: (context, model, childWidget) {
-        //return Scaffold(
-        //  body: Container(
-        //    margin: EdgeInsets.only(top: 0, bottom: 5),
-        //    child: CustomScrollView(
-        //      slivers: <Widget>[
-        //        _bar(context, model),
-        //        SliverToBoxAdapter(
-        //          child: Container(
-        //            width: double.maxFinite,
-        //            height: double.maxFinite,
-        //            child: _buildBody(context, model),
-        //          ),
-        //        ),
-        //      ],
-        //    ),
-        //  ),
-        //);
         return NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
@@ -126,13 +109,13 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
 
   Widget _bar(BuildContext context, HomeProvider model) {
     Widget widget;
-    //if (model.getBannerBeans() == null) {
-    //  widget = Center(
-    //    child: CircularProgressIndicator(),
-    //  );
-    //} else {
-    //  widget = CustomBanner(model.getBannerBeans());
-    //}
+    if (model.getBannerBeans() == null) {
+      widget = Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      widget = CustomBanner(model.getBannerBeans());
+    }
     return SliverAppBar(
       centerTitle: true,
       expandedHeight: 200.0,
@@ -144,8 +127,8 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
       backgroundColor: Color(0xFF303030),
       elevation: 10.0,
       forceElevated: true,
-      title: Text(""),
-      leading: Icon(Icons.arrow_back),
+      title: Text("干货"),
+      //leading: Icon(Icons.arrow_back),
       iconTheme: IconThemeData(color: Color(0xFFD8D8D8)),
       textTheme:
           TextTheme(title: TextStyle(fontSize: 17.0, color: Color(0xFFFFFFFF))),
@@ -178,20 +161,20 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
         child: CircularProgressIndicator(),
       );
     } else if (model.loadStatus == 1) {
-      content = initTabs(model.data);
+      content = _initTabs(model.data);
     } else {}
-    content = buildDefaultTabs();
+    content = _buildDefaultTabs();
 
     return content;
   }
 
-  Widget initTabs(List<GankCategory> list) {
+  Widget _initTabs(List<GankCategory> list) {
     List<Widget> tabViews = [];
     List<TabItem> tabItems = [];
     bool hasGirl = false;
     for (GankCategory category in list) {
       tabViews
-          .add(GankListPage(category: category, categoryType: categoryType));
+          .add(GankListPage(category: category, categoryType: _categoryType));
       tabItems.add(TabItem(text: category.title));
       if ("Girl" == category.title) {
         hasGirl = true;
@@ -212,21 +195,21 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
       tabViews: tabViews,
       tabItems: tabItems,
       isScrollable: true,
-      customIndicator: true,
+      customIndicator: false,
       decoration: _decoration,
       backgroundColor: Theme.of(context).accentColor,
       title: Text("干货"),
     );
   }
 
-  Widget buildDefaultTabs() {
+  Widget _buildDefaultTabs() {
     return TabsWidget(
       tabsViewStyle: TabsViewStyle.noAppbarTopTab,
       tabStyle: TabsStyle.textOnly,
-      tabViews: defaultTabViews,
-      tabItems: defaultTabItems,
+      tabViews: _defaultTabViews,
+      tabItems: _defaultTabItems,
       isScrollable: true,
-      customIndicator: true,
+      customIndicator: false,
       decoration: _decoration,
       backgroundColor: Theme.of(context).accentColor,
       title: Text("干货"),
