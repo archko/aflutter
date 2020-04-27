@@ -6,6 +6,7 @@ import 'package:AFlutter/page/list/gank_list_page.dart';
 import 'package:AFlutter/page/movie/movie_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base/model/provider_widget.dart';
+import 'package:flutter_base/utils/object_utils.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_base/widget/banner/custom_banner.dart';
@@ -123,8 +124,8 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
                   return homeProvider.gankBannerResponse;
                 },
                 shouldRebuild: (GankResponse<List<GankBanner>> prev,
-                    GankResponse<List<GankBanner>> dt) {
-                  return prev == null || prev.data != dt.data;
+                    GankResponse<List<GankBanner>> now) {
+                  return prev == null || prev.data != now.data;
                 },
               ),
             ),
@@ -141,10 +142,14 @@ class _HomeTabsPageState extends State<HomeTabsPage> {
             return _buildBody(context, _homeProvider);
           },
           selector: (_, HomeProvider homeProvider) {
-            return homeProvider.data;
+            //这里需要处理空集,否则会有类型错误.
+            return (ObjectUtils.isNull(homeProvider.data) ||
+                    homeProvider.data.length == 0)
+                ? List<GankCategory>()
+                : homeProvider.data;
           },
-          shouldRebuild: (List<GankCategory> prev, List<GankCategory> dt) {
-            return prev == null || prev != dt;
+          shouldRebuild: (List<GankCategory> prev, List<GankCategory> now) {
+            return prev == null || prev != now;
           },
         ),
       ),
