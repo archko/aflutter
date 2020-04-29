@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:AFlutter/page/home/home_tabs_page.dart';
+import 'package:AFlutter/page/home/test_tabs_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -48,6 +49,7 @@ class _StateDemoAppState extends State<StateDemoApp> {
       ),
       home: Scaffold(
         body: HomeTabsPage(),
+        //body: TestTabsPage(),
       ),
     );
   }
