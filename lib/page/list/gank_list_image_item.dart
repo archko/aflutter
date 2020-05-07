@@ -46,21 +46,19 @@ class GankListImageItem extends StatelessWidget {
                       left: 5.0, right: 5.0, top: 5.0, bottom: 5.0),
                   child: Text("${bean.desc}")),
             ),
-            Container(
-              margin: const EdgeInsets.all(5.0),
-              //child: Image(
-              //  image: CachedNetworkImageProvider('${bean.images[0]}',),
-              //  fit: BoxFit.fitWidth,
-              //),
-              child: CachedNetworkImage(
-                fit: BoxFit.fitWidth,
-                imageUrl: bean.images[0],
-                placeholder: (context, url) => Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    backgroundColor: Colors.deepPurple[600],
+            RepaintBoundary(
+              child: Container(
+                margin: const EdgeInsets.all(5.0),
+                child: CachedNetworkImage(
+                  fit: BoxFit.fitWidth,
+                  imageUrl: bean.images[0],
+                  placeholder: (context, url) => Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.5,
+                      backgroundColor: Colors.deepPurple[600],
+                    ),
                   ),
                 ),
               ),

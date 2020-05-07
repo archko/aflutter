@@ -11,7 +11,7 @@ class TestPaintPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _TestPaintPageState createState() => new _TestPaintPageState();
+  _TestPaintPageState createState() => _TestPaintPageState();
 
   @override
   String toStringShort() {

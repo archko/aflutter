@@ -17,7 +17,7 @@ class GankListPage extends StatefulWidget {
   final String categoryType;
 
   @override
-  _GankListPageState createState() => new _GankListPageState();
+  _GankListPageState createState() => _GankListPageState();
 
   @override
   String toStringShort() {
@@ -76,9 +76,9 @@ class _GankListPageState extends State<GankListPage>
 
   void detail(GankBean bean) {
     Navigator.of(context).push(
-      new MaterialPageRoute<void>(
+      MaterialPageRoute<void>(
         builder: (BuildContext context) {
-          return new GankDetailPage(
+          return GankDetailPage(
             bean: bean,
           );
         },
@@ -91,16 +91,18 @@ class _GankListPageState extends State<GankListPage>
     GankBean bean = _gankProvider.getData()[index];
     if (bean.images == null || bean.images.length < 1) {
       return GankListNoImageItem(
-          bean: bean,
-          onPressed: () {
-            detail(bean);
-          });
+        bean: bean,
+        onPressed: () {
+          detail(bean);
+        },
+      );
     } else {
       return GankListImageItem(
-          bean: bean,
-          onPressed: () {
-            detail(bean);
-          });
+        bean: bean,
+        onPressed: () {
+          detail(bean);
+        },
+      );
     }
   }
 }

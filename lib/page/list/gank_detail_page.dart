@@ -8,14 +8,14 @@ class GankDetailPage extends StatefulWidget {
   final GankBean bean;
 
   @override
-  _GankDetailPageState createState() => new _GankDetailPageState();
+  _GankDetailPageState createState() => _GankDetailPageState();
 }
 
 class _GankDetailPageState extends State<GankDetailPage> {
   Widget detail(GankBean gankBean) {
     if (gankBean.images != null && gankBean.images.length > 0) {
-      return new Scaffold(
-        appBar: new AppBar(),
+      return Scaffold(
+        appBar: AppBar(),
         body: ListView(
           children: <Widget>[
             Column(
@@ -47,8 +47,7 @@ class _GankDetailPageState extends State<GankDetailPage> {
                   margin: const EdgeInsets.all(5.0),
                   child: CachedNetworkImage(
                     imageUrl: gankBean.images[0],
-                    placeholder: (context, url) =>
-                        new CircularProgressIndicator(),
+                    placeholder: (context, url) => CircularProgressIndicator(),
                     fit: BoxFit.fitWidth,
                   ),
                 ),
@@ -76,10 +75,10 @@ class _GankDetailPageState extends State<GankDetailPage> {
                 Padding(
                   padding: EdgeInsets.only(left: 10.0, right: 10.0),
                   child: CachedNetworkImage(
-                    key: new ValueKey<String>(gankBean.images[0]),
+                    key:  ValueKey<String>(gankBean.images[0]),
                     imageUrl: gankBean.images[0],
                     placeholder: (context, url) =>
-                        new CircularProgressIndicator(),
+                         CircularProgressIndicator(),
                   ),
                 ),
               ],
@@ -88,8 +87,8 @@ class _GankDetailPageState extends State<GankDetailPage> {
         ),
       );
     } else {
-      return new Scaffold(
-        appBar: new AppBar(),
+      return Scaffold(
+        appBar: AppBar(),
         body: ListView(
           children: <Widget>[
             Container(
@@ -115,9 +114,10 @@ class _GankDetailPageState extends State<GankDetailPage> {
                   ),
                   Container(
                     child: Padding(
-                        padding: EdgeInsets.only(
-                            left: 5.0, right: 5.0, top: 5.0, bottom: 5.0),
-                        child: Text("${widget.bean.desc}")),
+                      padding: EdgeInsets.only(
+                          left: 5.0, right: 5.0, top: 5.0, bottom: 5.0),
+                      child: Text("${widget.bean.desc}"),
+                    ),
                   ),
                 ],
               ),
